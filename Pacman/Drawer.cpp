@@ -2,10 +2,11 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #include "SDL_ttf.h"
+#include "assert.h"
 
-Drawer* Drawer::Create(SDL_Window* aWindow, SDL_Renderer* aRenderer)
+Drawer* Drawer::Create(SDL_Window* aWindow, SDL_Renderer* aRenderer, AssetManager* aAssetManager)
 {
-	Drawer* drawer = new Drawer(aWindow, aRenderer);
+	Drawer* drawer = new Drawer(aWindow, aRenderer, aAssetManager);
 
 	if (!drawer->Init())
 	{
@@ -16,9 +17,10 @@ Drawer* Drawer::Create(SDL_Window* aWindow, SDL_Renderer* aRenderer)
 	return drawer;
 }
 
-Drawer::Drawer(SDL_Window* aWindow, SDL_Renderer* aRenderer)
+Drawer::Drawer(SDL_Window* aWindow, SDL_Renderer* aRenderer, AssetManager* aAssetManager)
 : myWindow(aWindow)
 , myRenderer(aRenderer)
+, myAssetManager(aAssetManager)
 {
 }
 
@@ -36,12 +38,26 @@ bool Drawer::Init()
 
 void Drawer::Draw(const char* anImage, int aCellX, int aCellY)
 {
-	SDL_Surface* surface = IMG_Load( anImage ) ;
+	AssetStructPtr assetStructPtr = myAssetManager->GetAsset(anImage);
+	if (!assetStructPtr)
+	{
+		//this could mean that the asset has not been added to the AssetManager
+		assetStructPtr = myAssetManager->AddAsset(anImage);
 
-	if (!surface)
+		if (!assetStructPtr)
+		{
+			SDL_Log("Getting/Adding asset from AssetManager Failed");
+			assert(0 && "Getting/Adding asset from AssetManager Failed");
+			return;
+		}
+	}
+	SDL_Texture* optimizedSurface = assetStructPtr->sdlTexture;
+	SDL_Surface* surface = assetStructPtr->sdlSurface;
+	if (!optimizedSurface || !surface)
+	{
+		SDL_Log("Unable to Render");
 		return;
-
-	SDL_Texture* optimizedSurface = SDL_CreateTextureFromSurface(myRenderer, surface);
+	}
 
     SDL_Rect sizeRect;
     sizeRect.x = 0 ;

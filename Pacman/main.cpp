@@ -32,7 +32,8 @@ int main(int argc, char **argv)
 		exit(-1);
 	}
 
-	Drawer* drawer = Drawer::Create(window, renderer);
+	AssetManager* assetManager = AssetManager::Create(renderer);
+	Drawer* drawer = Drawer::Create(window, renderer, assetManager);
 	Pacman* pacman = Pacman::Create(drawer);
 
 	float lastFrame = (float) SDL_GetTicks() * 0.001f;
@@ -58,6 +59,7 @@ int main(int argc, char **argv)
 
 	delete pacman;
 	delete drawer;
+	delete assetManager;
 
 	TTF_Quit();
 	IMG_Quit();

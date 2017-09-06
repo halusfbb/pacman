@@ -64,6 +64,9 @@
       <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="AssetManager.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pacman.h">
@@ -104,6 +107,12 @@
     </ClInclude>
     <ClInclude Include="Vector2f.h">
       <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Header.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetManager.h">
+      <Filter>Graphics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
