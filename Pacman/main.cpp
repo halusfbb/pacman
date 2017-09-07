@@ -4,6 +4,7 @@
 #include "assert.h"
 #include "pacman.h"
 #include "drawer.h"
+#include "AssetManager.h"
 #include <iostream>
 
 int main(int argc, char **argv)
@@ -32,6 +33,7 @@ int main(int argc, char **argv)
 		exit(-1);
 	}
 
+	AssetManager::Create(renderer);
 	Drawer* drawer = Drawer::Create(window, renderer);
 	Pacman* pacman = Pacman::Create(drawer);
 
