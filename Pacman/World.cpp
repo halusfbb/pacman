@@ -63,6 +63,7 @@ bool World::InitDots()
 				if (line[i] == '.')
 				{
 					Dot* dot = new Dot(Vector2f(i*22, lineIndex*22));
+					dot->Init();
 					myDots.push_back(dot);
 				}
 			}
@@ -109,7 +110,7 @@ void World::Draw(Drawer* aDrawer)
 	for(std::list<Dot*>::iterator list_iter = myDots.begin(); list_iter != myDots.end(); list_iter++)
 	{
 		Dot* dot = *list_iter;
-		dot->Draw(aDrawer);
+		dot->Draw();
 	}
 
 	for(std::list<BigDot*>::iterator list_iter = myBigDots.begin(); list_iter != myBigDots.end(); list_iter++)
