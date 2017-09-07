@@ -34,6 +34,9 @@ bool ImageAssetCache::Init()
 		return false;
 	}
 	
+	mWidth = sdlSurface->w;
+	mHeight = sdlSurface->h;
+
 	SDL_Texture* sdlTexture = SDL_CreateTextureFromSurface(mRenderer, sdlSurface);
 	if (!sdlTexture)
 	{
@@ -41,6 +44,7 @@ bool ImageAssetCache::Init()
 		return false;
 	}
 	
+	SDL_FreeSurface(sdlSurface);
 	mSDLTexture = sdlTexture;
 	
 	return true;
@@ -48,5 +52,5 @@ bool ImageAssetCache::Init()
 
 void ImageAssetCache::CleanUpAssets()
 {
-	delete mSDLTexture;
+	SDL_DestroyTexture(mSDLTexture);
 }
