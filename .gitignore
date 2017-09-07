@@ -1,3 +1,4 @@
 # VS 2015+
 *.vc.vc.opendb
 *.vc.db
+Pacman/Debug/
