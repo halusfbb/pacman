@@ -91,6 +91,7 @@ bool World::InitBigDots()
 				if (line[i] == 'o')
 				{
 					BigDot* dot = new BigDot(Vector2f(i*22, lineIndex*22));
+					dot->Init();
 					myBigDots.push_back(dot);
 				}
 			}
@@ -116,7 +117,7 @@ void World::Draw(Drawer* aDrawer)
 	for(std::list<BigDot*>::iterator list_iter = myBigDots.begin(); list_iter != myBigDots.end(); list_iter++)
 	{
 		BigDot* dot = *list_iter;
-		dot->Draw(aDrawer);
+		dot->Draw();
 	}
 }
 
