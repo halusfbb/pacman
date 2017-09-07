@@ -14,6 +14,8 @@ public:
 
 	//create function
 	static AssetManager* Create(SDL_Renderer* aRenderer);
+	static AssetManager* assetManagerInstance;
+	static AssetManager* GetInstance();
 	bool Init();
 	~AssetManager();
 

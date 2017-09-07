@@ -3,17 +3,24 @@
 #include "ImageAssetCache.h"
 #include "assert.h"
 
+AssetManager* AssetManager::assetManagerInstance = NULL;
+
 AssetManager* AssetManager::Create(SDL_Renderer* aRenderer)
 {
-	AssetManager* assetManager = new AssetManager(aRenderer);
+	assetManagerInstance = new AssetManager(aRenderer);
 
-	if (!assetManager->Init())
+	if (!assetManagerInstance->Init())
 	{
-		delete assetManager;
+		delete assetManagerInstance;
 		return NULL;
 	}
 
-	return assetManager;
+	return assetManagerInstance;
+}
+
+AssetManager * AssetManager::GetInstance()
+{
+	return assetManagerInstance;
 }
 
 bool AssetManager::Init()
