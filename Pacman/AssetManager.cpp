@@ -7,6 +7,9 @@ AssetManager* AssetManager::assetManagerInstance = NULL;
 
 AssetManager* AssetManager::Create(SDL_Renderer* aRenderer)
 {
+	if (assetManagerInstance)
+		return assetManagerInstance;
+
 	assetManagerInstance = new AssetManager(aRenderer);
 
 	if (!assetManagerInstance->Init())
@@ -18,7 +21,7 @@ AssetManager* AssetManager::Create(SDL_Renderer* aRenderer)
 	return assetManagerInstance;
 }
 
-AssetManager * AssetManager::GetInstance()
+AssetManager* AssetManager::GetInstance()
 {
 	return assetManagerInstance;
 }
