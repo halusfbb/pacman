@@ -16,11 +16,11 @@ public:
 	int GetWidth() const;
 	int GetHeight() const;
 
+	virtual void CleanUpAssets() = 0;
+
 protected:
 	AssetCache(std::string assetName, SDL_Renderer* sdlRenderer);
 	virtual ~AssetCache();
-
-	virtual void CleanUpAssets() = 0;
 
 	std::string mAssetName;
 	SDL_Renderer* mRenderer;

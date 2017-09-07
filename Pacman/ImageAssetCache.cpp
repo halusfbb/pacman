@@ -2,7 +2,7 @@
 #include "SDL_image.h"
 #include "SDL.h"
 
-ImageAssetCache* ImageAssetCache::CreateImageAssetCacheFromFile(std::string fileName, SDL_Renderer* sdlRenderer)
+ImageAssetCacheSPtr ImageAssetCache::CreateImageAssetCacheFromFile(std::string& fileName, SDL_Renderer* sdlRenderer)
 {
 	ImageAssetCache* imageAssetCache = new ImageAssetCache(fileName, sdlRenderer);
 
@@ -12,10 +12,10 @@ ImageAssetCache* ImageAssetCache::CreateImageAssetCacheFromFile(std::string file
 		return NULL;
 	}
 
-	return imageAssetCache;
+	return std::make_shared<ImageAssetCache>(*imageAssetCache);
 }
 
-ImageAssetCache::ImageAssetCache(std::string fileName, SDL_Renderer* sdlRenderer)
+ImageAssetCache::ImageAssetCache(std::string& fileName, SDL_Renderer* sdlRenderer)
 :AssetCache(fileName, sdlRenderer)
 {
 }

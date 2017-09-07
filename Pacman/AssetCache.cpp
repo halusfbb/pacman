@@ -1,5 +1,5 @@
 #include "AssetCache.h"
-#include "sdl.h"
+#include "SDL.h"
 
 AssetCache::AssetCache(std::string assetName, SDL_Renderer * sdlRenderer)
 :mAssetName(assetName)
