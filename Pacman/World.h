@@ -3,6 +3,7 @@
 
 #include <list>
 #include "Vector2f.h"
+#include "ImageAssetCache.h"
 
 class Drawer;
 class PathmapTile;
@@ -39,11 +40,14 @@ private:
 	bool InitPathmap();
 	bool InitDots();
 	bool InitBigDots();
+	void InitBoard();
 
 	std::list<PathmapTile*> myPathmapTiles;
 	std::list<Dot*> myDots;
 	std::list<BigDot*> myBigDots;
 	std::list<Cherry*> myCherry;
+
+	ImageAssetCacheSPtr mBoardImageAssetCache;
 
 };
 

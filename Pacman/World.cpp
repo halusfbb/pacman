@@ -8,6 +8,8 @@
 #include "Dot.h"
 #include "BigDot.h"
 #include "Drawer.h"
+#include "AssetManager.h"
+#include "SDL.h"
 
 World::World(void)
 {
@@ -22,6 +24,7 @@ void World::Init()
 	InitPathmap();
 	InitDots();
 	InitBigDots();
+	InitBoard();
 }
 
 bool World::InitPathmap()
@@ -104,9 +107,26 @@ bool World::InitBigDots()
 	return true;
 }
 
+void World::InitBoard()
+{
+	mBoardImageAssetCache = std::dynamic_pointer_cast<ImageAssetCache>(AssetManager::GetInstance()->GetImageAsset("playfield.png"));
+}
+
 void World::Draw(Drawer* aDrawer)
 {
-	aDrawer->Draw("playfield.png");
+	SDL_Rect sizeRect;
+	sizeRect.x = 0;
+	sizeRect.y = 0;
+	sizeRect.w = mBoardImageAssetCache->GetWidth();
+	sizeRect.h = mBoardImageAssetCache->GetHeight();
+
+	SDL_Rect posRect;
+	posRect.x = 0;
+	posRect.y = 0;
+	posRect.w = sizeRect.w;
+	posRect.h = sizeRect.h;
+
+	SDL_RenderCopy(mBoardImageAssetCache->GetRenderer(), mBoardImageAssetCache->GetTexture(), &sizeRect, &posRect);
 
 	for(std::list<Dot*>::iterator list_iter = myDots.begin(); list_iter != myDots.end(); list_iter++)
 	{
