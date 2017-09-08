@@ -2,6 +2,7 @@
 #include "World.h"
 #include "PathmapTile.h"
 #include "Drawer.h"
+#include "AssetManager.h"
 
 Ghost::Ghost(const Vector2f& aPosition)
 : MovableGameEntity(aPosition, "ghost_32.png")
@@ -85,19 +86,27 @@ void Ghost::Update(float aTime, World* aWorld)
 		direction.Normalize();
 		myPosition += direction * distanceToMove;
 	}
+
+	if (myIsDeadFlag)
+		SetImage("Ghost_Dead_32.png");
+	else if (myIsClaimableFlag)
+		SetImage("Ghost_Vulnerable_32.png");
+	else
+		SetImage("ghost_32.png");
 }
 
 void Ghost::SetImage(const char* anImage)
 {
-	myImage = anImage;
+	if (myImageAssetCache)
+	{
+		if (strcmp(anImage, myImageAssetCache->getImageName().c_str()) == 0)
+			return; // image has no changes
+	}
+	
+	myImageAssetCache = std::dynamic_pointer_cast<ImageAssetCache>(AssetManager::GetInstance()->GetImageAsset(anImage));
 }
 
 void Ghost::Draw(Drawer* aDrawer)
 {
-	if (myIsDeadFlag)
-		aDrawer->Draw("Ghost_Dead_32.png", (int)myPosition.myX + 220, (int)myPosition.myY + 60);
-	else if (myIsClaimableFlag)
-		aDrawer->Draw("Ghost_Vulnerable_32.png", (int)myPosition.myX + 220, (int)myPosition.myY + 60);
-	else
-		aDrawer->Draw(myImage, (int)myPosition.myX + 220, (int)myPosition.myY + 60);
+	aDrawer->Draw(myImageAssetCache, (int)myPosition.myX + 220, (int)myPosition.myY + 60);
 }

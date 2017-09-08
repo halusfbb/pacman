@@ -131,13 +131,13 @@ void World::Draw(Drawer* aDrawer)
 	for(std::list<Dot*>::iterator list_iter = myDots.begin(); list_iter != myDots.end(); list_iter++)
 	{
 		Dot* dot = *list_iter;
-		dot->Draw();
+		dot->Draw(aDrawer);
 	}
 
 	for(std::list<BigDot*>::iterator list_iter = myBigDots.begin(); list_iter != myBigDots.end(); list_iter++)
 	{
 		BigDot* dot = *list_iter;
-		dot->Draw();
+		dot->Draw(aDrawer);
 	}
 }
 

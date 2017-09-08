@@ -1,6 +1,7 @@
 #include "AssetManager.h"
 #include "SDL_image.h"
 #include "ImageAssetCache.h"
+#include "FontAssetCache.h"
 #include "assert.h"
 
 AssetManager* AssetManager::assetManagerInstance = NULL;
@@ -41,13 +42,13 @@ AssetManager::AssetManager(SDL_Renderer* aRenderer)
 {
 }
 
-AssetCacheSPtr AssetManager::AddImageAsset(std::string assetName)
+ImageAssetCacheSPtr AssetManager::AddImageAsset(std::string assetName)
 {
 	//search if the asset already exists
 	auto search = mMapAsset.find(assetName);
 	if (search != mMapAsset.end())
 	{
-		return search->second; //asset already added
+		return std::dynamic_pointer_cast<ImageAssetCache>(search->second); //asset already added
 	}
 	
 	ImageAssetCacheSPtr imageAssetCacheSPtr = ImageAssetCache::CreateImageAssetCacheFromFile(assetName, mRenderer);
@@ -57,22 +58,61 @@ AssetCacheSPtr AssetManager::AddImageAsset(std::string assetName)
 	AssetCacheSPtr assetCacheSPtr = imageAssetCacheSPtr;
 	mMapAsset.insert(std::make_pair(assetName, assetCacheSPtr));
 	
-	return imageAssetCacheSPtr;
+	return std::dynamic_pointer_cast<ImageAssetCache>(assetCacheSPtr);
 }
 
-AssetCacheSPtr AssetManager::GetImageAsset(const std::string& assetName)
+FontAssetCacheSPtr AssetManager::AddFontAsset(std::string fontAssetName, int fontSize)
+{
+	//search if the asset already exists
+	std::string concatenatedFontName = fontAssetName + ":" + std::to_string(fontSize);
+	auto search = mMapAsset.find(concatenatedFontName);
+	if (search != mMapAsset.end())
+	{
+		return std::dynamic_pointer_cast<FontAssetCache>(search->second); //asset already added
+	}
+
+	FontAssetCacheSPtr fontAssetCacheSPtr = FontAssetCache::CreateFontAssetCacheFromFile(fontAssetName, fontSize, mRenderer);
+	if (!fontAssetCacheSPtr)
+		return NULL;
+
+	AssetCacheSPtr assetCacheSPtr = fontAssetCacheSPtr;
+	mMapAsset.insert(std::make_pair(concatenatedFontName, assetCacheSPtr));
+
+
+	return std::dynamic_pointer_cast<FontAssetCache>(assetCacheSPtr);
+}
+
+ImageAssetCacheSPtr AssetManager::GetImageAsset(const std::string& assetName)
 {
 	//search if the asset already exists
 	auto search = mMapAsset.find(assetName);
 	if (search != mMapAsset.end())
 	{
-		return search->second;
+		return std::dynamic_pointer_cast<ImageAssetCache>(search->second); //asset already added
 	}
 	else
 	{
 		return AddImageAsset(assetName);
 	}
 }
+
+FontAssetCacheSPtr AssetManager::GetFontAsset(const std::string& fontAssetName, int fontSize)
+{
+	//search if the asset already exists
+	std::string concatenatedFontName = fontAssetName + ":" + std::to_string(fontSize);
+
+	//search if the asset already exists
+	auto search = mMapAsset.find(concatenatedFontName);
+	if (search != mMapAsset.end())
+	{
+		return std::dynamic_pointer_cast<FontAssetCache>(search->second);
+	}
+	else
+	{
+		return AddFontAsset(fontAssetName, fontSize);
+	}
+}
+
 AssetManager::~AssetManager()
 {
 	for (auto pair : mMapAsset)
@@ -85,6 +125,23 @@ bool AssetManager::RemoveImageAsset(const std::string& assetName)
 {
 	//search if the asset already exists
 	auto search = mMapAsset.find(assetName);
+	if (search != mMapAsset.end())
+	{
+		search->second->CleanUpAssets();
+		mMapAsset.erase(search);
+		return true; //asset exists and have been removed
+	}
+	else
+	{
+		return false; //asset doesn't exist
+	}
+}
+
+bool AssetManager::RemoveFontAsset(const std::string & fontAssetName, int fontSize)
+{
+	std::string concatenatedFontName = fontAssetName + ":" + std::to_string(fontSize);
+
+	auto search = mMapAsset.find(concatenatedFontName);
 	if (search != mMapAsset.end())
 	{
 		search->second->CleanUpAssets();

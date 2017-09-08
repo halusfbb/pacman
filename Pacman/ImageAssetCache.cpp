@@ -17,6 +17,8 @@ ImageAssetCacheSPtr ImageAssetCache::CreateImageAssetCacheFromFile(std::string& 
 
 ImageAssetCache::ImageAssetCache(std::string& fileName, SDL_Renderer* sdlRenderer)
 :AssetCache(fileName, sdlRenderer)
+, mWidth(0)
+, mHeight(0)
 {
 }
 
@@ -53,4 +55,14 @@ bool ImageAssetCache::Init()
 void ImageAssetCache::CleanUpAssets()
 {
 	SDL_DestroyTexture(mSDLTexture);
+}
+
+int ImageAssetCache::GetWidth() const
+{
+	return mWidth;
+}
+
+int ImageAssetCache::GetHeight() const
+{
+	return mHeight;
 }

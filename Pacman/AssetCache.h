@@ -13,10 +13,8 @@ class AssetCache
 {
 public: 
 	SDL_Renderer* GetRenderer() const;
-	int GetWidth() const;
-	int GetHeight() const;
-
 	virtual void CleanUpAssets() = 0;
+	std::string getImageName() const;
 
 protected:
 	AssetCache(std::string assetName, SDL_Renderer* sdlRenderer);
@@ -24,9 +22,6 @@ protected:
 
 	std::string mAssetName;
 	SDL_Renderer* mRenderer;
-
-	int mWidth;
-	int mHeight;
 };
 
 typedef std::shared_ptr<AssetCache> AssetCacheSPtr;

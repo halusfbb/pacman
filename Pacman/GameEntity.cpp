@@ -1,10 +1,12 @@
 #include "GameEntity.h"
 #include "Drawer.h"
+#include "AssetManager.h"
 
 GameEntity::GameEntity(const Vector2f& aPosition, const char* anImage)
 :myPosition(aPosition)
 ,myImage(anImage)
 ,myIdMarkedForDeleteFlag(false)
+,myImageAssetCache(NULL)
 {
 }
 
@@ -12,13 +14,18 @@ GameEntity::~GameEntity(void)
 {
 }
 
+void GameEntity::Init()
+{
+	if((myImage != NULL) && (myImage[0] != '\0'))
+		myImageAssetCache = std::dynamic_pointer_cast<ImageAssetCache>(AssetManager::GetInstance()->GetImageAsset(myImage));
+}
+
 bool GameEntity::Intersect(GameEntity* aGameEntity)
 {
-
 	return false;	
 }
 
 void GameEntity::Draw(Drawer* aDrawer)
 {
-	aDrawer->Draw(myImage, (int)myPosition.myX + 220, (int)myPosition.myY + 60);
+	aDrawer->Draw(myImageAssetCache, (int)myPosition.myX + 220, (int)myPosition.myY + 60);
 }

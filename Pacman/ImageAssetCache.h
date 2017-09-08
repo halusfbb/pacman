@@ -13,11 +13,17 @@ public:
 	static ImageAssetCacheSPtr CreateImageAssetCacheFromFile(std::string& fileName, SDL_Renderer* sdlRenderer);
 	SDL_Texture* GetTexture() const;
 
+	int GetWidth() const;
+	int GetHeight() const;
+
 private:
 	ImageAssetCache(std::string& fileName, SDL_Renderer* sdlRenderer);
 	bool Init();
 	void CleanUpAssets() override;
 	SDL_Texture* mSDLTexture;
+
+	int mWidth;
+	int mHeight;
 };
 
 #endif
