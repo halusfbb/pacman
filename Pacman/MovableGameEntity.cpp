@@ -23,6 +23,12 @@ bool MovableGameEntity::IsAtDestination()
 	return false;
 }
 
+void MovableGameEntity::ResetTilesToCurrentPosition()
+{
+	myCurrentTileX = myNextTileX = myPosition.myX / 22;
+	myCurrentTileY = myNextTileY = myPosition.myY / 22;
+}
+
 void MovableGameEntity::SetNextTile(int anX, int anY)
 {
 	myNextTileX = anX;

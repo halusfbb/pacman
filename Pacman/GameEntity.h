@@ -12,10 +12,11 @@ public:
 	GameEntity(const Vector2f& aPosition, const char* anImage);
 	~GameEntity(void);
 
-	void Init();
+	virtual void Init();
 
 	Vector2f GetPosition() const { return myPosition; }
 	void SetPosition(const Vector2f& aPosition){ myPosition = aPosition; }
+	void SetAlpha(Uint8 alpha);
 
 	bool Intersect(GameEntity* aGameEntity);
 	virtual void Draw(Drawer* aDrawer);

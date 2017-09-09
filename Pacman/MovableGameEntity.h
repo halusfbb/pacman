@@ -13,6 +13,7 @@ public:
 	void SetNextTile(int anX, int anY);
 	int GetCurrentTileX() const { return myCurrentTileX; }
 	int GetCurrentTileY() const { return myCurrentTileY; }
+	void ResetTilesToCurrentPosition();
 
 	bool IsAtDestination();
 

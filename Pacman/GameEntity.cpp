@@ -20,6 +20,11 @@ void GameEntity::Init()
 		myImageAssetCache = AssetManager::GetInstance()->GetImageAsset(myImage);
 }
 
+void GameEntity::SetAlpha(Uint8 alpha)
+{
+	myImageAssetCache->SetAlpha(alpha);
+}
+
 bool GameEntity::Intersect(GameEntity* aGameEntity)
 {
 	return false;	

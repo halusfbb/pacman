@@ -31,6 +31,8 @@ Pacman::Pacman(Drawer* aDrawer)
 , myFps(0)
 , myLives(3)
 , myGhostGhostCounter(0.f)
+, myCurrentGameState(GAME_STATE_INIT)
+, myNextGameState(GAME_STATE_INIT)
 {
 	myAvatar = new Avatar(Vector2f(13*22,22*22));
 	myGhost = new Ghost(Vector2f(13*22,13*22));
@@ -55,57 +57,105 @@ bool Pacman::Update(float aTime)
 	if (!UpdateInput())
 		return false;
 
-	if (CheckEndGameCondition())
+	myCurrentGameState = myNextGameState;
+
+	switch (myCurrentGameState)
 	{
+	case GAME_STATE_INIT:
+		myNextGameState = GAME_STATE_PLAY;
+		break;
+
+	case GAME_STATE_START:
+		break;
+
+	case GAME_STATE_PLAY:
+		MoveAvatar();
+		myAvatar->Update(aTime);
+		myGhost->Update(aTime, myWorld);
+
+		if (myWorld->HasIntersectedDot(myAvatar->GetPosition()))
+			myScore += 10;
+
+		myGhostGhostCounter -= aTime;
+
+		if (myWorld->HasIntersectedBigDot(myAvatar->GetPosition()))
+		{
+			myScore += 20;
+			myGhostGhostCounter = 20.f;
+			myGhost->myIsClaimableFlag = true;
+		}
+
+		if (myGhostGhostCounter <= 0) //!!@ no idea what this is for. this seems like a timer of some sort, ok looks like a powerpill
+		{
+			myGhost->myIsClaimableFlag = false;
+		}
+
+		if ((myGhost->GetPosition() - myAvatar->GetPosition()).Length() < 10.f)
+		{
+			if (myGhostGhostCounter <= 0.f)
+			{
+				myNextGameState = GAME_STATE_DEATH_ANIMATION;
+			}
+			else if (myGhost->myIsClaimableFlag && !myGhost->myIsDeadFlag)
+			{
+				myScore += 50;
+				myGhost->myIsDeadFlag = true;
+				myGhost->Die(myWorld);
+			}
+		}
+
+		if (CheckEndGameCondition())
+		{
+			myNextGameState = GAME_STATE_WIN;
+		}
+		else if (myLives <= 0)
+		{
+			myNextGameState = GAME_STATE_LOSE;
+		}
+
+		break;
+
+	case GAME_STATE_DEATH_ANIMATION:
+
+		myLives--;
+
+		myGhost->SetAlpha(0);
+		myGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+		myGhost->ResetTilesToCurrentPosition();
+
+		myNextGameState = GAME_STATE_DEATH_END;
+
+		break;
+
+	case GAME_STATE_DEATH_END:
+		myAvatar->SetPosition(Vector2f(13 * 22, 22 * 22));
+		myAvatar->ResetTilesToCurrentPosition();
+		SetNextMovement(Vector2f(-1, 0));
+		myGhost->SetAlpha(255);
+		myNextGameState = GAME_STATE_PLAY;
+		break;
+
+	case GAME_STATE_LOSE:
+
+		myDrawer->DrawText("You lose!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70, 24);
+		return true;
+
+		break;
+
+	case GAME_STATE_WIN:
+		
 		myDrawer->DrawText("You win!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70, 24);
 		return true;
-	}
-	else if (myLives <= 0)
-	{
-		myDrawer->DrawText("You lose!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70, 24);	
-		return true;
-	}
 
-	MoveAvatar();
-	myAvatar->Update(aTime);
-	myGhost->Update(aTime, myWorld);
+		break;
 
-	if (myWorld->HasIntersectedDot(myAvatar->GetPosition()))
-		myScore += 10;
+	default:
+		break;
+	}	
 
-	myGhostGhostCounter -= aTime;
-
-	if (myWorld->HasIntersectedBigDot(myAvatar->GetPosition()))
-	{
-		myScore += 20;
-		myGhostGhostCounter = 20.f;
-		myGhost->myIsClaimableFlag = true;
-	}
-
-	if (myGhostGhostCounter <= 0)
-	{
-		myGhost->myIsClaimableFlag = false;
-	}
-
-	if ((myGhost->GetPosition() - myAvatar->GetPosition()).Length() < 10.f)
-	{
-		if (myGhostGhostCounter <= 0.f)
-		{
-			myLives--;
-
-			myAvatar->SetPosition(Vector2f(13*22,22*22));
-			myGhost->SetPosition(Vector2f(13*22,13*22));
-		}
-		else if (myGhost->myIsClaimableFlag && !myGhost->myIsDeadFlag)
-		{
-			myScore += 50;
-			myGhost->myIsDeadFlag = true;
-			myGhost->Die(myWorld);
-		}
-	}
-	
 	if (aTime > 0)
-		myFps = (int) (1 / aTime);
+		myFps = (int)(1 / aTime);
+
 
 	return true;
 }
@@ -176,4 +226,15 @@ bool Pacman::Draw()
 	myDrawer->DrawText(fpsString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 930, 50, 24);
 
 	return true;
+}
+
+void Pacman::SetNextMovement(Vector2f & vec)
+{
+	if (vec.Length() != 1)
+		vec.Normalize();
+
+	if (vec.myX == 0 || vec.myY == 0) // this is to ensure vectors aligned to the grid
+	{
+		myNextMovement = vec;
+	}
 }
