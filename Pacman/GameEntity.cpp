@@ -16,8 +16,8 @@ GameEntity::~GameEntity(void)
 
 void GameEntity::Init()
 {
-	if((myImage != NULL) && (myImage[0] != '\0'))
-		myImageAssetCache = std::dynamic_pointer_cast<ImageAssetCache>(AssetManager::GetInstance()->GetImageAsset(myImage));
+	if ((myImage != NULL) && (myImage[0] != '\0'))
+		myImageAssetCache = AssetManager::GetInstance()->GetImageAsset(myImage);
 }
 
 bool GameEntity::Intersect(GameEntity* aGameEntity)
