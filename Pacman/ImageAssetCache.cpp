@@ -66,3 +66,9 @@ int ImageAssetCache::GetHeight() const
 {
 	return mHeight;
 }
+
+//Modulate texture rgb
+void ImageAssetCache::SetAlpha(Uint8 alpha)
+{
+	SDL_SetTextureAlphaMod(mSDLTexture, alpha);
+}

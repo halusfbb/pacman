@@ -2,6 +2,7 @@
 #define IMAGEASSETCACHE_H
 
 #include "AssetCache.h"
+#include "SDL_stdinc.h"
 
 struct SDL_Texture;
 class ImageAssetCache;
@@ -15,6 +16,9 @@ public:
 
 	int GetWidth() const;
 	int GetHeight() const;
+
+	//Modulate texture rgb
+	void SetAlpha(Uint8 alpha);
 
 private:
 	ImageAssetCache(std::string& fileName, SDL_Renderer* sdlRenderer);
