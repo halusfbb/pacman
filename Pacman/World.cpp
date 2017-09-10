@@ -34,18 +34,50 @@ bool World::InitPathmap()
 	if (myfile.is_open())
 	{
 		int lineIndex = 0;
-		while (! myfile.eof() )
+		while (!myfile.eof())
 		{
-			std::getline (myfile,line);
+			std::getline(myfile, line);
 			for (unsigned int i = 0; i < line.length(); i++)
 			{
-				PathmapTile* tile = new PathmapTile(i, lineIndex, (line[i] == 'x'));
+				PathmapTile* tile = new PathmapTile(i, lineIndex, (line[i] == 'x'), (line[i] == 's'), line[i] == 'g');
 				myPathmapTiles.push_back(tile);
 			}
 
 			lineIndex++;
 		}
 		myfile.close();
+	}
+	
+	//iterate over each tile and determine how many valid tiles are its neighbours
+	int x, y;
+	for (auto pathmapTile : myPathmapTiles)
+	{
+		x = pathmapTile->myX;
+		y = pathmapTile->myY;
+
+		if (!TileIsValid(x, y))
+			continue;
+
+		//keeping the order of Up, Left, Down, Right in accordance to classical pacman pathfinding
+		if (TileIsValid(x, y - 1))
+		{
+			pathmapTile->myValidNeighbours.push_back(TileCoord{x, y - 1});
+		}
+
+		if (TileIsValid(x - 1, y))
+		{
+			pathmapTile->myValidNeighbours.push_back(TileCoord{x - 1, y});
+		}
+
+		if (TileIsValid(x, y + 1))
+		{
+			pathmapTile->myValidNeighbours.push_back(TileCoord{x, y + 1});
+		}
+
+		if (TileIsValid(x + 1, y))
+		{
+			pathmapTile->myValidNeighbours.push_back(TileCoord{x + 1, y});
+		}
 	}
 
 	return true;
