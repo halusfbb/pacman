@@ -32,5 +32,5 @@ bool GameEntity::Intersect(GameEntity* aGameEntity)
 
 void GameEntity::Draw(Drawer* aDrawer)
 {
-	aDrawer->Draw(myImageAssetCache, (int)myPosition.myX + 220, (int)myPosition.myY + 60);
+	aDrawer->Draw(myImageAssetCache, (int)myPosition.myX + 220, (int)myPosition.myY + 60);  //!!@ Hardcoded values
 }

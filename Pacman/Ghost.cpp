@@ -3,6 +3,7 @@
 #include "PathmapTile.h"
 #include "Drawer.h"
 #include "AssetManager.h"
+#include "BaseGhost.h"
 
 Ghost::Ghost(const Vector2f& aPosition)
 : MovableGameEntity(aPosition, "ghost_32.png")
@@ -12,6 +13,10 @@ Ghost::Ghost(const Vector2f& aPosition)
 
 	myDesiredMovementX = 0;
 	myDesiredMovementY = -1;
+
+	//!!@temp
+	mGhostBehaviour = new BaseGhost(this);
+	mGhostState.SetNextState(GHOST_CHASE);
 }
 
 Ghost::~Ghost(void)
@@ -26,48 +31,125 @@ void Ghost::Die(World* aWorld)
 
 void Ghost::Update(float aTime, World* aWorld)
 {
-	float speed = 30.f;
-	int nextTileX = GetCurrentTileX() + myDesiredMovementX;
-	int nextTileY = GetCurrentTileY() + myDesiredMovementY;
+	Vector2f unitDirection = Vector2f(0.f,0.f);
 
-	if (myIsDeadFlag)
-		speed = 120.f;
+	mGhostState.CheckAndSwapState();
 
-	if (IsAtDestination())
+	switch (mGhostState.GetCurrentState())
 	{
-		if (!myPath.empty())
+	case GHOST_START:
+
+		break;
+	case GHOST_CHASE:
+		//initialize
+		if (!mGhostState.IsInitialized())
 		{
-			PathmapTile* nextTile = myPath.front();
-			myPath.pop_front();
-			SetNextTile(nextTile->myX, nextTile->myY);
+			if (!mGhostState.IsInSubState())
+			{
+				//perform substate actions and call DoSubState()
+				//e.g.
+				//call DoSubState() to indicate substate action is being done
+				//action 1
+				//action 2
+				//...
+				//
+				mGhostState.SetSubState();
+				mGhostBehaviour->ChaseStateInit(aTime);
+			}
+			else
+			{
+				//check condition for substate finish and call SetInitalizingDone()
+				//e.g.
+				//if(condition for substate finish)
+				//SetInitalizingDone()
+				//..
+				mGhostState.SetInitalizingDone();
+			}
 		}
-		else if (aWorld->TileIsValid(nextTileX, nextTileY))
+
+		//main
+		if (!mGhostState.IsChangingState())
+		{	
+			if(IsAtDestination()) //!!@ do we need to do this everywhwerer? init, cleanup and other states
+				mGhostBehaviour->ChaseState(aTime, unitDirection);
+		}
+		//cleanup
+		if (!mGhostState.IsCleanedUp())
+		{
+			if (!mGhostState.IsInSubState())
+			{
+				mGhostState.SetSubState();
+				mGhostBehaviour->ChaseStateCleanup(aTime);
+			}
+			else
+			{
+				mGhostState.SetCleanUpDone();
+			}
+		}
+
+		break;
+
+	case GHOST_SCATTER:
+		break;
+
+	case GHOST_FRIGHTENED:
+		break;
+
+	default:
+		break;
+	}
+
+
+	float speed = 30.f;
+	if (unitDirection.Length() != 0)
+	{
+		int nextTileX = GetCurrentTileX() + unitDirection.myX;
+		int nextTileY = GetCurrentTileY() + unitDirection.myY;
+
+		if (aWorld->TileIsValid(nextTileX, nextTileY)) //!!@ this check might be unnessary if ghost behaviours already made sure of this. and this is expensive operate at the moment
 		{
 			SetNextTile(nextTileX, nextTileY);
 		}
-		else
-		{
-			if (myDesiredMovementX == 1)
-			{
-				myDesiredMovementX = 0;
-				myDesiredMovementY = 1;
-			} else if (myDesiredMovementY == 1)
-			{
-				myDesiredMovementX = -1;
-				myDesiredMovementY = 0;			
-			} else if (myDesiredMovementX == -1)
-			{
-				myDesiredMovementX = 0;
-				myDesiredMovementY = -1;
-			} else
-			{
-				myDesiredMovementX = 1;
-				myDesiredMovementY = 0;
-			}
-
-			myIsDeadFlag = false;
-		}
 	}
+
+	//if (myIsDeadFlag)
+	//	speed = 120.f;
+
+	//if (IsAtDestination())
+	//{
+	//	if (!myPath.empty())
+	//	{
+	//		PathmapTile* nextTile = myPath.front();
+	//		myPath.pop_front();
+	//		SetNextTile(nextTile->myX, nextTile->myY);
+	//	}
+	//	else if (aWorld->TileIsValid(nextTileX, nextTileY))
+	//	{	
+	//		SetNextTile(nextTileX, nextTileY);
+	//	}
+	//	else
+	//	{
+	//		if (myDesiredMovementX == 1)
+	//		{
+	//			myDesiredMovementX = 0;
+	//			myDesiredMovementY = 1;
+	//		} else if (myDesiredMovementY == 1)
+	//		{
+	//			myDesiredMovementX = -1;
+	//			myDesiredMovementY = 0;			
+	//		} else if (myDesiredMovementX == -1)
+	//		{
+	//			myDesiredMovementX = 0;
+	//			myDesiredMovementY = -1;
+	//		} else
+	//		{
+	//			myDesiredMovementX = 1;
+	//			myDesiredMovementY = 0;
+	//		}
+
+	//		myIsDeadFlag = false;
+	//	}
+	//}
 
 	int tileSize = 22;
 	Vector2f destination(myNextTileX * tileSize, myNextTileY * tileSize);
@@ -77,7 +159,7 @@ void Ghost::Update(float aTime, World* aWorld)
 
 	if (distanceToMove > direction.Length())
 	{
-		myPosition = destination;
+		myPosition = destination; //!!@ set setter?
 		myCurrentTileX = myNextTileX;
 		myCurrentTileY = myNextTileY;
 	}
@@ -109,4 +191,9 @@ void Ghost::SetImage(const char* anImage)
 void Ghost::Draw(Drawer* aDrawer)
 {
 	aDrawer->Draw(myImageAssetCache, (int)myPosition.myX + 220, (int)myPosition.myY + 60);
+}
+
+void Ghost::SetPosition(const Vector2f & aPosition)
+{
+	GameEntity::SetPosition(aPosition);
 }

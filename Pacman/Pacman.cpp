@@ -10,6 +10,8 @@
 #include "World.h"
 #include "Ghost.h"
 
+Pacman* gPacman = NULL;
+
 Pacman* Pacman::Create(Drawer* aDrawer)
 {
 	Pacman* pacman = new Pacman(aDrawer);
@@ -20,6 +22,7 @@ Pacman* Pacman::Create(Drawer* aDrawer)
 		pacman = NULL;
 	}
 
+	gPacman = pacman;
 	return pacman;
 }
 
@@ -35,7 +38,8 @@ Pacman::Pacman(Drawer* aDrawer)
 , myNextGameState(GAME_STATE_INIT)
 {
 	myAvatar = new Avatar(Vector2f(13*22,22*22));
-	myGhost = new Ghost(Vector2f(13*22,13*22));
+	//myGhost = new Ghost(Vector2f(13*22,13*22));
+	myGhost = new Ghost(Vector2f(10*22,12*22));
 	myWorld = new World();
 }
 

@@ -15,7 +15,7 @@ public:
 	virtual void Init();
 
 	Vector2f GetPosition() const { return myPosition; }
-	void SetPosition(const Vector2f& aPosition){ myPosition = aPosition; }
+	virtual void SetPosition(const Vector2f& aPosition){ myPosition = aPosition; }
 	void SetAlpha(Uint8 alpha);
 
 	bool Intersect(GameEntity* aGameEntity);

@@ -34,18 +34,48 @@ bool World::InitPathmap()
 	if (myfile.is_open())
 	{
 		int lineIndex = 0;
-		while (! myfile.eof() )
+		while (!myfile.eof())
 		{
-			std::getline (myfile,line);
+			std::getline(myfile, line);
 			for (unsigned int i = 0; i < line.length(); i++)
 			{
-				PathmapTile* tile = new PathmapTile(i, lineIndex, (line[i] == 'x'));
+				PathmapTile* tile = new PathmapTile(i, lineIndex, (line[i] == 'x'), (line[i] == 's'), line[i] == 'g');
 				myPathmapTiles.push_back(tile);
 			}
 
 			lineIndex++;
 		}
 		myfile.close();
+	}
+		//iterate over each tile and determine how many valid tiles are its neighbours
+	int x, y;
+	for (auto pathmapTile : myPathmapTiles)
+	{
+		x = pathmapTile->myX;
+		y = pathmapTile->myY;
+
+		if (!TileIsValid(x, y))
+			continue;
+
+		if (TileIsValid(x, y - 1)) //!!@TIle is valid is very inefficient function to be calling many times
+		{
+			pathmapTile->myValidNeighbours.push_back(TileCoord{x, y - 1});
+		}
+
+		if (TileIsValid(x - 1, y))
+		{
+			pathmapTile->myValidNeighbours.push_back(TileCoord{x - 1, y});
+		}
+
+		if (TileIsValid(x, y + 1))
+		{
+			pathmapTile->myValidNeighbours.push_back(TileCoord{x, y + 1});
+		}
+
+		if (TileIsValid(x + 1, y))
+		{
+			pathmapTile->myValidNeighbours.push_back(TileCoord{x + 1, y});
+		}
 	}
 
 	return true;
@@ -143,7 +173,7 @@ void World::Draw(Drawer* aDrawer)
 
 bool World::TileIsValid(int anX, int anY)
 {
-	for(std::list<PathmapTile*>::iterator list_iter = myPathmapTiles.begin(); list_iter != myPathmapTiles.end(); list_iter++)
+	for(std::vector<PathmapTile*>::iterator list_iter = myPathmapTiles.begin(); list_iter != myPathmapTiles.end(); list_iter++)
 	{
 		PathmapTile* tile = *list_iter;
 
@@ -196,7 +226,7 @@ void World::GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<Pathma
 	PathmapTile* fromTile = GetTile(aFromX, aFromY);
 	PathmapTile* toTile = GetTile(aToX, aToY);
 
-	for(std::list<PathmapTile*>::iterator list_iter = myPathmapTiles.begin(); list_iter != myPathmapTiles.end(); list_iter++)
+	for(std::vector<PathmapTile*>::iterator list_iter = myPathmapTiles.begin(); list_iter != myPathmapTiles.end(); list_iter++)
 	{
 		PathmapTile* tile = *list_iter;
 		tile->myIsVisitedFlag = false;
@@ -207,7 +237,7 @@ void World::GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<Pathma
 
 PathmapTile* World::GetTile(int aFromX, int aFromY)
 {
-	for(std::list<PathmapTile*>::iterator list_iter = myPathmapTiles.begin(); list_iter != myPathmapTiles.end(); list_iter++)
+	for(std::vector<PathmapTile*>::iterator list_iter = myPathmapTiles.begin(); list_iter != myPathmapTiles.end(); list_iter++)
 	{
 		PathmapTile* tile = *list_iter;
 		if (tile->myX == aFromX && tile->myY == aFromY)
@@ -242,7 +272,7 @@ bool SortFromGhostSpawn(PathmapTile* a, PathmapTile* b)
 }
 
 bool World::Pathfind(PathmapTile* aFromTile, PathmapTile* aToTile, std::list<PathmapTile*>& aList)
-{
+{ //!!@ take a look at this pathfind to see exactly how it does how it does
 	aFromTile->myIsVisitedFlag = true;
 
 	if (aFromTile->myIsBlockingFlag)

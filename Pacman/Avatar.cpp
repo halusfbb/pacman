@@ -33,13 +33,13 @@ void Avatar::Update(float aTime)
 	Vector2f destination(myNextTileX * tileSize, myNextTileY * tileSize);
 	Vector2f direction = destination - myPosition;
 
-	float distanceToMove = aTime * 30.f;
+	float distanceToMove = aTime * 60;
 	
 	UpdateFacingDirection(direction);
 
 	if (distanceToMove > direction.Length())
 	{
-		myPosition = destination;
+		myPosition = destination; //!!@ something fishy with logic here. the speed is limited by the tile size
 		myCurrentTileX = myNextTileX;
 		myCurrentTileY = myNextTileY;
 	}
@@ -91,7 +91,13 @@ bool Avatar::ShouldAvatarBite() const
 {
 	if (mEnumAvatarFacing == AVATAR_FACING_RIGHT || mEnumAvatarFacing == AVATAR_FACING_LEFT)
 	{
-		if ((int)myPosition.myX % 22 < 11)
+		int offset;
+		if (mEnumAvatarFacing == AVATAR_FACING_LEFT)
+			offset = 0;
+		else
+			offset = 0;
+
+		if (((int)myPosition.myX + offset) % 22 <= 12) //!!@ a lot of magic numbers
 		{
 			return true; 
 		}
@@ -102,7 +108,13 @@ bool Avatar::ShouldAvatarBite() const
 	}
 	else
 	{
-		if ((int)myPosition.myY % 22 < 11)
+		int offset;
+		if (mEnumAvatarFacing == AVATAR_FACING_UP)
+			offset = 0;
+		else
+			offset = 0;
+
+		if (((int)myPosition.myY + offset) % 22 <= 12)
 		{
 			return true;
 		}

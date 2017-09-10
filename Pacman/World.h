@@ -2,6 +2,7 @@
 #define WORLD_H
 
 #include <list>
+#include <vector>
 #include "Vector2f.h"
 #include "ImageAssetCache.h"
 
@@ -29,10 +30,10 @@ public:
 	void Update();
 
 	void GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<PathmapTile*>& aList);
+	PathmapTile* GetTile(int aFromX, int aFromY);
 
 private:
 
-	PathmapTile* GetTile(int aFromX, int aFromY);
 	bool Pathfind(PathmapTile* aFromTile, PathmapTile* aToTile, std::list<PathmapTile*>& aList);
 	bool ListDoesNotContain(PathmapTile* aFromTile, std::list<PathmapTile*>& aList);
 
@@ -42,7 +43,7 @@ private:
 	bool InitBigDots();
 	void InitBoard();
 
-	std::list<PathmapTile*> myPathmapTiles;
+	std::vector<PathmapTile*> myPathmapTiles; //instantiate the correct number of slots change back to list?
 	std::list<Dot*> myDots;
 	std::list<BigDot*> myBigDots;
 	std::list<Cherry*> myCherry;

@@ -10,6 +10,7 @@ class World;
 class Ghost;
 
 typedef enum {
+	//!!@Document the states
 	GAME_STATE_INIT,
 	GAME_STATE_START,
 	GAME_STATE_PLAY,
@@ -29,6 +30,9 @@ public:
 	bool Draw();
 
 	void SetNextMovement(Vector2f& vec);
+
+	const Avatar* GetAvatar() { return myAvatar; }
+	World* GetWorld() { return myWorld; }
 
 private:
 	Pacman(Drawer* aDrawer);
@@ -55,5 +59,7 @@ private:
 	PacmanGameState myCurrentGameState;
 	PacmanGameState myNextGameState;
 };
+
+extern Pacman* gPacman;
 
 #endif // PACMAN_H
