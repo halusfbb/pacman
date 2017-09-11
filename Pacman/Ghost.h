@@ -3,9 +3,19 @@
 
 #include <list>
 #include "MovableGameEntity.h"
+#include "StateHelper.h"
 
 class World;
 class PathmapTile;
+class BaseGhost;
+
+typedef enum {
+	UNDEFINED = -1,
+	GHOST_START, //
+	GHOST_CHASE, //chase the avatar
+	GHOST_SCATTER, //spread out to a predetermined corner of the maze
+	GHOST_FRIGHTENED //power pill eaten by the avatar
+} GhostState;
 
 class Ghost : public MovableGameEntity
 {
@@ -24,12 +34,16 @@ public:
 
 	void Draw(Drawer* aDrawer);
 
-protected:
+private:
 
 	int myDesiredMovementX;
 	int myDesiredMovementY;
 
 	std::list<PathmapTile*> myPath;
+
+	BaseGhost* mGhostBehaviour;
+
+	StateHelper<GhostState> mGhostState;
 
 };
 

@@ -29,10 +29,10 @@ public:
 	void Update();
 
 	void GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<PathmapTile*>& aList);
+	PathmapTile* GetTile(int aFromX, int aFromY);
 
 private:
 
-	PathmapTile* GetTile(int aFromX, int aFromY);
 	bool Pathfind(PathmapTile* aFromTile, PathmapTile* aToTile, std::list<PathmapTile*>& aList);
 	bool ListDoesNotContain(PathmapTile* aFromTile, std::list<PathmapTile*>& aList);
 
