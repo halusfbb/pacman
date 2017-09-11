@@ -44,6 +44,19 @@ bool World::InitPathmap()
 			}
 
 			lineIndex++;
+
+			if (line.length() != 0)
+			{
+				myMapRowSize++; //just to avoid the case where there might be extra lines in the file
+			}
+
+			if(myMapColSize == 0)
+				myMapColSize = line.length();
+			else
+			{
+				if (myMapColSize != line.length() && line.length() != 0)
+					SDL_Log("MapSize is not Square!");
+			}
 		}
 		myfile.close();
 	}
@@ -175,13 +188,17 @@ void World::Draw(Drawer* aDrawer)
 
 bool World::TileIsValid(int anX, int anY)
 {
-	for(std::list<PathmapTile*>::iterator list_iter = myPathmapTiles.begin(); list_iter != myPathmapTiles.end(); list_iter++)
-	{
-		PathmapTile* tile = *list_iter;
+	if (anX < 0 || anY < 0)
+		return false;
+	if (anX >= myMapColSize || anY >= myMapRowSize)
+		return false;
+	//to speed up the search, we can do index referencing on the vector
+	int numberOfTilesPerRow = 26; //in future this can be read from map.txt
+	int indexNumber = anY * 26 + anX;
+	PathmapTile* tile = myPathmapTiles[indexNumber];
 
-		if (anX == tile->myX && anY == tile->myY && !tile->myIsBlockingFlag)
-			return true;
-	}
+	if (anX == tile->myX && anY == tile->myY && !tile->myIsBlockingFlag)
+		return true;
 
 	return false;
 }
@@ -228,7 +245,7 @@ void World::GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<Pathma
 	PathmapTile* fromTile = GetTile(aFromX, aFromY);
 	PathmapTile* toTile = GetTile(aToX, aToY);
 
-	for(std::list<PathmapTile*>::iterator list_iter = myPathmapTiles.begin(); list_iter != myPathmapTiles.end(); list_iter++)
+	for(std::vector<PathmapTile*>::iterator list_iter = myPathmapTiles.begin(); list_iter != myPathmapTiles.end(); list_iter++)
 	{
 		PathmapTile* tile = *list_iter;
 		tile->myIsVisitedFlag = false;
@@ -239,13 +256,18 @@ void World::GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<Pathma
 
 PathmapTile* World::GetTile(int aFromX, int aFromY)
 {
-	for(std::list<PathmapTile*>::iterator list_iter = myPathmapTiles.begin(); list_iter != myPathmapTiles.end(); list_iter++)
+	if (aFromX < 0 || aFromY < 0)
+		return false;
+	if (aFromX >= myMapRowSize || aFromY >= myMapColSize)
+		return false;
+	//to speed up the search, we can do index referencing on the vector
+	int numberOfTilesPerRow = 26; //in future this can be read from map.txt
+	int indexNumber = aFromY * 26 + aFromX;
+	PathmapTile* tile = myPathmapTiles[indexNumber];
+
+	if (tile->myX == aFromX && tile->myY == aFromY)
 	{
-		PathmapTile* tile = *list_iter;
-		if (tile->myX == aFromX && tile->myY == aFromY)
-		{
-			return tile;
-		}
+		return tile;
 	}
 
 	return NULL;
