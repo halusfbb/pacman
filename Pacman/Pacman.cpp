@@ -10,6 +10,8 @@
 #include "World.h"
 #include "Ghost.h"
 
+#include <time.h>
+
 Pacman* gPacman = NULL;
 
 Pacman* Pacman::Create(Drawer* aDrawer)
@@ -40,6 +42,8 @@ Pacman::Pacman(Drawer* aDrawer)
 	myWorld = new World();
 
 	myPacmanGameState.SetNextState(GAME_STATE_PLAY);
+
+	srand(time(NULL));
 }
 
 Pacman::~Pacman(void)

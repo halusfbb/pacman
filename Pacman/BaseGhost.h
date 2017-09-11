@@ -4,6 +4,7 @@
 #include "Vector2f.h"
 
 class Ghost;
+class PathmapTile;
 
 //this class is designed to be "plugged" into the Ghost class to incorporate the
 //behaviour of a simple base ghost.
@@ -24,6 +25,10 @@ private:
 	void ScatterStateInit();
 	void ScatterState();
 	void ScatterStateCleanup();
+
+	//this is for use on a two exit tile for which the ghost should move in the same direction or
+	//exit by the other available way (at corners). If all else fails, then the ghost will retreat back in the same direction
+	void MoveInSameDirection(PathmapTile* ghostParentCurrentTile, Vector2f& directionUnitVector);
 
 	Ghost* mGhostParent;
 	int mCurrentTileTargetX;
