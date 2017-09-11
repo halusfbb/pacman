@@ -7,21 +7,33 @@
 
 class World;
 class PathmapTile;
-class BaseGhost;
+class BaseGhostBehaviour;
 
 typedef enum {
-	UNDEFINED = -1,
+	GHOST_STATE_UNDEFINED = -1,
 	GHOST_START, //
 	GHOST_CHASE, //chase the avatar
 	GHOST_SCATTER, //spread out to a predetermined corner of the maze
 	GHOST_FRIGHTENED //power pill eaten by the avatar
 } GhostState;
 
+typedef enum {
+	GHOST_COLOR_UNDEFINED = -1,
+	GHOST_RED,
+	GHOST_PINK,
+	GHOST_CYAN,
+	GHOST_ORANGE
+} GhostColor;
+
 class Ghost : public MovableGameEntity
 {
 public:
-	Ghost(const Vector2f& aPosition);
+	static Ghost* Create(const Vector2f& aPosition, GhostColor ghostColor);
+
+	Ghost(const Vector2f& aPosition, GhostColor ghostColor);
 	~Ghost(void);
+
+	void Init() override;
 
 	void Update(float aTime, World* aWorld);
 
@@ -36,6 +48,8 @@ public:
 	void SetIsClaimableFlag(bool value);
 	bool GetIsClaimableFlag();
 
+	void SetNextState(GhostState ghostState);
+
 private:
 
 	int myDesiredMovementX;
@@ -45,10 +59,11 @@ private:
 
 	std::list<PathmapTile*> myPath;
 
-	BaseGhost* mGhostBehaviour;
+	BaseGhostBehaviour* mGhostBehaviour;
 
 	StateHelper<GhostState> mGhostState;
 
+	GhostColor mGhostColor;
 };
 
 #endif // GHOST_H

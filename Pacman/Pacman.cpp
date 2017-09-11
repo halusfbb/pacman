@@ -38,7 +38,7 @@ Pacman::Pacman(Drawer* aDrawer)
 , myGhostGhostCounter(0.f)
 {
 	myAvatar = new Avatar(Vector2f(13*22,22*22));
-	myGhost = new Ghost(Vector2f(13*22,13*22));
+	myGhost = Ghost::Create(Vector2f(22*22,25*22), GHOST_RED);
 	myWorld = new World();
 
 	myPacmanGameState.SetNextState(GAME_STATE_PLAY);
@@ -53,7 +53,6 @@ Pacman::~Pacman(void)
 bool Pacman::Init()
 {
 	myWorld->Init();
-	myGhost->Init();
 	myAvatar->Init();
 
 	return true;

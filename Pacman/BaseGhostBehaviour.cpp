@@ -1,31 +1,32 @@
-#include "BaseGhost.h"
+#include "BaseGhostBehaviour.h"
 #include "Pacman.h" //!!@ saving time and doing global access
 #include "Avatar.h"
 #include "Ghost.h"
 #include "World.h"
 #include "PathmapTile.h"
-
+#include "globals.h"
 
 int GetIndirectMagnitude(TileCoord a, TileCoord b)
 {
 	return abs(a.x - b.x) + abs(a.y - b.y);
 }
 
-BaseGhost::BaseGhost(Ghost * ghostParent)
+BaseGhostBehaviour::BaseGhostBehaviour(Ghost * ghostParent)
 	:mGhostParent(ghostParent)
 	,mCurrentTileTargetX(0)
 	,mCurrentTileTargetY(0)
 	,mPreviousDirectionUnitVecX(0)
 	,mPreviousDirectionUnitVecY(0)
+	,mScatterTargetTileCoord{ 25, 29 }
 {
 }
 
-void BaseGhost::ChaseStateInit(float dt)
+void BaseGhostBehaviour::ChaseStateInit(float dt)
 {
-	mGhostParent->SetImage("ghost_32.png");
+	mGhostParent->SetImage(GetNormalImageName());
 }
 
-void BaseGhost::ChaseState(float dt, Vector2f & directionUnitVector)
+void BaseGhostBehaviour::ChaseState(float dt, Vector2f & directionUnitVector)
 {
 	//getting avatar and his current tile position
 	const Avatar* avatar = gPacman->GetAvatar();
@@ -77,16 +78,16 @@ void BaseGhost::ChaseState(float dt, Vector2f & directionUnitVector)
 	}
 }
 
-void BaseGhost::ChaseStateCleanup(float dt)
+void BaseGhostBehaviour::ChaseStateCleanup(float dt)
 {
 }
 
-void BaseGhost::FrightenedStateInit(float dt)
+void BaseGhostBehaviour::FrightenedStateInit(float dt)
 {
-	mGhostParent->SetImage("Ghost_Vulnerable_32.png");
+	mGhostParent->SetImage(GetFrightenedImageName());
 }
 
-void BaseGhost::FrightenedState(float dt, Vector2f & directionUnitVector)
+void BaseGhostBehaviour::FrightenedState(float dt, Vector2f & directionUnitVector)
 {
 	//get ghost current tile
 	int ghostParentCurrentTileX = mGhostParent->GetCurrentTileX();
@@ -129,15 +130,15 @@ void BaseGhost::FrightenedState(float dt, Vector2f & directionUnitVector)
 	}
 }
 
-void BaseGhost::FrightenedStateCleanup(float dt)
+void BaseGhostBehaviour::FrightenedStateCleanup(float dt)
 {
 }
 
-void BaseGhost::ScatterStateInit(float dt)
+void BaseGhostBehaviour::ScatterStateInit(float dt)
 {
 }
 
-void BaseGhost::ScatterState(float dt, Vector2f & directionUnitVector)
+void BaseGhostBehaviour::ScatterState(float dt, Vector2f & directionUnitVector)
 {
 	//getting avatar and his current tile position
 	const Avatar* avatar = gPacman->GetAvatar();
@@ -190,11 +191,31 @@ void BaseGhost::ScatterState(float dt, Vector2f & directionUnitVector)
 	}
 }
 
-void BaseGhost::ScatterStateCleanup(float dt)
+void BaseGhostBehaviour::ScatterStateCleanup(float dt)
 {
 }
 
-void BaseGhost::MoveInSameDirection(PathmapTile* ghostParentCurrentTile, Vector2f& directionUnitVector)
+const char * BaseGhostBehaviour::GetNormalImageName()
+{
+	return GRAY_GHOST_IMAGE;
+}
+
+const char * BaseGhostBehaviour::GetFrightenedImageName()
+{
+	return FRIGHTENED_GHOST_IMAGE;
+}
+
+const char * BaseGhostBehaviour::GetDeadImageName()
+{
+	return DEAD_GHOST_IMAGE;
+}
+
+void BaseGhostBehaviour::SetScatterTileCoord(TileCoord& scatterTileCoord)
+{
+	mScatterTargetTileCoord = scatterTileCoord;
+}
+
+void BaseGhostBehaviour::MoveInSameDirection(PathmapTile* ghostParentCurrentTile, Vector2f& directionUnitVector)
 {
 	//get ghost current tile
 	int ghostParentCurrentTileX = mGhostParent->GetCurrentTileX();

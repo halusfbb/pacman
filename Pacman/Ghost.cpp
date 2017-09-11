@@ -3,24 +3,53 @@
 #include "PathmapTile.h"
 #include "Drawer.h"
 #include "AssetManager.h"
-#include "BaseGhost.h"
+#include "BaseGhostBehaviour.h"
+#include "RedGhostBehaviour.h"
 
-Ghost::Ghost(const Vector2f& aPosition)
-: MovableGameEntity(aPosition, "ghost_32.png")
+Ghost * Ghost::Create(const Vector2f & aPosition, GhostColor ghostColor)
 {
-	myIsClaimableFlag = false;
-	myIsDeadFlag = false;
+	Ghost* ghost = new Ghost(aPosition, ghostColor);
+	if (!ghost)
+		return NULL;
+	
+	ghost->Init();
+	return ghost;
+}
 
-	myDesiredMovementX = 0;
-	myDesiredMovementY = -1;
-
-	//!!@temp
-	mGhostBehaviour = new BaseGhost(this);
-	mGhostState.SetNextState(GHOST_CHASE, true);
+Ghost::Ghost(const Vector2f& aPosition, GhostColor ghostColor)
+: MovableGameEntity(aPosition, "")
+, myIsClaimableFlag(false)
+, myIsDeadFlag(false)
+, mGhostColor(ghostColor)
+{
 }
 
 Ghost::~Ghost(void)
 {
+}
+
+void Ghost::Init()
+{
+	myDesiredMovementX = 0; //!!@remove??
+	myDesiredMovementY = -1;
+
+	switch (mGhostColor)
+	{
+	case GHOST_RED:
+		mGhostBehaviour = new RedGhostBehaviour(this);
+		mGhostState.SetNextState(GHOST_CHASE, true);
+		break;
+	case GHOST_PINK:
+		break;
+	case GHOST_CYAN:
+		break;
+	case GHOST_ORANGE:
+		break;
+	default:
+		break;
+	}
+
+	MovableGameEntity::Init();
 }
 
 void Ghost::Die(World* aWorld)
@@ -124,6 +153,8 @@ void Ghost::Update(float aTime, World* aWorld)
 			{
 				mGhostState.SetSubState();
 				mGhostBehaviour->FrightenedStateInit(aTime);
+
+				SetIsClaimableFlag(true);
 			}
 			else
 			{
@@ -214,10 +245,15 @@ void Ghost::SetIsClaimableFlag(bool value)
 	if(myIsClaimableFlag)
 		mGhostState.SetNextState(GHOST_FRIGHTENED, true);
 	else
-		mGhostState.SetNextState(GHOST_CHASE); //!!@ this needs to be extended 
+		mGhostState.SetNextState(GHOST_SCATTER); //!!@ this needs to be extended 
 }
 
 bool Ghost::GetIsClaimableFlag()
 {
 	return myIsClaimableFlag;
+}
+
+void Ghost::SetNextState(GhostState ghostState)
+{
+	mGhostState.SetNextState(ghostState);
 }

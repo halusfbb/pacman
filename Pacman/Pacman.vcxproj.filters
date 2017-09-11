@@ -82,7 +82,16 @@
     <ClCompile Include="FontAssetCache.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="BaseGhost.cpp">
+    <ClCompile Include="GhostManager.cpp">
+      <Filter>Game\Game entities\Movable</Filter>
+    </ClCompile>
+    <ClCompile Include="globals.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseGhostBehaviour.cpp">
+      <Filter>Game\Game entities\Movable\GhostBehaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="RedGhostBehaviour.cpp">
       <Filter>Game\Game entities\Movable\GhostBehaviour</Filter>
     </ClCompile>
   </ItemGroup>
@@ -141,11 +150,20 @@
     <ClInclude Include="FontAssetCache.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="BaseGhost.h">
-      <Filter>Game\Game entities\Movable\GhostBehaviour</Filter>
-    </ClInclude>
     <ClInclude Include="StateHelper.h">
       <Filter>State</Filter>
+    </ClInclude>
+    <ClInclude Include="GhostManager.h">
+      <Filter>Game\Game entities\Movable</Filter>
+    </ClInclude>
+    <ClInclude Include="globals.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseGhostBehaviour.h">
+      <Filter>Game\Game entities\Movable\GhostBehaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="RedGhostBehaviour.h">
+      <Filter>Game\Game entities\Movable\GhostBehaviour</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
