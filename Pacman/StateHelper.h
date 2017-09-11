@@ -76,6 +76,9 @@ inline T StateHelper<T>::GetCurrentState() const
 template<typename T>
 inline void StateHelper<T>::SetNextState(T nextState, bool needInitalize, bool needCleanup)
 {
+	if (mNextState == nextState)
+		return;
+
 	mSkipNextInitialize = !needInitalize;
 
 	if (!needCleanup)
