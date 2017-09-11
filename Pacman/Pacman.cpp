@@ -100,12 +100,12 @@ bool Pacman::Update(float aTime)
 			{
 				myScore += 20;
 				myGhostGhostCounter = 20.f;
-				myGhost->myIsClaimableFlag = true;
+				myGhost->SetIsClaimableFlag(true);
 			}
 
 			if (myGhostGhostCounter <= 0)
 			{
-				myGhost->myIsClaimableFlag = false;
+				myGhost->SetIsClaimableFlag(false);
 			}
 
 			if ((myGhost->GetPosition() - myAvatar->GetPosition()).Length() < 10.f)
@@ -114,7 +114,7 @@ bool Pacman::Update(float aTime)
 				{
 					myPacmanGameState.SetNextState(GAME_STATE_DEATH_ANIMATION);
 				}
-				else if (myGhost->myIsClaimableFlag && !myGhost->myIsDeadFlag)
+				else if (myGhost->GetIsClaimableFlag() && !myGhost->myIsDeadFlag)
 				{
 					myScore += 50;
 					myGhost->myIsDeadFlag = true;

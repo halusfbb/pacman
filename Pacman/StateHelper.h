@@ -91,6 +91,8 @@ inline void StateHelper<T>::SetInitalizingDone()
 {
 	mIsInitalized = true;
 	mIsInSubState = false;
+
+	mIsCleanedUp = false;
 }
 
 template<typename T>
@@ -98,6 +100,8 @@ inline void StateHelper<T>::SetCleanUpDone()
 {
 	mIsCleanedUp = true;
 	mIsInSubState = false;
+
+	mIsInitalized = false;
 }
 
 template<typename T>

@@ -25,7 +25,6 @@ public:
 
 	void Update(float aTime, World* aWorld);
 
-	bool myIsClaimableFlag;
 	bool myIsDeadFlag;
 
 	void SetImage(const char* anImage);
@@ -34,10 +33,15 @@ public:
 
 	void Draw(Drawer* aDrawer);
 
+	void SetIsClaimableFlag(bool value);
+	bool GetIsClaimableFlag();
+
 private:
 
 	int myDesiredMovementX;
 	int myDesiredMovementY;
+
+	bool myIsClaimableFlag;
 
 	std::list<PathmapTile*> myPath;
 

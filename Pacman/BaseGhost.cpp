@@ -1,5 +1,5 @@
 #include "BaseGhost.h"
-#include "Pacman.h"
+#include "Pacman.h" //!!@ saving time and doing global access
 #include "Avatar.h"
 #include "Ghost.h"
 #include "World.h"
@@ -22,6 +22,7 @@ BaseGhost::BaseGhost(Ghost * ghostParent)
 
 void BaseGhost::ChaseStateInit(float dt)
 {
+	mGhostParent->SetImage("ghost_32.png");
 }
 
 void BaseGhost::ChaseState(float dt, Vector2f & directionUnitVector)
@@ -118,5 +119,18 @@ void BaseGhost::ChaseState(float dt, Vector2f & directionUnitVector)
 }
 
 void BaseGhost::ChaseStateCleanup(float dt)
+{
+}
+
+void BaseGhost::FrightenedStateInit(float dt)
+{
+	mGhostParent->SetImage("Ghost_Vulnerable_32.png");
+}
+
+void BaseGhost::FrightenedState(float dt, Vector2f & directionUnitVector)
+{
+}
+
+void BaseGhost::FrightenedStateCleanup(float dt)
 {
 }

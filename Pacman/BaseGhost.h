@@ -15,15 +15,15 @@ public:
 	virtual void ChaseStateInit(float dt);
 	virtual void ChaseState(float dt, Vector2f & directionUnitVector);
 	virtual void ChaseStateCleanup(float dt);
+
+	void FrightenedStateInit(float dt);
+	void FrightenedState(float dt, Vector2f & directionUnitVector);
+	void FrightenedStateCleanup(float dt);
 private:
 
 	void ScatterStateInit();
 	void ScatterState();
 	void ScatterStateCleanup();
-
-	void FrightenedStateInit();
-	void FrightenedState();
-	void FrightenedStateCleanup();
 
 	Ghost* mGhostParent;
 	int mCurrentTileTargetX;

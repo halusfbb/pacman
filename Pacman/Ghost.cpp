@@ -16,7 +16,7 @@ Ghost::Ghost(const Vector2f& aPosition)
 
 	//!!@temp
 	mGhostBehaviour = new BaseGhost(this);
-	mGhostState.SetNextState(GHOST_CHASE);
+	mGhostState.SetNextState(GHOST_CHASE, true);
 }
 
 Ghost::~Ghost(void)
@@ -93,12 +93,46 @@ void Ghost::Update(float aTime, World* aWorld)
 		break;
 
 	case GHOST_FRIGHTENED:
+		//initialize
+		if (!mGhostState.IsInitialized())
+		{
+			if (!mGhostState.IsInSubState())
+			{
+				mGhostState.SetSubState();
+				mGhostBehaviour->FrightenedStateInit(aTime);
+			}
+			else
+			{
+				mGhostState.SetInitalizingDone();
+			}
+		}
+
+		//main
+		if (!mGhostState.IsChangingState())
+		{
+			if (IsAtDestination())
+				mGhostBehaviour->FrightenedState(aTime, unitDirection);
+		}
+
+		//cleanup
+		if (!mGhostState.IsCleanedUp())
+		{
+			if (!mGhostState.IsInSubState())
+			{
+				mGhostState.SetSubState();
+				mGhostBehaviour->FrightenedStateCleanup(aTime);
+			}
+			else
+			{
+				mGhostState.SetCleanUpDone();
+			}
+		}
+
 		break;
 
 	default:
 		break;
 	}
-
 
 	float speed = 30.f;
 	if (unitDirection.Length() != 0)
@@ -106,10 +140,10 @@ void Ghost::Update(float aTime, World* aWorld)
 		int nextTileX = GetCurrentTileX() + unitDirection.myX;
 		int nextTileY = GetCurrentTileY() + unitDirection.myY;
 
-		if (aWorld->TileIsValid(nextTileX, nextTileY)) //!!@ this check might be unnessary if ghost behaviours already made sure of this. and this is expensive operate at the moment
-		{
+//		if (aWorld->TileIsValid(nextTileX, nextTileY)) //!!@ this check might be unnessary if ghost behaviours already made sure of this. and this is expensive operate at the moment
+//		{
 			SetNextTile(nextTileX, nextTileY);
-		}
+//		}
 	}
 
 	int tileSize = 22;
@@ -132,10 +166,6 @@ void Ghost::Update(float aTime, World* aWorld)
 
 	if (myIsDeadFlag)
 		SetImage("Ghost_Dead_32.png");
-	else if (myIsClaimableFlag)
-		SetImage("Ghost_Vulnerable_32.png");
-	else
-		SetImage("ghost_32.png");
 }
 
 void Ghost::SetImage(const char* anImage)
@@ -152,4 +182,18 @@ void Ghost::SetImage(const char* anImage)
 void Ghost::Draw(Drawer* aDrawer)
 {
 	aDrawer->Draw(myImageAssetCache, (int)myPosition.myX + 220, (int)myPosition.myY + 60);
+}
+
+void Ghost::SetIsClaimableFlag(bool value)
+{
+	myIsClaimableFlag = value;
+	if(myIsClaimableFlag)
+		mGhostState.SetNextState(GHOST_FRIGHTENED, true);
+	else
+		mGhostState.SetNextState(GHOST_CHASE); //!!@ this needs to be extended 
+}
+
+bool Ghost::GetIsClaimableFlag()
+{
+	return myIsClaimableFlag;
 }
