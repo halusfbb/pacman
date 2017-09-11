@@ -134,7 +134,6 @@
     <ClCompile Include="MovableGameEntity.cpp" />
     <ClCompile Include="Pacman.cpp" />
     <ClCompile Include="PathmapTile.cpp" />
-    <ClCompile Include="RedGhost.cpp" />
     <ClCompile Include="StaticGameEntity.cpp" />
     <ClCompile Include="Vector2f.cpp" />
     <ClCompile Include="World.cpp" />
@@ -156,7 +155,6 @@
     <ClInclude Include="MovableGameEntity.h" />
     <ClInclude Include="Pacman.h" />
     <ClInclude Include="PathmapTile.h" />
-    <ClInclude Include="RedGhost.h" />
     <ClInclude Include="StateHelper.h" />
     <ClInclude Include="StaticGameEntity.h" />
     <ClInclude Include="Vector2f.h" />

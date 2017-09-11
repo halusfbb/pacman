@@ -32,9 +32,6 @@ private:
 	bool mSkipNextInitialize; //skips the next initialie after the state change
 };
 
-#endif
-
-
 template<typename T>
 inline StateHelper<T>::StateHelper()
 	:mCurrentState((T)-1)
@@ -59,7 +56,7 @@ inline bool StateHelper<T>::IsInitialized() const
 }
 
 template<typename T>
-bool StateHelper<T>::IsCleanedUp() const
+inline bool StateHelper<T>::IsCleanedUp() const
 {
 	return mIsCleanedUp;
 }
@@ -127,3 +124,5 @@ inline void StateHelper<T>::SetCurrentStateFromNextState()
 		mSkipNextInitialize = false;
 	}
 }
+
+#endif

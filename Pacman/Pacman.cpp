@@ -10,6 +10,8 @@
 #include "World.h"
 #include "Ghost.h"
 
+Pacman* gPacman = NULL;
+
 Pacman* Pacman::Create(Drawer* aDrawer)
 {
 	Pacman* pacman = new Pacman(aDrawer);
@@ -20,6 +22,7 @@ Pacman* Pacman::Create(Drawer* aDrawer)
 		pacman = NULL;
 	}
 
+	gPacman = pacman;
 	return pacman;
 }
 
@@ -31,12 +34,12 @@ Pacman::Pacman(Drawer* aDrawer)
 , myFps(0)
 , myLives(3)
 , myGhostGhostCounter(0.f)
-, myCurrentGameState(GAME_STATE_INIT)
-, myNextGameState(GAME_STATE_INIT)
 {
 	myAvatar = new Avatar(Vector2f(13*22,22*22));
 	myGhost = new Ghost(Vector2f(13*22,13*22));
 	myWorld = new World();
+
+	myPacmanGameState.SetNextState(GAME_STATE_PLAY);
 }
 
 Pacman::~Pacman(void)
@@ -57,95 +60,235 @@ bool Pacman::Update(float aTime)
 	if (!UpdateInput())
 		return false;
 
-	myCurrentGameState = myNextGameState;
+	myPacmanGameState.CheckAndSwapState();
 
-	switch (myCurrentGameState)
+	switch (myPacmanGameState.GetCurrentState())
 	{
-	case GAME_STATE_INIT:
-		myNextGameState = GAME_STATE_PLAY;
-		break;
+	//case GAME_STATE_INIT: !!@we will determine if we need these later
+	//	break;
 
-	case GAME_STATE_START:
-		break;
+	//case GAME_STATE_START:
+	//	break;
 
 	case GAME_STATE_PLAY:
-		MoveAvatar();
-		myAvatar->Update(aTime);
-		myGhost->Update(aTime, myWorld);
-
-		if (myWorld->HasIntersectedDot(myAvatar->GetPosition()))
-			myScore += 10;
-
-		myGhostGhostCounter -= aTime;
-
-		if (myWorld->HasIntersectedBigDot(myAvatar->GetPosition()))
+		//initialize
+		if (!myPacmanGameState.IsInitialized())
 		{
-			myScore += 20;
-			myGhostGhostCounter = 20.f;
-			myGhost->myIsClaimableFlag = true;
-		}
-
-		if (myGhostGhostCounter <= 0) //!!@ no idea what this is for. this seems like a timer of some sort, ok looks like a powerpill
-		{
-			myGhost->myIsClaimableFlag = false;
-		}
-
-		if ((myGhost->GetPosition() - myAvatar->GetPosition()).Length() < 10.f)
-		{
-			if (myGhostGhostCounter <= 0.f)
+			if (!myPacmanGameState.IsInSubState())
 			{
-				myNextGameState = GAME_STATE_DEATH_ANIMATION;
+				myPacmanGameState.SetSubState();
 			}
-			else if (myGhost->myIsClaimableFlag && !myGhost->myIsDeadFlag)
+			else
 			{
-				myScore += 50;
-				myGhost->myIsDeadFlag = true;
-				myGhost->Die(myWorld);
+				myPacmanGameState.SetInitalizingDone();
 			}
 		}
 
-		if (CheckEndGameCondition())
+		//main
+		if (!myPacmanGameState.IsChangingState())
 		{
-			myNextGameState = GAME_STATE_WIN;
+			MoveAvatar();
+			myAvatar->Update(aTime);
+			myGhost->Update(aTime, myWorld);
+
+			if (myWorld->HasIntersectedDot(myAvatar->GetPosition()))
+				myScore += 10;
+
+			myGhostGhostCounter -= aTime;
+
+			if (myWorld->HasIntersectedBigDot(myAvatar->GetPosition()))
+			{
+				myScore += 20;
+				myGhostGhostCounter = 20.f;
+				myGhost->myIsClaimableFlag = true;
+			}
+
+			if (myGhostGhostCounter <= 0)
+			{
+				myGhost->myIsClaimableFlag = false;
+			}
+
+			if ((myGhost->GetPosition() - myAvatar->GetPosition()).Length() < 10.f)
+			{
+				if (myGhostGhostCounter <= 0.f)
+				{
+					myPacmanGameState.SetNextState(GAME_STATE_DEATH_ANIMATION);
+				}
+				else if (myGhost->myIsClaimableFlag && !myGhost->myIsDeadFlag)
+				{
+					myScore += 50;
+					myGhost->myIsDeadFlag = true;
+					myGhost->Die(myWorld);
+				}
+			}
+
+			if (CheckEndGameCondition())
+			{
+				myPacmanGameState.SetNextState(GAME_STATE_WIN);
+			}
+			else if (myLives <= 0)
+			{
+				myPacmanGameState.SetNextState(GAME_STATE_LOSE);
+			}
 		}
-		else if (myLives <= 0)
+
+		//cleanup
+		if (!myPacmanGameState.IsCleanedUp())
 		{
-			myNextGameState = GAME_STATE_LOSE;
+			if (!myPacmanGameState.IsInSubState())
+			{
+				myPacmanGameState.SetSubState();
+			}
+			else
+			{
+				myPacmanGameState.SetCleanUpDone();
+			}
 		}
 
 		break;
 
 	case GAME_STATE_DEATH_ANIMATION:
+		//initialize
+		if (!myPacmanGameState.IsInitialized())
+		{
+			if (!myPacmanGameState.IsInSubState())
+			{
+				myPacmanGameState.SetSubState();
+			}
+			else
+			{
+				myPacmanGameState.SetInitalizingDone();
+			}
+		}
 
-		myLives--;
+		//main
+		if (!myPacmanGameState.IsChangingState())
+		{
+			myLives--;
 
-		myGhost->SetAlpha(0);
-		myGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-		myGhost->ResetTilesToCurrentPosition();
+			myGhost->SetAlpha(0);
+			myGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+			myGhost->ResetTilesToCurrentPosition();
 
-		myNextGameState = GAME_STATE_DEATH_END;
+			myPacmanGameState.SetNextState(GAME_STATE_DEATH_END);
+		}
 
+		//cleanup
+		if (!myPacmanGameState.IsCleanedUp())
+		{
+			if (!myPacmanGameState.IsInSubState())
+			{
+				myPacmanGameState.SetSubState();
+			}
+			else
+			{
+				myPacmanGameState.SetCleanUpDone();
+			}
+		}
 		break;
 
 	case GAME_STATE_DEATH_END:
-		myAvatar->SetPosition(Vector2f(13 * 22, 22 * 22));
-		myAvatar->ResetTilesToCurrentPosition();
-		SetNextMovement(Vector2f(-1, 0));
-		myGhost->SetAlpha(255);
-		myNextGameState = GAME_STATE_PLAY;
-		break;
+		//initialize
+		if (!myPacmanGameState.IsInitialized())
+		{
+			if (!myPacmanGameState.IsInSubState())
+			{
+				myPacmanGameState.SetSubState();
+			}
+			else
+			{
+				myPacmanGameState.SetInitalizingDone();
+			}
+		}
+
+		if (!myPacmanGameState.IsChangingState())
+		{
+			myAvatar->SetPosition(Vector2f(13 * 22, 22 * 22));
+			myAvatar->ResetTilesToCurrentPosition();
+			SetNextMovement(Vector2f(-1, 0));
+			myGhost->SetAlpha(255);
+			myPacmanGameState.SetNextState(GAME_STATE_PLAY);
+		}
+
+		//cleanup
+		if (!myPacmanGameState.IsCleanedUp())
+		{
+			if (!myPacmanGameState.IsInSubState())
+			{
+				myPacmanGameState.SetSubState();
+			}
+			else
+			{
+				myPacmanGameState.SetCleanUpDone();
+			}
+		}
 
 	case GAME_STATE_LOSE:
+		//initialize
+		if (!myPacmanGameState.IsInitialized())
+		{
+			if (!myPacmanGameState.IsInSubState())
+			{
+				myPacmanGameState.SetSubState();
+			}
+			else
+			{
+				myPacmanGameState.SetInitalizingDone();
+			}
+		}
 
-		myDrawer->DrawText("You lose!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70, 24);
-		return true;
+		if (!myPacmanGameState.IsChangingState())
+		{
+			myDrawer->DrawText("You lose!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70, 24);
+		}
+
+		//cleanup
+		if (!myPacmanGameState.IsCleanedUp())
+		{
+			if (!myPacmanGameState.IsInSubState())
+			{
+				myPacmanGameState.SetSubState();
+			}
+			else
+			{
+				myPacmanGameState.SetCleanUpDone();
+			}
+		}
 
 		break;
 
 	case GAME_STATE_WIN:
 		
-		myDrawer->DrawText("You win!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70, 24);
-		return true;
+		//initialize
+		if (!myPacmanGameState.IsInitialized())
+		{
+			if (!myPacmanGameState.IsInSubState())
+			{
+				myPacmanGameState.SetSubState();
+			}
+			else
+			{
+				myPacmanGameState.SetInitalizingDone();
+			}
+		}
+
+		if (!myPacmanGameState.IsChangingState())
+		{
+			myDrawer->DrawText("You win!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70, 24);
+		}
+
+		//cleanup
+		if (!myPacmanGameState.IsCleanedUp())
+		{
+			if (!myPacmanGameState.IsInSubState())
+			{
+				myPacmanGameState.SetSubState();
+			}
+			else
+			{
+				myPacmanGameState.SetCleanUpDone();
+			}
+		}
 
 		break;
 

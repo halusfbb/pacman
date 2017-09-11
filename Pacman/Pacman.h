@@ -2,6 +2,7 @@
 #define PACMAN_H
 
 #include "Vector2f.h"
+#include "StateHelper.h"
 
 struct SDL_Surface;
 class Drawer;
@@ -30,6 +31,9 @@ public:
 
 	void SetNextMovement(Vector2f& vec);
 
+	const Avatar* GetAvatar() { return myAvatar; }
+	World* GetWorld() { return myWorld; }
+
 private:
 	Pacman(Drawer* aDrawer);
 	bool Init();
@@ -52,8 +56,9 @@ private:
 	Ghost* myGhost;
 	World* myWorld;
 
-	PacmanGameState myCurrentGameState;
-	PacmanGameState myNextGameState;
+	StateHelper<PacmanGameState> myPacmanGameState;
 };
+
+extern Pacman* gPacman;
 
 #endif // PACMAN_H
