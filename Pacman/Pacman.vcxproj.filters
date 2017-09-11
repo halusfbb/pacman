@@ -22,6 +22,12 @@
     <Filter Include="Math">
       <UniqueIdentifier>{407f4558-6586-4bc4-8b47-e4c33e7ecfdd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Game entities\Movable\GhostBehaviour">
+      <UniqueIdentifier>{ddb1f25e-7373-477c-8e67-21e77f82dd27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="State">
+      <UniqueIdentifier>{26d78f8f-9b34-4075-ac9f-dda5e46b78bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Pacman.cpp">
@@ -75,6 +81,12 @@
     </ClCompile>
     <ClCompile Include="FontAssetCache.cpp">
       <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="RedGhost.cpp">
+      <Filter>Game\Game entities\Movable\GhostBehaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseGhost.cpp">
+      <Filter>Game\Game entities\Movable\GhostBehaviour</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -131,6 +143,15 @@
     </ClInclude>
     <ClInclude Include="FontAssetCache.h">
       <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="RedGhost.h">
+      <Filter>Game\Game entities\Movable\GhostBehaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseGhost.h">
+      <Filter>Game\Game entities\Movable\GhostBehaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="StateHelper.h">
+      <Filter>State</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

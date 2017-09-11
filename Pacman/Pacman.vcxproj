@@ -121,6 +121,7 @@
     <ClCompile Include="AssetCache.cpp" />
     <ClCompile Include="AssetManager.cpp" />
     <ClCompile Include="Avatar.cpp" />
+    <ClCompile Include="BaseGhost.cpp" />
     <ClCompile Include="BigDot.cpp" />
     <ClCompile Include="Cherry.cpp" />
     <ClCompile Include="Dot.cpp" />
@@ -133,6 +134,7 @@
     <ClCompile Include="MovableGameEntity.cpp" />
     <ClCompile Include="Pacman.cpp" />
     <ClCompile Include="PathmapTile.cpp" />
+    <ClCompile Include="RedGhost.cpp" />
     <ClCompile Include="StaticGameEntity.cpp" />
     <ClCompile Include="Vector2f.cpp" />
     <ClCompile Include="World.cpp" />
@@ -141,6 +143,7 @@
     <ClInclude Include="AssetCache.h" />
     <ClInclude Include="AssetManager.h" />
     <ClInclude Include="Avatar.h" />
+    <ClInclude Include="BaseGhost.h" />
     <ClInclude Include="BigDot.h" />
     <ClInclude Include="Cherry.h" />
     <ClInclude Include="Dot.h" />
@@ -153,6 +156,8 @@
     <ClInclude Include="MovableGameEntity.h" />
     <ClInclude Include="Pacman.h" />
     <ClInclude Include="PathmapTile.h" />
+    <ClInclude Include="RedGhost.h" />
+    <ClInclude Include="StateHelper.h" />
     <ClInclude Include="StaticGameEntity.h" />
     <ClInclude Include="Vector2f.h" />
     <ClInclude Include="World.h" />
