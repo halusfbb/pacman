@@ -17,12 +17,17 @@ typedef enum {
 	GHOST_FRIGHTENED //power pill eaten by the avatar
 } GhostState;
 
+#ifdef _DEBUG
+extern const char* gStateChar[];
+#endif
+
 typedef enum {
 	GHOST_COLOR_UNDEFINED = -1,
 	GHOST_RED,
 	GHOST_PINK,
 	GHOST_CYAN,
-	GHOST_ORANGE
+	GHOST_ORANGE,
+	GHOST_GRAY
 } GhostColor;
 
 class Ghost : public MovableGameEntity
@@ -49,6 +54,7 @@ public:
 	bool GetIsClaimableFlag();
 
 	void SetNextState(GhostState ghostState);
+	GhostState GetCurrentState();
 
 private:
 

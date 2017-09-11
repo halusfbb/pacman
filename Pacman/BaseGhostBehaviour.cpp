@@ -136,6 +136,7 @@ void BaseGhostBehaviour::FrightenedStateCleanup(float dt)
 
 void BaseGhostBehaviour::ScatterStateInit(float dt)
 {
+	mGhostParent->SetImage(GetNormalImageName());
 }
 
 void BaseGhostBehaviour::ScatterState(float dt, Vector2f & directionUnitVector)
@@ -208,6 +209,11 @@ const char * BaseGhostBehaviour::GetFrightenedImageName()
 const char * BaseGhostBehaviour::GetDeadImageName()
 {
 	return DEAD_GHOST_IMAGE;
+}
+
+TileCoord BaseGhostBehaviour::GetTileCurrentTargetTile()
+{
+	return TileCoord{ mCurrentTileTargetX, mCurrentTileTargetY };
 }
 
 void BaseGhostBehaviour::SetScatterTileCoord(TileCoord& scatterTileCoord)

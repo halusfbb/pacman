@@ -9,5 +9,11 @@ extern const char* ORANGE_GHOST_IMAGE;
 extern const char* DEAD_GHOST_IMAGE;
 extern const char* FRIGHTENED_GHOST_IMAGE;
 
+//in seconds
+extern int CHASE_STATE_MIN_DURATION;
+extern int CHASE_STATE_MAX_DURATION;
+extern int SCATTER_STATE_MIN_DURATION;
+extern int SCATTER_STATE_MAX_DURATION;
+
 #endif
 

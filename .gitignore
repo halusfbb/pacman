@@ -2,3 +2,4 @@
 *.vc.vc.opendb
 *.vc.db
 Pacman/Debug/
+Release/

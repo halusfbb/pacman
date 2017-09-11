@@ -5,12 +5,12 @@
 #include <sstream>
 #include <fstream>
 #include <string>
+#include <time.h>
 
 #include "Avatar.h"
 #include "World.h"
-#include "Ghost.h"
-
-#include <time.h>
+#include "GhostManager.h"
+#include "globals.h"
 
 Pacman* gPacman = NULL;
 
@@ -28,9 +28,13 @@ Pacman* Pacman::Create(Drawer* aDrawer)
 	return pacman;
 }
 
+float Pacman::GetFrightenedGhostCounter()
+{
+	return myGhostGhostCounter;
+}
+
 Pacman::Pacman(Drawer* aDrawer)
 : myDrawer(aDrawer)
-, myTimeToNextUpdate(0.f)
 , myNextMovement(-1.f,0.f)
 , myScore(0)
 , myFps(0)
@@ -38,7 +42,7 @@ Pacman::Pacman(Drawer* aDrawer)
 , myGhostGhostCounter(0.f)
 {
 	myAvatar = new Avatar(Vector2f(13*22,22*22));
-	myGhost = Ghost::Create(Vector2f(22*22,25*22), GHOST_RED);
+	myGhostManager = GhostManager::Create();
 	myWorld = new World();
 
 	myPacmanGameState.SetNextState(GAME_STATE_PLAY);
@@ -92,7 +96,7 @@ bool Pacman::Update(float aTime)
 		{
 			MoveAvatar();
 			myAvatar->Update(aTime);
-			myGhost->Update(aTime, myWorld);
+			myGhostManager->Update(aTime);
 
 			if (myWorld->HasIntersectedDot(myAvatar->GetPosition()))
 				myScore += 10;
@@ -103,25 +107,28 @@ bool Pacman::Update(float aTime)
 			{
 				myScore += 20;
 				myGhostGhostCounter = 20.f;
-				myGhost->SetIsClaimableFlag(true);
+				myGhostManager->SetGhostsNextState(GHOST_FRIGHTENED);
 			}
 
 			if (myGhostGhostCounter <= 0)
 			{
-				myGhost->SetIsClaimableFlag(false);
+				myGhostManager->RevertToPreviousState();
 			}
 
-			if ((myGhost->GetPosition() - myAvatar->GetPosition()).Length() < 10.f)
+			for (auto ghost : myGhostManager->GetVectorOfGhost())
 			{
-				if (myGhostGhostCounter <= 0.f)
+				if ((ghost->GetPosition() - myAvatar->GetPosition()).Length() < 10.f)
 				{
-					myPacmanGameState.SetNextState(GAME_STATE_DEATH_ANIMATION);
-				}
-				else if (myGhost->GetIsClaimableFlag() && !myGhost->myIsDeadFlag)
-				{
-					myScore += 50;
-					myGhost->myIsDeadFlag = true;
-					myGhost->Die(myWorld);
+					if (myGhostGhostCounter <= 0.f)
+					{
+						myPacmanGameState.SetNextState(GAME_STATE_DEATH_ANIMATION);
+					}
+					else if (ghost->GetCurrentState() == GHOST_FRIGHTENED && !ghost->myIsDeadFlag)
+					{
+						myScore += 50;
+						ghost->myIsDeadFlag = true;
+						ghost->Die(myWorld);
+					}
 				}
 			}
 
@@ -169,9 +176,12 @@ bool Pacman::Update(float aTime)
 		{
 			myLives--;
 
-			myGhost->SetAlpha(0);
-			myGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-			myGhost->ResetTilesToCurrentPosition();
+			for (auto ghost : myGhostManager->GetVectorOfGhost())
+			{
+				ghost->SetAlpha(0);
+				ghost->SetPosition(Vector2f(13 * 22, 13 * 22));
+				ghost->ResetTilesToCurrentPosition();
+			}
 
 			myPacmanGameState.SetNextState(GAME_STATE_DEATH_END);
 		}
@@ -209,7 +219,11 @@ bool Pacman::Update(float aTime)
 			myAvatar->SetPosition(Vector2f(13 * 22, 22 * 22));
 			myAvatar->ResetTilesToCurrentPosition();
 			SetNextMovement(Vector2f(-1, 0));
-			myGhost->SetAlpha(255);
+			for (auto ghost : myGhostManager->GetVectorOfGhost())
+			{
+				ghost->SetAlpha(255);
+			}
+
 			myPacmanGameState.SetNextState(GAME_STATE_PLAY);
 		}
 
@@ -348,7 +362,7 @@ bool Pacman::Draw()
 {
 	myWorld->Draw(myDrawer);
 	myAvatar->Draw(myDrawer);
-	myGhost->Draw(myDrawer);
+	myGhostManager->Draw(myDrawer);
 
 	std::string scoreString;
 	std::stringstream scoreStream;

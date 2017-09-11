@@ -6,6 +6,15 @@
 #include "BaseGhostBehaviour.h"
 #include "RedGhostBehaviour.h"
 
+#ifdef _DEBUG
+const char* gStateChar[] = {
+	"GHOST_START",
+	"GHOST_CHASE",
+	"GHOST_SCATTER",
+	"GHOST_FRIGHTENED"
+};
+#endif
+
 Ghost * Ghost::Create(const Vector2f & aPosition, GhostColor ghostColor)
 {
 	Ghost* ghost = new Ghost(aPosition, ghostColor);
@@ -37,13 +46,15 @@ void Ghost::Init()
 	{
 	case GHOST_RED:
 		mGhostBehaviour = new RedGhostBehaviour(this);
-		mGhostState.SetNextState(GHOST_CHASE, true);
 		break;
 	case GHOST_PINK:
 		break;
 	case GHOST_CYAN:
 		break;
 	case GHOST_ORANGE:
+		break;
+	case GHOST_GRAY:
+		mGhostBehaviour = new BaseGhostBehaviour(this);
 		break;
 	default:
 		break;
@@ -237,15 +248,26 @@ void Ghost::SetImage(const char* anImage)
 void Ghost::Draw(Drawer* aDrawer)
 {
 	aDrawer->Draw(myImageAssetCache, (int)myPosition.myX + 220, (int)myPosition.myY + 60);
+#ifdef _DEBUG
+	std::string str;
+	if (mGhostState.GetCurrentState() == GHOST_STATE_UNDEFINED)
+	{
+		str = "State: UNDEFINED";
+	}
+	else
+	{
+		str = "State: " + std::string(gStateChar[mGhostState.GetCurrentState()]);
+	}
+	aDrawer->DrawText(str.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", (int)myPosition.myX + 20 + 220, (int)myPosition.myY - 20  + 60, 20);
+
+	SDL_SetRenderDrawColor(aDrawer->myRenderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
+	SDL_RenderDrawLine(aDrawer->myRenderer,(int)myPosition.myX + 11 + 220, (int)myPosition.myY + 11 + 60, mGhostBehaviour->GetTileCurrentTargetTile().x * 22 + 11 + 220, mGhostBehaviour->GetTileCurrentTargetTile().y * 22 + 11 + 60);
+#endif
 }
 
 void Ghost::SetIsClaimableFlag(bool value)
 {
 	myIsClaimableFlag = value;
-	if(myIsClaimableFlag)
-		mGhostState.SetNextState(GHOST_FRIGHTENED, true);
-	else
-		mGhostState.SetNextState(GHOST_SCATTER); //!!@ this needs to be extended 
 }
 
 bool Ghost::GetIsClaimableFlag()
@@ -255,5 +277,10 @@ bool Ghost::GetIsClaimableFlag()
 
 void Ghost::SetNextState(GhostState ghostState)
 {
-	mGhostState.SetNextState(ghostState);
+	mGhostState.SetNextState(ghostState, true);
+}
+
+GhostState Ghost::GetCurrentState()
+{
+	return mGhostState.GetCurrentState();
 }

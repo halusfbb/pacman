@@ -6,3 +6,8 @@ const char* CYAN_GHOST_IMAGE = "ghost_32_cyan.png";
 const char* ORANGE_GHOST_IMAGE = "ghost_32_orange.png";
 const char* DEAD_GHOST_IMAGE = "Ghost_Dead_32.png";
 const char* FRIGHTENED_GHOST_IMAGE = "Ghost_Vulnerable_32.png";
+
+int CHASE_STATE_MIN_DURATION = 15;
+int CHASE_STATE_MAX_DURATION = 20;
+int SCATTER_STATE_MIN_DURATION = 5;
+int SCATTER_STATE_MAX_DURATION = 7;

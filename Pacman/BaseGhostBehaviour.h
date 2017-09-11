@@ -29,6 +29,8 @@ public:
 	const char* GetFrightenedImageName();
 	const char* GetDeadImageName();
 
+	TileCoord GetTileCurrentTargetTile();
+
 protected:
 	void SetScatterTileCoord(TileCoord& scatterTileCoord);
 

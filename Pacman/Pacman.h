@@ -8,7 +8,7 @@ struct SDL_Surface;
 class Drawer;
 class Avatar;
 class World;
-class Ghost;
+class GhostManager;
 
 typedef enum {
 	GAME_STATE_INIT,
@@ -34,6 +34,7 @@ public:
 	const Avatar* GetAvatar() { return myAvatar; }
 	World* GetWorld() { return myWorld; }
 
+	float GetFrightenedGhostCounter();
 private:
 	Pacman(Drawer* aDrawer);
 	bool Init();
@@ -43,7 +44,6 @@ private:
 
 	Drawer* myDrawer;
 
-	float myTimeToNextUpdate;
 	float myGhostGhostCounter;
 
 	int myLives;
@@ -53,7 +53,7 @@ private:
 	Vector2f myNextMovement;
 
 	Avatar* myAvatar;
-	Ghost* myGhost;
+	GhostManager* myGhostManager;
 	World* myWorld;
 
 	StateHelper<PacmanGameState> myPacmanGameState;
