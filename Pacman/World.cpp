@@ -189,9 +189,9 @@ void World::Draw(Drawer* aDrawer)
 bool World::TileIsValid(int anX, int anY)
 {
 	if (anX < 0 || anY < 0)
-		return false;
+		return NULL;
 	if (anX >= myMapColSize || anY >= myMapRowSize)
-		return false;
+		return NULL;
 	//to speed up the search, we can do index referencing on the vector
 	int numberOfTilesPerRow = 26; //in future this can be read from map.txt
 	int indexNumber = anY * 26 + anX;
@@ -257,9 +257,9 @@ void World::GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<Pathma
 PathmapTile* World::GetTile(int aFromX, int aFromY)
 {
 	if (aFromX < 0 || aFromY < 0)
-		return false;
-	if (aFromX >= myMapRowSize || aFromY >= myMapColSize)
-		return false;
+		return NULL;
+	if (aFromX >= myMapColSize || aFromY >= myMapRowSize)
+		return NULL;
 	//to speed up the search, we can do index referencing on the vector
 	int numberOfTilesPerRow = 26; //in future this can be read from map.txt
 	int indexNumber = aFromY * 26 + aFromX;
@@ -271,6 +271,16 @@ PathmapTile* World::GetTile(int aFromX, int aFromY)
 	}
 
 	return NULL;
+}
+
+int World::GetMapRowSize() const
+{
+	return myMapRowSize;
+}
+
+int World::GetMapColSize() const
+{
+	return myMapColSize;
 }
 
 bool World::ListDoesNotContain(PathmapTile* aFromTile, std::list<PathmapTile*>& aList)

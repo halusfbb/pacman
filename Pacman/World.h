@@ -32,14 +32,16 @@ public:
 	void GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<PathmapTile*>& aList);
 	PathmapTile* GetTile(int aFromX, int aFromY);
 
-	int myMapRowSize;
-	int myMapColSize;
+	int GetMapRowSize() const;
+	int GetMapColSize() const;
 
 private:
 
+	int myMapRowSize;
+	int myMapColSize;
+
 	bool Pathfind(PathmapTile* aFromTile, PathmapTile* aToTile, std::list<PathmapTile*>& aList);
 	bool ListDoesNotContain(PathmapTile* aFromTile, std::list<PathmapTile*>& aList);
-
 
 	bool InitPathmap();
 	bool InitDots();
