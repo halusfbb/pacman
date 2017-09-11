@@ -46,22 +46,11 @@ void Ghost::Update(float aTime, World* aWorld)
 		{
 			if (!mGhostState.IsInSubState())
 			{
-				//perform substate actions and call DoSubState()
-				//e.g.
-				//call SetSubState() to indicate substate action is being done
-				//action 1
-				//action 2
-				//...
 				mGhostState.SetSubState();
 				mGhostBehaviour->ChaseStateInit(aTime);
 			}
 			else
 			{
-				//check condition for substate finish and call SetInitalizingDone()
-				//e.g.
-				//if(condition for substate finish)
-				//SetInitalizingDone()
-				//..
 				mGhostState.SetInitalizingDone();
 			}
 		}
@@ -90,6 +79,41 @@ void Ghost::Update(float aTime, World* aWorld)
 		break;
 
 	case GHOST_SCATTER:
+		//initialize
+		if (!mGhostState.IsInitialized())
+		{
+			if (!mGhostState.IsInSubState())
+			{
+				mGhostState.SetSubState();
+				mGhostBehaviour->ScatterStateInit(aTime);
+			}
+			else
+			{
+				mGhostState.SetInitalizingDone();
+			}
+		}
+
+		//main
+		else if (!mGhostState.IsChangingState())
+		{
+			if (IsAtDestination())// !!@Temporarily removing. howvver there is a bug here. If ghost has reached destination, then there is no way of asking the behaviour for another destination
+				mGhostBehaviour->ScatterState(aTime, unitDirection);
+		}
+
+		//cleanup
+		else if (!mGhostState.IsCleanedUp())
+		{
+			if (!mGhostState.IsInSubState())
+			{
+				mGhostState.SetSubState();
+				mGhostBehaviour->ScatterStateCleanup(aTime);
+			}
+			else
+			{
+				mGhostState.SetCleanUpDone();
+			}
+		}
+
 		break;
 
 	case GHOST_FRIGHTENED:
