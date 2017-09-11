@@ -36,6 +36,9 @@ void BaseGhost::ChaseState(float dt, Vector2f & directionUnitVector)
 	int ghostParentCurrentTileX = mGhostParent->GetCurrentTileX();
 	int ghostParentCurrentTileY = mGhostParent->GetCurrentTileY();
 
+	//these was where the ghost came from
+	int previousTileX = ghostParentCurrentTileX - mPreviousDirectionUnitVecX;
+	int previousTileY = ghostParentCurrentTileY - mPreviousDirectionUnitVecY;
 	//get the world
 	World* world = gPacman->GetWorld();
 	PathmapTile* tile = world->GetTile(ghostParentCurrentTileX, ghostParentCurrentTileY);
@@ -49,6 +52,12 @@ void BaseGhost::ChaseState(float dt, Vector2f & directionUnitVector)
 		int indirectMagnitude;
 		for (int i = 0; i < tile->myValidNeighbours.size(); i++)
 		{
+			if (tile->myValidNeighbours[i].x == previousTileX &&
+				tile->myValidNeighbours[i].y == previousTileY)
+			{
+				continue;
+			}
+
 			indirectMagnitude = GetIndirectMagnitude(tile->myValidNeighbours[i], TileCoord{ mCurrentTileTargetX, mCurrentTileTargetY });
 			if (minMagnitude > indirectMagnitude)
 			{
@@ -83,17 +92,34 @@ void BaseGhost::FrightenedState(float dt, Vector2f & directionUnitVector)
 	int ghostParentCurrentTileX = mGhostParent->GetCurrentTileX();
 	int ghostParentCurrentTileY = mGhostParent->GetCurrentTileY();
 
+	//these was where the ghost came from
+	int previousTileX = ghostParentCurrentTileX - mPreviousDirectionUnitVecX;
+	int previousTileY = ghostParentCurrentTileY - mPreviousDirectionUnitVecY;
+
 	//get the world
 	World* world = gPacman->GetWorld();
 	PathmapTile* tile = world->GetTile(ghostParentCurrentTileX, ghostParentCurrentTileY);
 
 	if (tile->myValidNeighbours.size() > 2)
 	{
-		//get a random number to select the valid tiles
-		int randomIndex = rand() % tile->myValidNeighbours.size();
-		tile->myValidNeighbours[randomIndex];
+		std::vector<TileCoord> copyValidNeighbours(tile->myValidNeighbours);
+		int indexForPreviousTile;
+		for (int j = 0; j < copyValidNeighbours.size(); j++)
+		{
+			if (copyValidNeighbours[j].x == previousTileX &&
+				copyValidNeighbours[j].y == previousTileY)
+			{
+				indexForPreviousTile = j;
+				break;
+			}
+		}
 
-		TileCoord direction = tile->myValidNeighbours[randomIndex] - TileCoord{ ghostParentCurrentTileX, ghostParentCurrentTileY };
+		copyValidNeighbours.erase(copyValidNeighbours.begin() + indexForPreviousTile);
+
+		//get a random number to select the valid tiles
+		int randomIndex = rand() % copyValidNeighbours.size();
+
+		TileCoord direction = copyValidNeighbours[randomIndex] - TileCoord{ ghostParentCurrentTileX, ghostParentCurrentTileY };
 		directionUnitVector.myX = mPreviousDirectionUnitVecX = direction.x; //also saves a record of the previous direction
 		directionUnitVector.myY = mPreviousDirectionUnitVecY = direction.y; //also saves a record of the previous direction
 	}
