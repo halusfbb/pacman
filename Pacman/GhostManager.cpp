@@ -22,6 +22,7 @@ GhostManager::GhostManager()
 	:mCurrentState(GHOST_SCATTER)
 	,mCyclic_Chase_Scatter(GHOST_SCATTER)
 	,mNoOf_Chase_Scatter_Cycles(0)
+	,mTimerBeforeGhostExit(0.f)
 {
 }
 
@@ -49,6 +50,8 @@ void GhostManager::Init()
 	//get the duration for the state in mCyclicChase_Scatter
 	mCurrentCycleStateTimer = GetDurationForChase_ScatterState(mCyclic_Chase_Scatter);
 	SetGhostsNextState(mCyclic_Chase_Scatter);
+
+	mTimerBeforeGhostExit = GetDurationForGhostRelease();
 }
 
 void GhostManager::Update(float aTime)
@@ -88,6 +91,16 @@ void GhostManager::Update(float aTime)
 		if (mCurrentCycleStateTimer <= 0)
 		{
 			SwapCyclicState();
+		}
+	}
+
+	if (mGhostAtHomevec.size() > 0)
+	{
+		mTimerBeforeGhostExit -= aTime;
+		if (mTimerBeforeGhostExit < 0)
+		{
+			mGhostAtHomevec[0]->SetNextState(GHOST_EXITING);
+			mTimerBeforeGhostExit = GetDurationForGhostRelease();
 		}
 	}
 
@@ -189,4 +202,9 @@ float GhostManager::GetDurationForChase_ScatterState(GhostState ghoststate)
 	}
 
 	return 0.f;
+}
+
+float GhostManager::GetDurationForGhostRelease()
+{
+	return (float)(rand() % (MAX_TIMER_BEFORE_GHOSTS_EXIT - MIN_TIMER_BEFORE_GHOST_EXIT + 1) + MIN_TIMER_BEFORE_GHOST_EXIT);
 }

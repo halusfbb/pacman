@@ -52,6 +52,11 @@ bool World::InitPathmap()
 			{
 				PathmapTile* tile = new PathmapTile(i, lineIndex, (line[i] == 'x'), (line[i] == 's'), line[i] == 'g');
 				myPathmapTiles.push_back(tile);
+
+				if (line[i] == 'g')
+				{
+					myGateTiles.push_back(tile);
+				}
 			}
 
 			lineIndex++;
@@ -297,9 +302,14 @@ const std::list<Dot*>& World::GetListOfDots() const
 	return myDots;
 }
 
-const std::list<BigDot*> World::GetListOfBigDots() const
+const std::list<BigDot*>& World::GetListOfBigDots() const
 {
 	return myBigDots;
+}
+
+const std::vector<PathmapTile*>& World::GetListOfGateTiles() const
+{
+	return myGateTiles;
 }
 
 void World::ResetToOriginalDots()

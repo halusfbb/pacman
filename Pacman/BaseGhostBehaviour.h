@@ -17,6 +17,10 @@ public:
 	virtual void HomeState(float dt, Vector2f & directionUnitVector);
 	virtual void HomeStateCleanup(float dt);
 
+	virtual void ExitStateInit(float dt);
+	virtual void ExitState(float dt, Vector2f & directionUnitVector);
+	virtual void ExitStateCleanup(float dt);
+
 	virtual void ChaseStateInit(float dt);
 	virtual void ChaseState(float dt, Vector2f & directionUnitVector);
 	virtual void ChaseStateCleanup(float dt);

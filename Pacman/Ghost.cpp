@@ -123,6 +123,40 @@ void Ghost::Update(float aTime, World* aWorld)
 		}
 		break;
 	case GHOST_EXITING:
+		//initialize
+		if (!mGhostState.IsInitialized())
+		{
+			if (!mGhostState.IsInSubState())
+			{
+				mGhostState.SetSubState();
+				mGhostBehaviour->ExitStateInit(aTime);
+			}
+			else
+			{
+				mGhostState.SetInitalizingDone();
+			}
+		}
+
+		//main
+		else if (!mGhostState.IsChangingState())
+		{
+			if (IsAtDestination())
+				mGhostBehaviour->ExitState(aTime, unitDirection);
+		}
+
+		//cleanup
+		else if (!mGhostState.IsCleanedUp())
+		{
+			if (!mGhostState.IsInSubState())
+			{
+				mGhostState.SetSubState();
+				mGhostBehaviour->ExitStateCleanup(aTime);
+			}
+			else
+			{
+				mGhostState.SetCleanUpDone();
+			}
+		}
 		break;
 	case GHOST_CHASE:
 		//initialize

@@ -46,6 +46,69 @@ void BaseGhostBehaviour::HomeStateCleanup(float dt)
 {
 }
 
+void BaseGhostBehaviour::ExitStateInit(float dt)
+{
+}
+
+void BaseGhostBehaviour::ExitState(float dt, Vector2f & directionUnitVector)
+{
+	//randomly chooseone of the gate tiles
+	const std::vector<PathmapTile*>& gateTilesList = gPacman->GetWorld()->GetListOfGateTiles();
+
+	int randomNum = rand() % gateTilesList.size();
+	const PathmapTile* selectedTile = gateTilesList[randomNum];
+
+	mCurrentTileTargetX = selectedTile->myX;
+	mCurrentTileTargetY = selectedTile->myX - 1;
+	
+	//get ghost current tile
+	int ghostParentCurrentTileX = mGhostParent->GetCurrentTileX();
+	int ghostParentCurrentTileY = mGhostParent->GetCurrentTileY();
+
+	//these was where the ghost came from
+	int previousTileX = ghostParentCurrentTileX - mPreviousDirectionUnitVecX;
+	int previousTileY = ghostParentCurrentTileY - mPreviousDirectionUnitVecY;
+	//get the world
+	World* world = gPacman->GetWorld();
+	PathmapTile* tile = world->GetTile(ghostParentCurrentTileX, ghostParentCurrentTileY);
+	// if there are more than 2 valid neighbors, we are to use the target tile as an influence to this ghost's next direction,
+	if (tile->myValidNeighbours.size() > 2)
+	{
+		//iterate through the neighbour list to determine shortest indirect magnitude between target tile and current ghost position
+		int minMagnitude = INT_MAX;
+		int indexToMaxMagnitude = 0;
+		int indirectMagnitude;
+		for (int i = 0; i < tile->myValidNeighbours.size(); i++)
+		{
+			if (tile->myValidNeighbours[i].x == previousTileX &&
+				tile->myValidNeighbours[i].y == previousTileY)
+			{
+				continue;
+			}
+
+			indirectMagnitude = GetIndirectMagnitude(tile->myValidNeighbours[i], TileCoord{ mCurrentTileTargetX, mCurrentTileTargetY });
+			if (minMagnitude > indirectMagnitude)
+			{
+				minMagnitude = indirectMagnitude;
+				indexToMaxMagnitude = i;
+			}
+		}
+
+		//get direction vector to neighbour indexed by indexToMaxMagnitude
+		TileCoord direction = tile->myValidNeighbours[indexToMaxMagnitude] - TileCoord{ ghostParentCurrentTileX, ghostParentCurrentTileY };
+		directionUnitVector.myX = mPreviousDirectionUnitVecX = direction.x; //also saves a record of the previous direction
+		directionUnitVector.myY = mPreviousDirectionUnitVecY = direction.y; //also saves a record of the previous direction
+	}
+	else
+	{
+		MoveInSameDirection(tile, directionUnitVector);
+	}
+}
+
+void BaseGhostBehaviour::ExitStateCleanup(float dt)
+{
+}
+
 void BaseGhostBehaviour::ChaseStateInit(float dt)
 {
 	mGhostParent->SetImage(GetNormalImageName());

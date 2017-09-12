@@ -29,6 +29,7 @@ public:
 private:
 
 	float GetDurationForChase_ScatterState(GhostState ghoststate);
+	float GetDurationForGhostRelease();
 
 	std::vector<Ghost*> mGhostvec;
 	std::vector<Ghost*> mGhostAtHomevec;
@@ -39,5 +40,7 @@ private:
 	float mCurrentCycleStateTimer;
 
 	int mNoOf_Chase_Scatter_Cycles;
+
+	float mTimerBeforeGhostExit;
 };
 #endif

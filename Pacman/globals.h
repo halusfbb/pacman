@@ -17,5 +17,7 @@ extern int SCATTER_STATE_MAX_DURATION;
 
 extern int PACMAN_START_LIVES;
 
+extern int MIN_TIMER_BEFORE_GHOST_EXIT;
+extern int MAX_TIMER_BEFORE_GHOSTS_EXIT;
 #endif
 

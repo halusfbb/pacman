@@ -36,7 +36,8 @@ public:
 	int GetMapColSize() const;
 
 	const std::list<Dot*>& GetListOfDots() const;
-	const std::list<BigDot*> GetListOfBigDots() const;
+	const std::list<BigDot*>& GetListOfBigDots() const;
+	const std::vector<PathmapTile*>& GetListOfGateTiles() const;
 
 	void ResetToOriginalDots();
 
@@ -59,6 +60,7 @@ private:
 	std::list<Cherry*> myCherry;
 	std::list<Dot*> myOriginalDots;
 	std::list<BigDot*> myOrignalBigDots;
+	std::vector<PathmapTile*> myGateTiles;
 
 	ImageAssetCacheSPtr mBoardImageAssetCache;
 
