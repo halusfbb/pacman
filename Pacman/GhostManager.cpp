@@ -52,7 +52,7 @@ void GhostManager::Update(float aTime)
 		mCurrentCycleStateTimer -= aTime;
 		if (mCurrentCycleStateTimer <= 0)
 		{
-			SwapGhostsState();
+			SwapCyclicState();
 		}
 	}
 
@@ -98,7 +98,7 @@ void GhostManager::RevertToPreviousState()
 	SetGhostsNextState(mCyclic_Chase_Scatter);
 }
 
-void GhostManager::SwapGhostsState()
+void GhostManager::SwapCyclicState()
 {
 	if (mCyclic_Chase_Scatter == GHOST_CHASE)
 	{

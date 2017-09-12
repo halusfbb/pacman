@@ -198,11 +198,13 @@ bool Pacman::Update(float aTime)
 				myScore += 20;
 				myGhostGhostCounter = 20.f;
 				myGhostManager->SetGhostsNextState(GHOST_FRIGHTENED);
+				myGhostCounterCountdown = true;
 			}
 
-			if (myGhostGhostCounter <= 0)
+			if (myGhostGhostCounter <= 0 && myGhostCounterCountdown)
 			{
 				myGhostManager->RevertToPreviousState();
+				myGhostCounterCountdown = false;
 			}
 
 			for (auto ghost : myGhostManager->GetVectorOfGhost())

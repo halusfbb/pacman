@@ -48,6 +48,7 @@ private:
 	Drawer* myDrawer;
 
 	float myGhostGhostCounter;
+	bool myGhostCounterCountdown;
 
 	int myLives;
 	int myScore;

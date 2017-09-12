@@ -22,7 +22,7 @@ public:
 
 	void SetGhostsNextState(GhostState ghostState);
 	void RevertToPreviousState(); //revert to the cyclic state given in mCyclic_Chase_Scatter
-	void SwapGhostsState();
+	void SwapCyclicState();
 
 	const std::vector<Ghost*>& GetVectorOfGhost();
 

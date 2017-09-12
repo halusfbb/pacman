@@ -56,6 +56,7 @@ void Avatar::ResetAvatar()
 {
 	SetPosition(Vector2f(13 * 22, 22 * 22));
 	ResetTilesToCurrentPosition();
+	SetAlpha(255);
 	SetImage("open_left_32.png");
 }
 
