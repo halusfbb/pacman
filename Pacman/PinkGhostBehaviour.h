@@ -1,17 +1,18 @@
-#ifndef REDGHOSTBEHAVIOUR_H
-#define REDGHOSTBEHAVIOUR_H
+#ifndef PINKGHOSTBEHAVIOUR_H
+#define PINKGHOSTBEHAVIOUR_H
 
 #include "BaseGhostBehaviour.h"
 
 //this class is designed to be "plugged" into the Ghost class to incorporate the
-//behaviour of the red ghost
+//behaviour of the pink ghost
 
-class RedGhostBehaviour : public BaseGhostBehaviour
+class PinkGhostBehaviour : public BaseGhostBehaviour
 {
 public:
-	RedGhostBehaviour(Ghost* ghostParent);
+	PinkGhostBehaviour(Ghost* ghostParent);
 
 	const char* GetNormalImageName() override;
+
 private:
 };
 

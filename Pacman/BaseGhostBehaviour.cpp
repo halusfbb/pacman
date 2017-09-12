@@ -1,12 +1,12 @@
 #include "BaseGhostBehaviour.h"
-#include "Pacman.h" //!!@ saving time and doing global access
+#include "Pacman.h"
 #include "Avatar.h"
 #include "Ghost.h"
 #include "World.h"
 #include "PathmapTile.h"
 #include "globals.h"
 
-int GetIndirectMagnitude(TileCoord a, TileCoord b)
+int BaseGhostBehaviour::GetIndirectMagnitude(TileCoord a, TileCoord b)
 {
 	return abs(a.x - b.x) + abs(a.y - b.y);
 }
@@ -17,7 +17,7 @@ BaseGhostBehaviour::BaseGhostBehaviour(Ghost * ghostParent)
 	,mCurrentTileTargetY(0)
 	,mPreviousDirectionUnitVecX(0)
 	,mPreviousDirectionUnitVecY(0)
-	,mScatterTargetTileCoord{ 25, 29 }
+	,mScatterTargetTileCoord{ 26, 30 }
 {
 }
 

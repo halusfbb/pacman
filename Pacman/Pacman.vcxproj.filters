@@ -94,6 +94,15 @@
     <ClCompile Include="RedGhostBehaviour.cpp">
       <Filter>Game\Game entities\Movable\GhostBehaviour</Filter>
     </ClCompile>
+    <ClCompile Include="PinkGhostBehaviour.cpp">
+      <Filter>Game\Game entities\Movable\GhostBehaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="CyanGhostBehaviour.cpp">
+      <Filter>Game\Game entities\Movable\GhostBehaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="OrangeGhostBehaviour.cpp">
+      <Filter>Game\Game entities\Movable\GhostBehaviour</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pacman.h">
@@ -163,6 +172,15 @@
       <Filter>Game\Game entities\Movable\GhostBehaviour</Filter>
     </ClInclude>
     <ClInclude Include="RedGhostBehaviour.h">
+      <Filter>Game\Game entities\Movable\GhostBehaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="PinkGhostBehaviour.h">
+      <Filter>Game\Game entities\Movable\GhostBehaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="CyanGhostBehaviour.h">
+      <Filter>Game\Game entities\Movable\GhostBehaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="OrangeGhostBehaviour.h">
       <Filter>Game\Game entities\Movable\GhostBehaviour</Filter>
     </ClInclude>
   </ItemGroup>

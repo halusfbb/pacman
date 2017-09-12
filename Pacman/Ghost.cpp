@@ -5,6 +5,9 @@
 #include "AssetManager.h"
 #include "BaseGhostBehaviour.h"
 #include "RedGhostBehaviour.h"
+#include "PinkGhostBehaviour.h"
+#include "CyanGhostBehaviour.h"
+#include "OrangeGhostBehaviour.h"
 
 #ifdef _DEBUG
 const char* gStateChar[] = {
@@ -48,10 +51,13 @@ void Ghost::Init()
 		mGhostBehaviour = new RedGhostBehaviour(this);
 		break;
 	case GHOST_PINK:
+		mGhostBehaviour = new PinkGhostBehaviour(this);
 		break;
 	case GHOST_CYAN:
+		mGhostBehaviour = new CyanGhostBehaviour(this);
 		break;
 	case GHOST_ORANGE:
+		mGhostBehaviour = new OrangeGhostBehaviour(this);
 		break;
 	case GHOST_GRAY:
 		mGhostBehaviour = new BaseGhostBehaviour(this);

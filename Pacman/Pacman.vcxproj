@@ -124,6 +124,7 @@
     <ClCompile Include="BaseGhostBehaviour.cpp" />
     <ClCompile Include="BigDot.cpp" />
     <ClCompile Include="Cherry.cpp" />
+    <ClCompile Include="CyanGhostBehaviour.cpp" />
     <ClCompile Include="Dot.cpp" />
     <ClCompile Include="Drawer.cpp" />
     <ClCompile Include="FontAssetCache.cpp" />
@@ -134,8 +135,10 @@
     <ClCompile Include="ImageAssetCache.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MovableGameEntity.cpp" />
+    <ClCompile Include="OrangeGhostBehaviour.cpp" />
     <ClCompile Include="Pacman.cpp" />
     <ClCompile Include="PathmapTile.cpp" />
+    <ClCompile Include="PinkGhostBehaviour.cpp" />
     <ClCompile Include="RedGhostBehaviour.cpp" />
     <ClCompile Include="StaticGameEntity.cpp" />
     <ClCompile Include="Vector2f.cpp" />
@@ -148,6 +151,7 @@
     <ClInclude Include="BaseGhostBehaviour.h" />
     <ClInclude Include="BigDot.h" />
     <ClInclude Include="Cherry.h" />
+    <ClInclude Include="CyanGhostBehaviour.h" />
     <ClInclude Include="Dot.h" />
     <ClInclude Include="Drawer.h" />
     <ClInclude Include="FontAssetCache.h" />
@@ -158,8 +162,10 @@
     <ClInclude Include="Header.h" />
     <ClInclude Include="ImageAssetCache.h" />
     <ClInclude Include="MovableGameEntity.h" />
+    <ClInclude Include="OrangeGhostBehaviour.h" />
     <ClInclude Include="Pacman.h" />
     <ClInclude Include="PathmapTile.h" />
+    <ClInclude Include="PinkGhostBehaviour.h" />
     <ClInclude Include="RedGhostBehaviour.h" />
     <ClInclude Include="StateHelper.h" />
     <ClInclude Include="StaticGameEntity.h" />

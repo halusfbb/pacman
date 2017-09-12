@@ -33,23 +33,24 @@ public:
 
 protected:
 	void SetScatterTileCoord(TileCoord& scatterTileCoord);
+	int GetIndirectMagnitude(TileCoord a, TileCoord b);
 
-private:
+	//!!@potentialy change these x,y corrdinates to use Tilecoord
+	int mCurrentTileTargetX;
+	int mCurrentTileTargetY;
+
+	Ghost* mGhostParent;
+
+	int mPreviousDirectionUnitVecX;
+	int mPreviousDirectionUnitVecY;
 
 	//this is for use on a two exit tile for which the ghost should move in the same direction or
 	//exit by the other available way (at corners). If all else fails, then the ghost will retreat back in the same direction
 	void MoveInSameDirection(PathmapTile* ghostParentCurrentTile, Vector2f& directionUnitVector);
 
-	Ghost* mGhostParent;
-	//!!@potentialy change these x,y corrdinates to use Tilecoord
-	int mCurrentTileTargetX;
-	int mCurrentTileTargetY;
-
-	int mPreviousDirectionUnitVecX;
-	int mPreviousDirectionUnitVecY;
+private:
 
 	TileCoord mScatterTargetTileCoord;
-
 };
 
 

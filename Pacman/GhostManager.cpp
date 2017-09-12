@@ -27,15 +27,17 @@ GhostManager::GhostManager()
 void GhostManager::Init()
 {
 	//initialie the ghosts
-	mGhostvec.resize(4);
+	mGhostvec.resize(5);
 	Ghost* redGhost = Ghost::Create(Vector2f(10 * 22, 25 * 22), GHOST_RED);
-	Ghost* pinkGhost = Ghost::Create(Vector2f(25 * 22, 0 * 22), GHOST_RED);
-	Ghost* cyanGhost = Ghost::Create(Vector2f(24 * 22, 28 * 22), GHOST_RED);
-	Ghost* orangeGhost = Ghost::Create(Vector2f(8 * 22, 4 * 22), GHOST_GRAY);
+	Ghost* pinkGhost = Ghost::Create(Vector2f(25 * 22, 0 * 22), GHOST_PINK);
+	Ghost* cyanGhost = Ghost::Create(Vector2f(24 * 22, 28 * 22), GHOST_CYAN);
+	Ghost* orangeGhost = Ghost::Create(Vector2f(3 * 22, 7 * 22), GHOST_ORANGE);
+	Ghost* grayGhost = Ghost::Create(Vector2f(8 * 22, 4 * 22), GHOST_GRAY);
 	mGhostvec[GHOST_RED] = redGhost;
 	mGhostvec[GHOST_PINK] = pinkGhost;
 	mGhostvec[GHOST_CYAN] = cyanGhost;
 	mGhostvec[GHOST_ORANGE] = orangeGhost;
+	mGhostvec[GHOST_GRAY] = grayGhost;
 
 	//get the duration for the state in mCyclicChase_Scatter
 	mCurrentCycleStateTimer = GetDurationForChase_ScatterState(mCyclic_Chase_Scatter);
