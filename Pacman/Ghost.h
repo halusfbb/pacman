@@ -11,7 +11,8 @@ class BaseGhostBehaviour;
 
 typedef enum {
 	GHOST_STATE_UNDEFINED = -1,
-	GHOST_START, //
+	GHOST_HOME, //this confines the ghost in the home area.
+	GHOST_EXITING, //this will make the ghost beeline to the exit of their home
 	GHOST_CHASE, //chase the avatar
 	GHOST_SCATTER, //spread out to a predetermined corner of the maze
 	GHOST_FRIGHTENED //power pill eaten by the avatar
@@ -53,6 +54,8 @@ public:
 
 	void SetNextState(GhostState ghostState);
 	GhostState GetCurrentState();
+
+	bool IsGhostAtHome();
 
 private:
 

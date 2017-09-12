@@ -21,6 +21,31 @@ BaseGhostBehaviour::BaseGhostBehaviour(Ghost * ghostParent)
 {
 }
 
+void BaseGhostBehaviour::HomeStateInit(float dt)
+{
+}
+
+void BaseGhostBehaviour::HomeState(float dt, Vector2f & directionUnitVector)
+{
+	//get ghost current tile
+	int ghostParentCurrentTileX = mGhostParent->GetCurrentTileX();
+	int ghostParentCurrentTileY = mGhostParent->GetCurrentTileY();
+
+	//these was where the ghost came from
+	int previousTileX = ghostParentCurrentTileX - mPreviousDirectionUnitVecX;
+	int previousTileY = ghostParentCurrentTileY - mPreviousDirectionUnitVecY;
+	//get the world
+	World* world = gPacman->GetWorld();
+	PathmapTile* tile = world->GetTile(ghostParentCurrentTileX, ghostParentCurrentTileY);
+
+	//we will make the ghost repeatedly go up and down. Note that this state is only valid when
+	MoveInSameDirectionVertically(tile, directionUnitVector);
+}
+
+void BaseGhostBehaviour::HomeStateCleanup(float dt)
+{
+}
+
 void BaseGhostBehaviour::ChaseStateInit(float dt)
 {
 	mGhostParent->SetImage(GetNormalImageName());
@@ -43,7 +68,7 @@ void BaseGhostBehaviour::ChaseState(float dt, Vector2f & directionUnitVector)
 	//get the world
 	World* world = gPacman->GetWorld();
 	PathmapTile* tile = world->GetTile(ghostParentCurrentTileX, ghostParentCurrentTileY);
-
+	PathmapTile* destinationTile;
 	// if there are more than 2 valid neighbors, we are to use the target tile as an influence to this ghost's next direction,
 	if (tile->myValidNeighbours.size() > 2)
 	{
@@ -57,6 +82,11 @@ void BaseGhostBehaviour::ChaseState(float dt, Vector2f & directionUnitVector)
 				tile->myValidNeighbours[i].y == previousTileY)
 			{
 				continue;
+			}
+			destinationTile = world->GetTile(tile->myValidNeighbours[i].x, tile->myValidNeighbours[i].y);
+			if (destinationTile->myIsGateFlag)
+			{
+				continue; //don't go back into the home zone
 			}
 
 			indirectMagnitude = GetIndirectMagnitude(tile->myValidNeighbours[i], TileCoord{ mCurrentTileTargetX, mCurrentTileTargetY });
@@ -105,17 +135,36 @@ void BaseGhostBehaviour::FrightenedState(float dt, Vector2f & directionUnitVecto
 	{
 		std::vector<TileCoord> copyValidNeighbours(tile->myValidNeighbours);
 		int indexForPreviousTile;
-		for (int j = 0; j < copyValidNeighbours.size(); j++)
+		int indexForGateTile = -1;
+		PathmapTile* gateTile;
+
+		//to remove the previous tile
+		for (auto i = copyValidNeighbours.begin(); i != copyValidNeighbours.end();) 
 		{
-			if (copyValidNeighbours[j].x == previousTileX &&
-				copyValidNeighbours[j].y == previousTileY)
+			if ((*i).x == previousTileX &&
+				(*i).y == previousTileY)
 			{
-				indexForPreviousTile = j;
-				break;
+				i = copyValidNeighbours.erase(i);
+			}
+			else
+			{
+				++i;
 			}
 		}
 
-		copyValidNeighbours.erase(copyValidNeighbours.begin() + indexForPreviousTile);
+		//to remove the gate tile so that ghosts don't move back inside the home
+		for (auto i = copyValidNeighbours.begin(); i != copyValidNeighbours.end();)
+		{
+			gateTile = world->GetTile((*i).x, (*i).y);
+			if (gateTile->myIsGateFlag)
+			{
+				i = copyValidNeighbours.erase(i);
+			}
+			else
+			{
+				++i;
+			}
+		}
 
 		//get a random number to select the valid tiles
 		int randomIndex = rand() % copyValidNeighbours.size();
@@ -157,7 +206,7 @@ void BaseGhostBehaviour::ScatterState(float dt, Vector2f & directionUnitVector)
 	//get the world
 	World* world = gPacman->GetWorld();
 	PathmapTile* tile = world->GetTile(ghostParentCurrentTileX, ghostParentCurrentTileY);
-
+	PathmapTile* destinationTile;
 	// if there are more than 2 valid neighbors, we are to use the target tile as an influence to this ghost's next direction,
 	if (tile->myValidNeighbours.size() > 2)
 	{
@@ -171,6 +220,12 @@ void BaseGhostBehaviour::ScatterState(float dt, Vector2f & directionUnitVector)
 				tile->myValidNeighbours[i].y == previousTileY)
 			{
 				continue;
+			}
+
+			destinationTile = world->GetTile(tile->myValidNeighbours[i].x, tile->myValidNeighbours[i].y);
+			if (destinationTile->myIsGateFlag)
+			{
+				continue; //don't go back into the home zone
 			}
 
 			indirectMagnitude = GetIndirectMagnitude(tile->myValidNeighbours[i], TileCoord{ mCurrentTileTargetX, mCurrentTileTargetY });
@@ -275,6 +330,55 @@ void BaseGhostBehaviour::MoveInSameDirection(PathmapTile* ghostParentCurrentTile
 		//last resort: well the ghost has to go somewhere, so just go to the previous tile it came from
 		direction = ghostParentCurrentTile->myValidNeighbours[indexForPreviousTile] - TileCoord{ ghostParentCurrentTileX, ghostParentCurrentTileY };
 	}
+	directionUnitVector.myX = mPreviousDirectionUnitVecX = direction.x;
+	directionUnitVector.myY = mPreviousDirectionUnitVecY = direction.y;
+}
+
+void BaseGhostBehaviour::MoveInSameDirectionVertically(PathmapTile * ghostParentCurrentTile, Vector2f & directionUnitVector)
+{
+	//get ghost current tile
+	int ghostParentCurrentTileX = mGhostParent->GetCurrentTileX();
+	int ghostParentCurrentTileY = mGhostParent->GetCurrentTileY();
+
+	//proceed with same direction if it is going vertically
+	int proposedTileX;
+	int proposedTileY;
+	if (mPreviousDirectionUnitVecX == 0)
+	{
+		proposedTileX = ghostParentCurrentTileX + mPreviousDirectionUnitVecX;
+		proposedTileY = ghostParentCurrentTileY + mPreviousDirectionUnitVecY;
+	}
+	else
+	{
+		proposedTileX = 0;
+		proposedTileY = rand() % 3 - 1; // randomly choose a vertical direction
+	}
+
+	//check if the tile is valid in the proposed direction proposedTileX, proposedTileY
+	//iterate through the neighbour list
+	int indexForReversingTile = -1;
+
+	for (int i = 0; i < ghostParentCurrentTile->myValidNeighbours.size(); i++)
+	{
+		if (ghostParentCurrentTile->myValidNeighbours[i].x == proposedTileX &&
+			ghostParentCurrentTile->myValidNeighbours[i].y == proposedTileY)
+		{
+			//it is ok to proceed with the continue moving in the same direction proposal
+			directionUnitVector.myX = mPreviousDirectionUnitVecX;
+			directionUnitVector.myY = mPreviousDirectionUnitVecY;
+			return;
+		}
+
+		//if moving in the same direction leads to a tile that is not valid, we will prepare ourselves and check for which tile we came from and where we were not from
+		if (ghostParentCurrentTile->myValidNeighbours[i].x == proposedTileX ||
+			ghostParentCurrentTile->myValidNeighbours[i].y == proposedTileY * -1)
+		{
+			indexForReversingTile = i;
+		}
+	}
+
+	//continuing in the same direction does not yield a valid tile, so we just reverse
+	TileCoord direction = ghostParentCurrentTile->myValidNeighbours[indexForReversingTile] - TileCoord{ ghostParentCurrentTileX, ghostParentCurrentTileY };
 	directionUnitVector.myX = mPreviousDirectionUnitVecX = direction.x;
 	directionUnitVector.myY = mPreviousDirectionUnitVecY = direction.y;
 }

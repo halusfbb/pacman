@@ -28,17 +28,23 @@ GhostManager::GhostManager()
 void GhostManager::Init()
 {
 	//initialie the ghosts
-	mGhostvec.resize(5);
-	Ghost* redGhost = Ghost::Create(Vector2f(10 * 22, 25 * 22), GHOST_RED);
+	Ghost* redGhost = Ghost::Create(Vector2f(12 * 22, 10 * 22), GHOST_RED); // red ghost always start outside
+	//all ghosts inside
+	//Ghost* pinkGhost = Ghost::Create(Vector2f(12 * 22, 13 * 22), GHOST_PINK);
+	//Ghost* cyanGhost = Ghost::Create(Vector2f(14 * 22, 13 * 22), GHOST_CYAN);
+	//Ghost* orangeGhost = Ghost::Create(Vector2f(10 * 22, 13 * 22), GHOST_ORANGE);
+	//Ghost* grayGhost = Ghost::Create(Vector2f(15 * 22, 13 * 22), GHOST_GRAY);
+	//all ghosts outide
 	Ghost* pinkGhost = Ghost::Create(Vector2f(25 * 22, 0 * 22), GHOST_PINK);
 	Ghost* cyanGhost = Ghost::Create(Vector2f(24 * 22, 28 * 22), GHOST_CYAN);
 	Ghost* orangeGhost = Ghost::Create(Vector2f(3 * 22, 7 * 22), GHOST_ORANGE);
 	Ghost* grayGhost = Ghost::Create(Vector2f(8 * 22, 4 * 22), GHOST_GRAY);
-	mGhostvec[GHOST_RED] = redGhost;
-	mGhostvec[GHOST_PINK] = pinkGhost;
-	mGhostvec[GHOST_CYAN] = cyanGhost;
-	mGhostvec[GHOST_ORANGE] = orangeGhost;
-	mGhostvec[GHOST_GRAY] = grayGhost;
+
+	mGhostvec.push_back(redGhost);
+	mGhostvec.push_back(pinkGhost);
+	mGhostvec.push_back(cyanGhost);
+	mGhostvec.push_back(orangeGhost);
+	mGhostvec.push_back(grayGhost);
 
 	//get the duration for the state in mCyclicChase_Scatter
 	mCurrentCycleStateTimer = GetDurationForChase_ScatterState(mCyclic_Chase_Scatter);
@@ -47,6 +53,20 @@ void GhostManager::Init()
 
 void GhostManager::Update(float aTime)
 {
+	//checks for ghosts that are at home
+	for (auto i = mGhostvec.begin(); i != mGhostvec.end();) {
+		if ((*i)->IsGhostAtHome())
+		{
+			(*i)->SetNextState(GHOST_HOME);
+			mGhostAtHomevec.push_back(*i);
+			i = mGhostvec.erase(i);
+		}
+		else
+		{
+			++i;
+		}
+	}
+
 	if (mCurrentState == mCyclic_Chase_Scatter)
 	{
 		mCurrentCycleStateTimer -= aTime;
@@ -60,6 +80,11 @@ void GhostManager::Update(float aTime)
 	{
 		ghost->Update(aTime, gPacman->GetWorld());
 	}
+
+	for (auto ghost : mGhostAtHomevec)
+	{
+		ghost->Update(aTime, gPacman->GetWorld());
+	}
 }
 
 void GhostManager::Draw(Drawer * aDrawer)
@@ -68,6 +93,12 @@ void GhostManager::Draw(Drawer * aDrawer)
 	{
 		ghost->Draw(aDrawer);
 	}
+
+	for (auto ghost : mGhostAtHomevec)
+	{
+		ghost->Draw(aDrawer);
+	}
+	
 #ifdef _DEBUG
 	float timer;
 	if (mCurrentState == GHOST_FRIGHTENED)

@@ -8,10 +8,12 @@
 #include "PinkGhostBehaviour.h"
 #include "CyanGhostBehaviour.h"
 #include "OrangeGhostBehaviour.h"
+#include "Pacman.h"
 
 #ifdef _DEBUG
 const char* gGhostStateChar[] = {
-	"GHOST_START",
+	"GHOST_HOME",
+	"GHOST_EXITING",
 	"GHOST_CHASE",
 	"GHOST_SCATTER",
 	"GHOST_FRIGHTENED"
@@ -84,8 +86,43 @@ void Ghost::Update(float aTime, World* aWorld)
 
 	switch (mGhostState.GetCurrentState())
 	{
-	case GHOST_START:
+	case GHOST_HOME:
+		//initialize
+		if (!mGhostState.IsInitialized())
+		{
+			if (!mGhostState.IsInSubState())
+			{
+				mGhostState.SetSubState();
+				mGhostBehaviour->HomeStateInit(aTime);
+			}
+			else
+			{
+				mGhostState.SetInitalizingDone();
+			}
+		}
 
+		//main
+		else if (!mGhostState.IsChangingState())
+		{
+			if (IsAtDestination())
+				mGhostBehaviour->HomeState(aTime, unitDirection);
+		}
+
+		//cleanup
+		else if (!mGhostState.IsCleanedUp())
+		{
+			if (!mGhostState.IsInSubState())
+			{
+				mGhostState.SetSubState();
+				mGhostBehaviour->HomeStateCleanup(aTime);
+			}
+			else
+			{
+				mGhostState.SetCleanUpDone();
+			}
+		}
+		break;
+	case GHOST_EXITING:
 		break;
 	case GHOST_CHASE:
 		//initialize
@@ -282,4 +319,18 @@ void Ghost::SetNextState(GhostState ghostState)
 GhostState Ghost::GetCurrentState()
 {
 	return mGhostState.GetCurrentState();
+}
+
+bool Ghost::IsGhostAtHome()
+{
+	//get the world
+	World* world = gPacman->GetWorld();
+	PathmapTile* tile;
+	if (world)
+	{
+		tile = world->GetTile(myCurrentTileX, myCurrentTileY);
+		return tile->myIsStartZoneFlag;
+	}
+
+	return false;
 }

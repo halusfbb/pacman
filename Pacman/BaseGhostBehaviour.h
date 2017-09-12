@@ -13,6 +13,10 @@ class BaseGhostBehaviour
 public:
 	BaseGhostBehaviour(Ghost* ghostParent);
 
+	virtual void HomeStateInit(float dt);
+	virtual void HomeState(float dt, Vector2f & directionUnitVector);
+	virtual void HomeStateCleanup(float dt);
+
 	virtual void ChaseStateInit(float dt);
 	virtual void ChaseState(float dt, Vector2f & directionUnitVector);
 	virtual void ChaseStateCleanup(float dt);
@@ -48,6 +52,7 @@ protected:
 	//exit by the other available way (at corners). If all else fails, then the ghost will retreat back in the same direction
 	void MoveInSameDirection(PathmapTile* ghostParentCurrentTile, Vector2f& directionUnitVector);
 
+	void MoveInSameDirectionVertically(PathmapTile* ghostParentCurrentTile, Vector2f& directionUnitVector);
 private:
 
 	TileCoord mScatterTargetTileCoord;

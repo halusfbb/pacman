@@ -31,6 +31,7 @@ private:
 	float GetDurationForChase_ScatterState(GhostState ghoststate);
 
 	std::vector<Ghost*> mGhostvec;
+	std::vector<Ghost*> mGhostAtHomevec;
 
 	GhostState mCurrentState;
 	GhostState mCyclic_Chase_Scatter; //this keeps track of the current cycle of chase and scatter
