@@ -10,7 +10,7 @@
 #include "OrangeGhostBehaviour.h"
 
 #ifdef _DEBUG
-const char* gStateChar[] = {
+const char* gGhostStateChar[] = {
 	"GHOST_START",
 	"GHOST_CHASE",
 	"GHOST_SCATTER",
@@ -66,6 +66,7 @@ void Ghost::Init()
 		break;
 	}
 
+	SetImage(mGhostBehaviour->GetNormalImageName());
 	MovableGameEntity::Init();
 }
 
@@ -102,14 +103,14 @@ void Ghost::Update(float aTime, World* aWorld)
 		}
 
 		//main
-		if (!mGhostState.IsChangingState())
+		else if (!mGhostState.IsChangingState())
 		{	
 			if(IsAtDestination())
 				mGhostBehaviour->ChaseState(aTime, unitDirection);
 		}
 
 		//cleanup
-		if (!mGhostState.IsCleanedUp())
+		else if (!mGhostState.IsCleanedUp())
 		{
 			if (!mGhostState.IsInSubState())
 			{
@@ -180,14 +181,14 @@ void Ghost::Update(float aTime, World* aWorld)
 		}
 
 		//main
-		if (!mGhostState.IsChangingState())
+		else if (!mGhostState.IsChangingState())
 		{
 			if (IsAtDestination())
 				mGhostBehaviour->FrightenedState(aTime, unitDirection);
 		}
 
 		//cleanup
-		if (!mGhostState.IsCleanedUp())
+		else if (!mGhostState.IsCleanedUp())
 		{
 			if (!mGhostState.IsInSubState())
 			{
@@ -240,17 +241,6 @@ void Ghost::Update(float aTime, World* aWorld)
 		SetImage("Ghost_Dead_32.png");
 }
 
-void Ghost::SetImage(const char* anImage)
-{
-	if (myImageAssetCache)
-	{
-		if (strcmp(anImage, myImageAssetCache->getImageName().c_str()) == 0)
-			return; // image has no changes
-	}
-	
-	myImageAssetCache = std::dynamic_pointer_cast<ImageAssetCache>(AssetManager::GetInstance()->GetImageAsset(anImage));
-}
-
 void Ghost::Draw(Drawer* aDrawer)
 {
 	aDrawer->Draw(myImageAssetCache, (int)myPosition.myX + 220, (int)myPosition.myY + 60);
@@ -262,12 +252,15 @@ void Ghost::Draw(Drawer* aDrawer)
 	}
 	else
 	{
-		str = "State: " + std::string(gStateChar[mGhostState.GetCurrentState()]);
+		str = "State: " + std::string(gGhostStateChar[mGhostState.GetCurrentState()]);
 	}
-	aDrawer->DrawText(str.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", (int)myPosition.myX + 20 + 220, (int)myPosition.myY - 20  + 60, 20);
+	aDrawer->DrawText(str.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", (int)myPosition.myX + 20 + 220, (int)myPosition.myY - 20  + 60, 20, SDL_Color{ 255,0,0 });
 
 	SDL_SetRenderDrawColor(aDrawer->myRenderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
-	SDL_RenderDrawLine(aDrawer->myRenderer,(int)myPosition.myX + 11 + 220, (int)myPosition.myY + 11 + 60, mGhostBehaviour->GetTileCurrentTargetTile().x * 22 + 11 + 220, mGhostBehaviour->GetTileCurrentTargetTile().y * 22 + 11 + 60);
+	if (mGhostState.GetCurrentState() != GHOST_FRIGHTENED)
+	{
+		SDL_RenderDrawLine(aDrawer->myRenderer, (int)myPosition.myX + 11 + 220, (int)myPosition.myY + 11 + 60, mGhostBehaviour->GetTileCurrentTargetTile().x * 22 + 11 + 220, mGhostBehaviour->GetTileCurrentTargetTile().y * 22 + 11 + 60);
+	}
 #endif
 }
 

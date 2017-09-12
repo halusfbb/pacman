@@ -23,6 +23,8 @@ public:
 
 	void Update(float aTime);
 
+	void ResetAvatar();
+
 private:
 	//this determines if avatar should bite down depending on its position within a cell
 	bool ShouldAvatarBite() const;

@@ -17,6 +17,15 @@ World::World(void)
 
 World::~World(void)
 {
+	for (auto dot : myOriginalDots)
+	{
+		delete dot;
+	}
+
+	for (auto dot : myOrignalBigDots)
+	{
+		delete dot;
+	}
 }
 
 void World::Init()
@@ -25,6 +34,8 @@ void World::Init()
 	InitDots();
 	InitBigDots();
 	InitBoard();
+
+	ResetToOriginalDots();
 }
 
 bool World::InitPathmap()
@@ -112,7 +123,7 @@ bool World::InitDots()
 				{
 					Dot* dot = new Dot(Vector2f(i*22, lineIndex*22));
 					dot->Init();
-					myDots.push_back(dot);
+					myOriginalDots.push_back(dot);
 				}
 			}
 
@@ -140,7 +151,7 @@ bool World::InitBigDots()
 				{
 					BigDot* dot = new BigDot(Vector2f(i*22, lineIndex*22));
 					dot->Init();
-					myBigDots.push_back(dot);
+					myOrignalBigDots.push_back(dot);
 				}
 			}
 
@@ -211,7 +222,6 @@ bool World::HasIntersectedDot(const Vector2f& aPosition)
 		if ((dot->GetPosition() - aPosition).Length() < 5.f)
 		{
 			myDots.remove(dot);
-			delete dot;
 			return true;
 		}
 	}
@@ -227,7 +237,6 @@ bool World::HasIntersectedBigDot(const Vector2f& aPosition)
 		if ((dot->GetPosition() - aPosition).Length() < 5.f)
 		{
 			myBigDots.remove(dot);
-			delete dot;
 			return true;
 		}
 	}
@@ -281,6 +290,22 @@ int World::GetMapRowSize() const
 int World::GetMapColSize() const
 {
 	return myMapColSize;
+}
+
+const std::list<Dot*>& World::GetListOfDots() const
+{
+	return myDots;
+}
+
+const std::list<BigDot*> World::GetListOfBigDots() const
+{
+	return myBigDots;
+}
+
+void World::ResetToOriginalDots()
+{
+	myDots = myOriginalDots;
+	myBigDots = myOrignalBigDots;
 }
 
 bool World::ListDoesNotContain(PathmapTile* aFromTile, std::list<PathmapTile*>& aList)

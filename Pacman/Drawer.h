@@ -2,6 +2,7 @@
 #define DRAWER_H
 
 #include "ImageAssetCache.h"
+#include "SDL.h"
 
 struct SDL_Window;
 struct SDL_Renderer;
@@ -14,7 +15,7 @@ public:
 	~Drawer(void);
 
 	void Draw(ImageAssetCacheSPtr imageAssetCache, int aCellX = 0, int aCellY = 0);
-	void DrawText(const char* aText, const char* aFontFile, int aX, int aY, int fontSize);
+	void DrawText(const char* aText, const char* aFontFile, int aX, int aY, int fontSize, SDL_Color color, bool isCenterAlign=false);
 
 	SDL_Renderer* myRenderer;
 private:

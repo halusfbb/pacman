@@ -25,6 +25,17 @@ void GameEntity::SetAlpha(Uint8 alpha)
 	myImageAssetCache->SetAlpha(alpha);
 }
 
+void GameEntity::SetImage(const char * anImage)
+{
+	if (myImageAssetCache)
+	{
+		if (strcmp(anImage, myImageAssetCache->getImageName().c_str()) == 0)
+			return; // image has no changes
+	}
+	
+	myImageAssetCache = std::dynamic_pointer_cast<ImageAssetCache>(AssetManager::GetInstance()->GetImageAsset(anImage));
+}
+
 bool GameEntity::Intersect(GameEntity* aGameEntity)
 {
 	return false;	

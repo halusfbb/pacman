@@ -35,6 +35,11 @@ public:
 	int GetMapRowSize() const;
 	int GetMapColSize() const;
 
+	const std::list<Dot*>& GetListOfDots() const;
+	const std::list<BigDot*> GetListOfBigDots() const;
+
+	void ResetToOriginalDots();
+
 private:
 
 	int myMapRowSize;
@@ -52,6 +57,8 @@ private:
 	std::list<Dot*> myDots;
 	std::list<BigDot*> myBigDots;
 	std::list<Cherry*> myCherry;
+	std::list<Dot*> myOriginalDots;
+	std::list<BigDot*> myOrignalBigDots;
 
 	ImageAssetCacheSPtr mBoardImageAssetCache;
 

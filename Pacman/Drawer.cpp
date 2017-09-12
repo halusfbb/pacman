@@ -52,15 +52,23 @@ void Drawer::Draw(ImageAssetCacheSPtr imageAssetCache, int aCellX, int aCellY)
 	SDL_RenderCopy(myRenderer, imageAssetCache->GetTexture(), &sizeRect, &posRect);
 }
 
-void Drawer::DrawText(const char* aText, const char* aFontFile, int aX, int aY, int fontSize)
+void Drawer::DrawText(const char* aText, const char* aFontFile, int aX, int aY, int fontSize, SDL_Color color, bool isCenterAlign)
 {
 	FontAssetCacheSPtr fontAsset = AssetManager::GetInstance()->GetFontAsset(aFontFile, fontSize);
 	TTF_Font* font = fontAsset->GetFont();
 
-	SDL_Color fg={255,0,0,255};
+	SDL_Color fg = color;
 	SDL_Surface* surface = TTF_RenderText_Solid(font, aText, fg);
 
 	SDL_Texture* optimizedSurface = SDL_CreateTextureFromSurface(myRenderer, surface);
+
+	float alignedX = aX;
+	float alignedY = aY;
+	if (isCenterAlign)
+	{
+		alignedX -= surface->w / 2;
+		alignedY -= surface->h / 2;
+	}
 
     SDL_Rect sizeRect;
     sizeRect.x = 0 ;
@@ -69,8 +77,8 @@ void Drawer::DrawText(const char* aText, const char* aFontFile, int aX, int aY, 
     sizeRect.h = surface->h ;
 
     SDL_Rect posRect ;
-    posRect.x = aX;
-    posRect.y = aY;
+    posRect.x = alignedX;
+    posRect.y = alignedY;
 	posRect.w = sizeRect.w;
 	posRect.h = sizeRect.h;
 

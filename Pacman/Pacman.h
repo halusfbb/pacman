@@ -20,6 +20,10 @@ typedef enum {
 	GAME_STATE_WIN
 } PacmanGameState;
 
+#ifdef _DEBUG
+extern const char* gGameStateChar[];
+#endif
+
 class Pacman
 {
 public:
@@ -57,6 +61,8 @@ private:
 	World* myWorld;
 
 	StateHelper<PacmanGameState> myPacmanGameState;
+
+	float myTimerToNextState;
 };
 
 extern Pacman* gPacman;

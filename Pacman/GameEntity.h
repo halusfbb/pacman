@@ -17,6 +17,7 @@ public:
 	Vector2f GetPosition() const { return myPosition; }
 	void SetPosition(const Vector2f& aPosition){ myPosition = aPosition; }
 	void SetAlpha(Uint8 alpha);
+	void SetImage(const char* anImage);
 
 	bool Intersect(GameEntity* aGameEntity);
 	virtual void Draw(Drawer* aDrawer);

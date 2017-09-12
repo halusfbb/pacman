@@ -78,8 +78,8 @@ void GhostManager::Draw(Drawer * aDrawer)
 	{
 		timer = mCurrentCycleStateTimer;
 	}
-	std::string str = "State: " + std::string(gStateChar[mCurrentState]) + " " + std::to_string(timer);
-	aDrawer->DrawText(str.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 20, 275, 24);
+	std::string str = "State: " + std::string(gGhostStateChar[mCurrentState]) + " " + std::to_string(timer);
+	aDrawer->DrawText(str.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 20, 275, 24, SDL_Color{255,0,0});
 #endif
 }
 

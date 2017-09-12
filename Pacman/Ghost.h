@@ -18,7 +18,7 @@ typedef enum {
 } GhostState;
 
 #ifdef _DEBUG
-extern const char* gStateChar[];
+extern const char* gGhostStateChar[];
 #endif
 
 typedef enum {
@@ -43,8 +43,6 @@ public:
 	void Update(float aTime, World* aWorld);
 
 	bool myIsDeadFlag;
-
-	void SetImage(const char* anImage);
 
 	void Die(World* aWorld);
 

@@ -12,6 +12,18 @@
 #include "GhostManager.h"
 #include "globals.h"
 
+#ifdef _DEBUG
+const char* gGameStateChar[] = {
+	"GAME_STATE_INIT",
+	"GAME_STATE_START",
+	"GAME_STATE_PLAY",
+	"GAME_STATE_DEATH_ANIMATION",
+	"GAME_STATE_DEATH_END",
+	"GAME_STATE_LOSE",
+	"GAME_STATE_WIN"
+};
+#endif
+
 Pacman* gPacman = NULL;
 
 Pacman* Pacman::Create(Drawer* aDrawer)
@@ -40,12 +52,13 @@ Pacman::Pacman(Drawer* aDrawer)
 , myFps(0)
 , myLives(3)
 , myGhostGhostCounter(0.f)
+, myTimerToNextState(0.f)
 {
 	myAvatar = new Avatar(Vector2f(13*22,22*22));
 	myGhostManager = GhostManager::Create();
 	myWorld = new World();
 
-	myPacmanGameState.SetNextState(GAME_STATE_PLAY);
+	myPacmanGameState.SetNextState(GAME_STATE_START, true);
 
 	srand(time(NULL));
 }
@@ -71,11 +84,82 @@ bool Pacman::Update(float aTime)
 
 	switch (myPacmanGameState.GetCurrentState())
 	{
-	//case GAME_STATE_INIT: !!@we will determine if we need these later
-	//	break;
+	case GAME_STATE_INIT:
+		//initialize
+		if (!myPacmanGameState.IsInitialized())
+		{
+			if (!myPacmanGameState.IsInSubState())
+			{
+				myPacmanGameState.SetSubState();
+			}
+			else
+			{
+				myPacmanGameState.SetInitalizingDone();
+			}
+		}
+		//main
+		else if (!myPacmanGameState.IsChangingState())
+		{
+			myWorld->ResetToOriginalDots();
+			myPacmanGameState.SetNextState(GAME_STATE_START, true);
+		}
+		//cleanup
+		else if (!myPacmanGameState.IsCleanedUp())
+		{
+			if (!myPacmanGameState.IsInSubState())
+			{
+				myPacmanGameState.SetSubState();
+			}
+			else
+			{
+				myPacmanGameState.SetCleanUpDone();
+			}
+		}
+		break;
 
-	//case GAME_STATE_START:
-	//	break;
+	case GAME_STATE_START:
+		//initialize
+		if (!myPacmanGameState.IsInitialized())
+		{
+			if (!myPacmanGameState.IsInSubState())
+			{
+				myPacmanGameState.SetSubState();
+
+				myTimerToNextState = 4.f;
+				myAvatar->ResetAvatar();
+				SetNextMovement(Vector2f(-1, 0));
+			}
+			else
+			{
+				myPacmanGameState.SetInitalizingDone();
+			}
+		}
+
+		//main
+		else if (!myPacmanGameState.IsChangingState())
+		{
+			myTimerToNextState -= aTime;
+
+			if (myTimerToNextState < 0)
+			{
+				myPacmanGameState.SetNextState(GAME_STATE_PLAY);
+			}
+		}
+
+		//cleanup
+		else if (!myPacmanGameState.IsCleanedUp())
+		{
+			if (!myPacmanGameState.IsInSubState())
+			{
+				myPacmanGameState.SetSubState();
+			}
+			else
+			{
+				myPacmanGameState.SetCleanUpDone();
+			}
+		}
+
+		break;
 
 	case GAME_STATE_PLAY:
 		//initialize
@@ -92,7 +176,7 @@ bool Pacman::Update(float aTime)
 		}
 
 		//main
-		if (!myPacmanGameState.IsChangingState())
+		else if (!myPacmanGameState.IsChangingState())
 		{
 			MoveAvatar();
 			myAvatar->Update(aTime);
@@ -134,7 +218,7 @@ bool Pacman::Update(float aTime)
 
 			if (CheckEndGameCondition())
 			{
-				myPacmanGameState.SetNextState(GAME_STATE_WIN);
+				myPacmanGameState.SetNextState(GAME_STATE_WIN, true);
 			}
 			else if (myLives <= 0)
 			{
@@ -143,7 +227,7 @@ bool Pacman::Update(float aTime)
 		}
 
 		//cleanup
-		if (!myPacmanGameState.IsCleanedUp())
+		else if (!myPacmanGameState.IsCleanedUp())
 		{
 			if (!myPacmanGameState.IsInSubState())
 			{
@@ -172,7 +256,7 @@ bool Pacman::Update(float aTime)
 		}
 
 		//main
-		if (!myPacmanGameState.IsChangingState())
+		else if (!myPacmanGameState.IsChangingState())
 		{
 			myLives--;
 
@@ -187,7 +271,7 @@ bool Pacman::Update(float aTime)
 		}
 
 		//cleanup
-		if (!myPacmanGameState.IsCleanedUp())
+		else if (!myPacmanGameState.IsCleanedUp())
 		{
 			if (!myPacmanGameState.IsInSubState())
 			{
@@ -214,7 +298,7 @@ bool Pacman::Update(float aTime)
 			}
 		}
 
-		if (!myPacmanGameState.IsChangingState())
+		else if (!myPacmanGameState.IsChangingState())
 		{
 			myAvatar->SetPosition(Vector2f(13 * 22, 22 * 22));
 			myAvatar->ResetTilesToCurrentPosition();
@@ -228,7 +312,7 @@ bool Pacman::Update(float aTime)
 		}
 
 		//cleanup
-		if (!myPacmanGameState.IsCleanedUp())
+		else if (!myPacmanGameState.IsCleanedUp())
 		{
 			if (!myPacmanGameState.IsInSubState())
 			{
@@ -254,13 +338,13 @@ bool Pacman::Update(float aTime)
 			}
 		}
 
-		if (!myPacmanGameState.IsChangingState())
+		else if (!myPacmanGameState.IsChangingState())
 		{
-			myDrawer->DrawText("You lose!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70, 24);
+			myDrawer->DrawText("You lose!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70, 24, SDL_Color{ 255,0,0 });
 		}
 
 		//cleanup
-		if (!myPacmanGameState.IsCleanedUp())
+		else if (!myPacmanGameState.IsCleanedUp())
 		{
 			if (!myPacmanGameState.IsInSubState())
 			{
@@ -282,6 +366,8 @@ bool Pacman::Update(float aTime)
 			if (!myPacmanGameState.IsInSubState())
 			{
 				myPacmanGameState.SetSubState();
+
+				myTimerToNextState = 4.f;
 			}
 			else
 			{
@@ -289,13 +375,15 @@ bool Pacman::Update(float aTime)
 			}
 		}
 
-		if (!myPacmanGameState.IsChangingState())
+		else if (!myPacmanGameState.IsChangingState())
 		{
-			myDrawer->DrawText("You win!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70, 24);
+			myTimerToNextState -= aTime;
+			if (myTimerToNextState < 0)
+				myPacmanGameState.SetNextState(GAME_STATE_INIT);
 		}
 
 		//cleanup
-		if (!myPacmanGameState.IsCleanedUp())
+		else if (!myPacmanGameState.IsCleanedUp())
 		{
 			if (!myPacmanGameState.IsInSubState())
 			{
@@ -355,6 +443,13 @@ void Pacman::MoveAvatar()
 
 bool Pacman::CheckEndGameCondition()
 {
+	//game is won when all small and big dots dissapear
+	if (myWorld->GetListOfDots().empty() &&
+		myWorld->GetListOfBigDots().empty())
+	{
+		return true;
+	}
+
 	return false;
 }
 
@@ -368,22 +463,39 @@ bool Pacman::Draw()
 	std::stringstream scoreStream;
 	scoreStream << myScore;
 	scoreString = scoreStream.str();
-	myDrawer->DrawText("Score", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 50, 24);
-	myDrawer->DrawText(scoreString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 90, 50, 24);
+	myDrawer->DrawText("Score", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 50, 24, SDL_Color{ 255,0,0 });
+	myDrawer->DrawText(scoreString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 90, 50, 24, SDL_Color{ 255,0,0 });
 
 	std::string livesString;
 	std::stringstream liveStream;
 	liveStream << myLives;
 	livesString = liveStream.str();
-	myDrawer->DrawText("Lives", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 80, 24);
-	myDrawer->DrawText(livesString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 90, 80, 24);
+	myDrawer->DrawText("Lives", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 80, 24, SDL_Color{ 255,0,0 });
+	myDrawer->DrawText(livesString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 90, 80, 24, SDL_Color{ 255,0,0 });
 
-	myDrawer->DrawText("FPS", "freefont-ttf\\sfd\\FreeMono.ttf", 880, 50, 24);
+	myDrawer->DrawText("FPS", "freefont-ttf\\sfd\\FreeMono.ttf", 880, 50, 24, SDL_Color{ 255,0,0 });
 	std::string fpsString;
 	std::stringstream fpsStream;
 	fpsStream << myFps;
 	fpsString = fpsStream.str();
-	myDrawer->DrawText(fpsString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 930, 50, 24);
+	myDrawer->DrawText(fpsString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 930, 50, 24, SDL_Color{ 255,0,0 });
+
+	if (myPacmanGameState.GetCurrentState() == GAME_STATE_START)
+	{
+		myDrawer->DrawText("GetReady!", "freefont-ttf\\sfd\\FreeMonoBold.ttf", 512, 425, 32, SDL_Color{ 255,255,255 }, true);
+	}
+	else if (myPacmanGameState.GetCurrentState() == GAME_STATE_WIN)
+	{
+		myDrawer->DrawText("You Win!", "freefont-ttf\\sfd\\FreeMonoBold.ttf", 512, 300, 100, SDL_Color{ 255,255,0 },true);
+	}
+
+#ifdef _DEBUG
+	float timer = myTimerToNextState;
+	std::string str = "GameState: " + std::string(gGameStateChar[myPacmanGameState.GetCurrentState()]);
+	std::string str2 = "Time: " + std::to_string(timer);
+	myDrawer->DrawText(str.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 20, 350, 24, SDL_Color{ 0,255,0 });
+	myDrawer->DrawText(str2.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 20, 375, 24, SDL_Color{ 0,255,0 });
+#endif
 
 	return true;
 }

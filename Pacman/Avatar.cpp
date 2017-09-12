@@ -1,7 +1,7 @@
 #include "Avatar.h"
 
 Avatar::Avatar(const Vector2f& aPosition)
-: MovableGameEntity(aPosition, "open_32.png")
+: MovableGameEntity(aPosition, "open_left_32.png")
 , mEnumAvatarFacing(AVATAR_FACING_RIGHT) //this corresponds to open_32.png 
 {
 
@@ -50,6 +50,13 @@ void Avatar::Update(float aTime)
 	}
 
 	SetAnimation();
+}
+
+void Avatar::ResetAvatar()
+{
+	SetPosition(Vector2f(13 * 22, 22 * 22));
+	ResetTilesToCurrentPosition();
+	SetImage("open_left_32.png");
 }
 
 void Avatar::UpdateFacingDirection(Vector2f vec)
