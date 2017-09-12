@@ -21,6 +21,7 @@ GhostManager * GhostManager::Create()
 GhostManager::GhostManager()
 	:mCurrentState(GHOST_SCATTER)
 	,mCyclic_Chase_Scatter(GHOST_SCATTER)
+	,mNoOf_Chase_Scatter_Cycles(0)
 {
 }
 
@@ -102,10 +103,12 @@ void GhostManager::SwapGhostsState()
 	if (mCyclic_Chase_Scatter == GHOST_CHASE)
 	{
 		mCyclic_Chase_Scatter = GHOST_SCATTER;
+		mNoOf_Chase_Scatter_Cycles++;
 	}
 	else
 	{
 		mCyclic_Chase_Scatter = GHOST_CHASE;
+		mNoOf_Chase_Scatter_Cycles++;
 	}
 
 	mCurrentCycleStateTimer = GetDurationForChase_ScatterState(mCyclic_Chase_Scatter);
@@ -122,7 +125,14 @@ float GhostManager::GetDurationForChase_ScatterState(GhostState ghoststate)
 	switch (ghoststate)
 	{
 	case GHOST_CHASE:
-		 return (float)(rand() % (CHASE_STATE_MAX_DURATION - CHASE_STATE_MIN_DURATION + 1) + CHASE_STATE_MIN_DURATION);
+		if (mNoOf_Chase_Scatter_Cycles >= 7)
+		{
+			return INT_MAX; //indefinitely on chase
+		}
+		else
+		{
+			return (float)(rand() % (CHASE_STATE_MAX_DURATION - CHASE_STATE_MIN_DURATION + 1) + CHASE_STATE_MIN_DURATION);
+		}
 		break;
 	case GHOST_SCATTER:
 		return (float)(rand() % (SCATTER_STATE_MAX_DURATION - SCATTER_STATE_MIN_DURATION + 1) + SCATTER_STATE_MIN_DURATION);

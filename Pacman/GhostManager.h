@@ -36,5 +36,7 @@ private:
 	GhostState mCyclic_Chase_Scatter; //this keeps track of the current cycle of chase and scatter
 	
 	float mCurrentCycleStateTimer;
+
+	int mNoOf_Chase_Scatter_Cycles;
 };
 #endif
