@@ -67,6 +67,21 @@ void GhostManager::Update(float aTime)
 		}
 	}
 
+	//checks for ghosts that left home
+	for (auto i = mGhostAtHomevec.begin(); i != mGhostAtHomevec.end();)
+	{
+		if (!(*i)->IsGhostAtHome())
+		{
+			(*i)->SetNextState(mCurrentState);
+			mGhostvec.push_back(*i);
+			i = mGhostAtHomevec.erase(i);
+		}
+		else
+		{
+			++i;
+		}
+	}
+
 	if (mCurrentState == mCyclic_Chase_Scatter)
 	{
 		mCurrentCycleStateTimer -= aTime;
