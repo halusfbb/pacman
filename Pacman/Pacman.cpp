@@ -50,7 +50,7 @@ Pacman::Pacman(Drawer* aDrawer)
 , myNextMovement(-1.f,0.f)
 , myScore(0)
 , myFps(0)
-, myLives(3)
+, myLives(PACMAN_START_LIVES)
 , myGhostGhostCounter(0.f)
 , myTimerToNextState(0.f)
 {
@@ -101,6 +101,7 @@ bool Pacman::Update(float aTime)
 		else if (!myPacmanGameState.IsChangingState())
 		{
 			myWorld->ResetToOriginalDots();
+			myLives = PACMAN_START_LIVES;
 			myPacmanGameState.SetNextState(GAME_STATE_START, true);
 		}
 		//cleanup
@@ -128,6 +129,11 @@ bool Pacman::Update(float aTime)
 				myTimerToNextState = 4.f;
 				myAvatar->ResetAvatar();
 				SetNextMovement(Vector2f(-1, 0));
+
+				for (auto ghost : myGhostManager->GetVectorOfGhost())
+				{
+					ghost->SetAlpha(255);
+				}
 			}
 			else
 			{
@@ -205,7 +211,7 @@ bool Pacman::Update(float aTime)
 				{
 					if (myGhostGhostCounter <= 0.f)
 					{
-						myPacmanGameState.SetNextState(GAME_STATE_DEATH_ANIMATION);
+						myPacmanGameState.SetNextState(GAME_STATE_LOSE_LIFE, true);
 					}
 					else if (ghost->GetCurrentState() == GHOST_FRIGHTENED && !ghost->myIsDeadFlag)
 					{
@@ -222,7 +228,7 @@ bool Pacman::Update(float aTime)
 			}
 			else if (myLives <= 0)
 			{
-				myPacmanGameState.SetNextState(GAME_STATE_LOSE);
+				myPacmanGameState.SetNextState(GAME_STATE_LOSE, true);
 			}
 		}
 
@@ -241,13 +247,18 @@ bool Pacman::Update(float aTime)
 
 		break;
 
-	case GAME_STATE_DEATH_ANIMATION:
+	case GAME_STATE_LOSE_LIFE:
 		//initialize
 		if (!myPacmanGameState.IsInitialized())
 		{
 			if (!myPacmanGameState.IsInSubState())
 			{
 				myPacmanGameState.SetSubState();
+				myTimerToNextState = 2.f;
+				for (auto ghost : myGhostManager->GetVectorOfGhost())
+				{
+					ghost->SetAlpha(0);
+				}
 			}
 			else
 			{
@@ -255,27 +266,26 @@ bool Pacman::Update(float aTime)
 			}
 		}
 
-		//main
 		else if (!myPacmanGameState.IsChangingState())
 		{
-			myLives--;
-
-			for (auto ghost : myGhostManager->GetVectorOfGhost())
+			myTimerToNextState -= aTime;
+			if (myTimerToNextState < 0)
 			{
-				ghost->SetAlpha(0);
-				ghost->SetPosition(Vector2f(13 * 22, 13 * 22));
-				ghost->ResetTilesToCurrentPosition();
+				myPacmanGameState.SetNextState(GAME_STATE_START, true, true);
+			}
+			else
+			{
+				myAvatar->SetAlpha(255 / 2.f * myTimerToNextState);
 			}
 
-			myPacmanGameState.SetNextState(GAME_STATE_DEATH_END);
 		}
-
 		//cleanup
 		else if (!myPacmanGameState.IsCleanedUp())
 		{
 			if (!myPacmanGameState.IsInSubState())
 			{
 				myPacmanGameState.SetSubState();
+				myLives--;
 			}
 			else
 			{
@@ -283,46 +293,6 @@ bool Pacman::Update(float aTime)
 			}
 		}
 		break;
-
-	case GAME_STATE_DEATH_END:
-		//initialize
-		if (!myPacmanGameState.IsInitialized())
-		{
-			if (!myPacmanGameState.IsInSubState())
-			{
-				myPacmanGameState.SetSubState();
-			}
-			else
-			{
-				myPacmanGameState.SetInitalizingDone();
-			}
-		}
-
-		else if (!myPacmanGameState.IsChangingState())
-		{
-			myAvatar->SetPosition(Vector2f(13 * 22, 22 * 22));
-			myAvatar->ResetTilesToCurrentPosition();
-			SetNextMovement(Vector2f(-1, 0));
-			for (auto ghost : myGhostManager->GetVectorOfGhost())
-			{
-				ghost->SetAlpha(255);
-			}
-
-			myPacmanGameState.SetNextState(GAME_STATE_PLAY);
-		}
-
-		//cleanup
-		else if (!myPacmanGameState.IsCleanedUp())
-		{
-			if (!myPacmanGameState.IsInSubState())
-			{
-				myPacmanGameState.SetSubState();
-			}
-			else
-			{
-				myPacmanGameState.SetCleanUpDone();
-			}
-		}
 
 	case GAME_STATE_LOSE:
 		//initialize
@@ -331,6 +301,7 @@ bool Pacman::Update(float aTime)
 			if (!myPacmanGameState.IsInSubState())
 			{
 				myPacmanGameState.SetSubState();
+				myTimerToNextState = 4.f;
 			}
 			else
 			{
@@ -340,7 +311,9 @@ bool Pacman::Update(float aTime)
 
 		else if (!myPacmanGameState.IsChangingState())
 		{
-			myDrawer->DrawText("You lose!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70, 24, SDL_Color{ 255,0,0 });
+			myTimerToNextState -= aTime;
+			if (myTimerToNextState < 0)
+				myPacmanGameState.SetNextState(GAME_STATE_INIT);
 		}
 
 		//cleanup
@@ -366,7 +339,6 @@ bool Pacman::Update(float aTime)
 			if (!myPacmanGameState.IsInSubState())
 			{
 				myPacmanGameState.SetSubState();
-
 				myTimerToNextState = 4.f;
 			}
 			else
@@ -487,6 +459,10 @@ bool Pacman::Draw()
 	else if (myPacmanGameState.GetCurrentState() == GAME_STATE_WIN)
 	{
 		myDrawer->DrawText("You Win!", "freefont-ttf\\sfd\\FreeMonoBold.ttf", 512, 300, 100, SDL_Color{ 255,255,0 },true);
+	}
+	else if (myPacmanGameState.GetCurrentState() == GAME_STATE_LOSE)
+	{
+		myDrawer->DrawText("You lose!", "freefont-ttf\\sfd\\FreeMonoBold.ttf", 512, 300, 100, SDL_Color{ 255,129,0 }, true);
 	}
 
 #ifdef _DEBUG

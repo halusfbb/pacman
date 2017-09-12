@@ -31,6 +31,8 @@ protected:
 	Vector2f myPosition;
 	const char* myImage;
 	ImageAssetCacheSPtr myImageAssetCache;
+
+	Uint8 myAlpha; //transparency value
 };
 
 #endif // GAMEENTITY_H

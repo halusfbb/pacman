@@ -243,7 +243,7 @@ void Ghost::Update(float aTime, World* aWorld)
 
 void Ghost::Draw(Drawer* aDrawer)
 {
-	aDrawer->Draw(myImageAssetCache, (int)myPosition.myX + 220, (int)myPosition.myY + 60);
+	GameEntity::Draw(aDrawer);
 #ifdef _DEBUG
 	std::string str;
 	if (mGhostState.GetCurrentState() == GHOST_STATE_UNDEFINED)

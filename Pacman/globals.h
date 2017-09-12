@@ -15,5 +15,7 @@ extern int CHASE_STATE_MAX_DURATION;
 extern int SCATTER_STATE_MIN_DURATION;
 extern int SCATTER_STATE_MAX_DURATION;
 
+extern int PACMAN_START_LIVES;
+
 #endif
 

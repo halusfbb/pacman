@@ -7,6 +7,7 @@ GameEntity::GameEntity(const Vector2f& aPosition, const char* anImage)
 ,myImage(anImage)
 ,myIdMarkedForDeleteFlag(false)
 ,myImageAssetCache(NULL)
+,myAlpha(255)
 {
 }
 
@@ -22,7 +23,7 @@ void GameEntity::Init()
 
 void GameEntity::SetAlpha(Uint8 alpha)
 {
-	myImageAssetCache->SetAlpha(alpha);
+	myAlpha = alpha;
 }
 
 void GameEntity::SetImage(const char * anImage)
@@ -43,5 +44,6 @@ bool GameEntity::Intersect(GameEntity* aGameEntity)
 
 void GameEntity::Draw(Drawer* aDrawer)
 {
+	myImageAssetCache->SetAlpha(myAlpha);
 	aDrawer->Draw(myImageAssetCache, (int)myPosition.myX + 220, (int)myPosition.myY + 60);
 }
