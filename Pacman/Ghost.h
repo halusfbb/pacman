@@ -57,6 +57,10 @@ public:
 
 	bool IsGhostAtHome();
 
+	void SetFrightenedImage();
+	void SetNormalImage();
+	void SetDeadImage();
+
 private:
 
 	int myDesiredMovementX;

@@ -368,3 +368,18 @@ bool Ghost::IsGhostAtHome()
 
 	return false;
 }
+
+void Ghost::SetFrightenedImage()
+{
+	SetImage(mGhostBehaviour->GetFrightenedImageName());
+}
+
+void Ghost::SetNormalImage()
+{
+	SetImage(mGhostBehaviour->GetNormalImageName());
+}
+
+void Ghost::SetDeadImage()
+{
+	SetImage(mGhostBehaviour->GetDeadImageName());
+}

@@ -70,7 +70,7 @@ void GhostManager::Update(float aTime)
 		}
 	}
 
-	//checks for ghosts that left home
+	//checks for ghosts that left home. Although we are iterating over elements that was just added. With 4 ghosts, the overhead isn't goign to be much.
 	for (auto i = mGhostAtHomevec.begin(); i != mGhostAtHomevec.end();)
 	{
 		if (!(*i)->IsGhostAtHome())
@@ -147,6 +147,30 @@ void GhostManager::SetGhostsNextState(GhostState ghostState)
 	for (auto ghost : mGhostvec)
 	{
 		ghost->SetNextState(ghostState);
+	}
+
+	//for ghosts in the home zone
+	if (ghostState == GHOST_FRIGHTENED)
+	{
+		//set ghosts in the home also to frightened image
+		for (auto ghost : mGhostAtHomevec)
+		{
+			ghost->SetFrightenedImage();
+		}
+	}
+	else
+	{
+		for (auto ghost : mGhostAtHomevec)
+		{
+			if (ghost->myIsDeadFlag)
+			{
+				ghost->SetDeadImage();
+			}
+			else
+			{
+				ghost->SetNormalImage();
+			}
+		}
 	}
 	
 	mCurrentState = ghostState;
