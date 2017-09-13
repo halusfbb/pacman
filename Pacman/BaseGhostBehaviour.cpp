@@ -197,7 +197,6 @@ void BaseGhostBehaviour::FrightenedState(float dt, Vector2f & directionUnitVecto
 	if (tile->myValidNeighbours.size() > 2)
 	{
 		std::vector<TileCoord> copyValidNeighbours(tile->myValidNeighbours);
-		int indexForPreviousTile;
 		int indexForGateTile = -1;
 		PathmapTile* gateTile;
 
