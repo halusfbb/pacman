@@ -55,6 +55,7 @@ private:
 	int myFps;
 
 	Vector2f myNextMovement;
+	Vector2f myPrevMovement;
 
 	Avatar* myAvatar;
 	GhostManager* myGhostManager;

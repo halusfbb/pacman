@@ -49,6 +49,7 @@ float Pacman::GetFrightenedGhostCounter()
 Pacman::Pacman(Drawer* aDrawer)
 : myDrawer(aDrawer)
 , myNextMovement(-1.f,0.f)
+, myPrevMovement(0.f,0.f)
 , myScore(0)
 , myFps(0)
 , myLives(PACMAN_START_LIVES)
@@ -432,10 +433,19 @@ void Pacman::MoveAvatar()
 		int nextTileX = currentTileX + myNextMovement.myX;
 		int nextTileY = currentTileY + myNextMovement.myY;
 
+		int nextTileWithPrevMovementX = currentTileX + myPrevMovement.myX;
+		int nextTileWithPrevMovementY = currentTileY + myPrevMovement.myY;
+
 		bool isTileValid = myWorld->TileIsValid(nextTileX, nextTileY);
+		bool isPreviousMovementValid = myWorld->TileIsValid(nextTileWithPrevMovementX, nextTileWithPrevMovementY);
 		if (isTileValid)
 		{
 			myAvatar->SetNextTile(nextTileX, nextTileY);
+			myPrevMovement = myNextMovement;
+		}
+		else if (isPreviousMovementValid)
+		{
+			myAvatar->SetNextTile(nextTileWithPrevMovementX, nextTileWithPrevMovementY);
 		}
 		else
 		{
@@ -446,10 +456,10 @@ void Pacman::MoveAvatar()
 			if (isLoopTile)
 			{
 				//check if avatar wants to move out of the maze and not the walls
-				if (myNextMovement.myY == 0)
+				if (myNextMovement.myY == 0 || myPrevMovement.myY == 0) //due to movment caching, we have to check both current and previous inputs
 				{
 					//this is a loop tile, so send the avatar across the maze directly
-					if (myNextMovement.myX == -1)
+					if (myNextMovement.myX == -1 || myPrevMovement.myX == -1)
 					{
 						nextTileX = myWorld->GetMapColSize() - 1;
 					}
@@ -457,6 +467,8 @@ void Pacman::MoveAvatar()
 					{
 						nextTileX = 0;
 					}
+					nextTileY = currentTileY; //forces the avatar to stay at the same row
+
 					myAvatar->SetPosition(Vector2f(nextTileX * TILE_SIZE, nextTileY * TILE_SIZE));
 					myAvatar->ResetTilesToCurrentPosition();
 				}
