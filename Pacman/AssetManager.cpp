@@ -113,6 +113,23 @@ FontAssetCacheSPtr AssetManager::GetFontAsset(const std::string& fontAssetName, 
 	}
 }
 
+void AssetManager::FlushUnusedAssets()
+{
+	std::unordered_map<std::string, AssetCacheSPtr> mAssetsToRemove;
+
+	for (auto i = mAssetsToRemove.begin(); i != mAssetsToRemove.end();)
+	{
+		if (i->second.use_count() == 1)
+		{
+			i = mAssetsToRemove.erase(i);
+		}
+		else
+		{
+			++i;
+		}
+	}
+}
+
 AssetManager::~AssetManager()
 {
 	for (auto pair : mMapAsset)

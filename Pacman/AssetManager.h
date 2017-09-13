@@ -32,6 +32,8 @@ public:
 	ImageAssetCacheSPtr GetImageAsset(const std::string& assetName);
 	FontAssetCacheSPtr GetFontAsset(const std::string& fontAssetName, int fontSize);
 
+	void FlushUnusedAssets();
+
 private:
 	AssetManager(SDL_Renderer* aRenderer);
 
