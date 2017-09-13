@@ -28,24 +28,25 @@ GhostManager::GhostManager()
 
 void GhostManager::Init()
 {
+	//!!@cclear the memeory at destructor
 	//initialie the ghosts
 	Ghost* redGhost = Ghost::Create(Vector2f(12 * 22, 10 * 22), GHOST_RED); // red ghost always start outside
 	//all ghosts inside
-	//Ghost* pinkGhost = Ghost::Create(Vector2f(12 * 22, 13 * 22), GHOST_PINK);
-	//Ghost* cyanGhost = Ghost::Create(Vector2f(14 * 22, 13 * 22), GHOST_CYAN);
-	//Ghost* orangeGhost = Ghost::Create(Vector2f(10 * 22, 13 * 22), GHOST_ORANGE);
+	Ghost* pinkGhost = Ghost::Create(Vector2f(12 * 22, 13 * 22), GHOST_PINK);
+	Ghost* cyanGhost = Ghost::Create(Vector2f(14 * 22, 13 * 22), GHOST_CYAN);
+	Ghost* orangeGhost = Ghost::Create(Vector2f(10 * 22, 13 * 22), GHOST_ORANGE);
 	//Ghost* grayGhost = Ghost::Create(Vector2f(15 * 22, 13 * 22), GHOST_GRAY);
 	//all ghosts outide
-	Ghost* pinkGhost = Ghost::Create(Vector2f(25 * 22, 0 * 22), GHOST_PINK);
-	Ghost* cyanGhost = Ghost::Create(Vector2f(24 * 22, 28 * 22), GHOST_CYAN);
-	Ghost* orangeGhost = Ghost::Create(Vector2f(3 * 22, 7 * 22), GHOST_ORANGE);
-	Ghost* grayGhost = Ghost::Create(Vector2f(8 * 22, 4 * 22), GHOST_GRAY);
+	//Ghost* pinkGhost = Ghost::Create(Vector2f(25 * 22, 0 * 22), GHOST_PINK);
+	//Ghost* cyanGhost = Ghost::Create(Vector2f(24 * 22, 28 * 22), GHOST_CYAN);
+	//Ghost* orangeGhost = Ghost::Create(Vector2f(3 * 22, 7 * 22), GHOST_ORANGE);
+	//Ghost* grayGhost = Ghost::Create(Vector2f(8 * 22, 4 * 22), GHOST_GRAY);
 
 	mGhostvec.push_back(redGhost);
 	mGhostvec.push_back(pinkGhost);
 	mGhostvec.push_back(cyanGhost);
 	mGhostvec.push_back(orangeGhost);
-	mGhostvec.push_back(grayGhost);
+	//mGhostvec.push_back(grayGhost);
 
 	//get the duration for the state in mCyclicChase_Scatter
 	mCurrentCycleStateTimer = GetDurationForChase_ScatterState(mCyclic_Chase_Scatter);
