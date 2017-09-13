@@ -11,12 +11,12 @@ class World;
 class GhostManager;
 
 typedef enum {
-	GAME_STATE_INIT,
-	GAME_STATE_START,
+	GAME_STATE_INIT,  //does a hard reset of game items
+	GAME_STATE_START, //displays "Get Ready" and does a soft reset of game items
 	GAME_STATE_PLAY,
 	GAME_STATE_LOSE_LIFE,
-	GAME_STATE_LOSE,
-	GAME_STATE_WIN
+	GAME_STATE_LOSE, //no lives left
+	GAME_STATE_WIN	//all dots eaten
 } PacmanGameState;
 
 #ifdef _DEBUG
