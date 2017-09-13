@@ -22,7 +22,6 @@ const char * RedGhostBehaviour::GetNormalImageName()
 
 void RedGhostBehaviour::ChaseState(float dt, Vector2f & directionUnitVector)
 {
-	mReverseFlag = false; //this is so that the red ghost do not reverse direction unlike the other ghosts during state change
 	BaseGhostBehaviour::ChaseState(dt, directionUnitVector);
 }
 
@@ -30,7 +29,6 @@ void RedGhostBehaviour::ScatterState(float dt, Vector2f & directionUnitVector)
 {
 	if (mRestrictToChaseMode)
 	{
-		mReverseFlag = false;
 		mGhostParent->SetNextState(GHOST_CHASE);
 		ChaseState(dt, directionUnitVector);
 	}
