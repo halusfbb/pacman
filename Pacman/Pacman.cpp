@@ -109,6 +109,15 @@ bool Pacman::Update(float aTime)
 			myLives = PACMAN_START_LIVES;
 			myScore = 0;
 			myGhostManager->ResetCycleCount();
+			for (auto ghost : myGhostManager->GetVectorOfGhost())
+			{
+				ghost->ResetGhostBehaviour();
+			}
+
+			for (auto ghost : myGhostManager->GetVectorOfHomeGhost())
+			{
+				ghost->ResetGhostBehaviour();
+			}
 			myPacmanGameState.SetNextState(GAME_STATE_START, true);
 		}
 		//cleanup
@@ -141,12 +150,12 @@ bool Pacman::Update(float aTime)
 
 				for (auto ghost : myGhostManager->GetVectorOfGhost())
 				{
-					ghost->ResetGhost();
+					ghost->SoftReset();
 				}
 
 				for (auto ghost : myGhostManager->GetVectorOfHomeGhost())
 				{
-					ghost->ResetGhost();
+					ghost->SoftReset();
 				}
 			}
 			else

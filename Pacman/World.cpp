@@ -323,6 +323,16 @@ const std::vector<PathmapTile*>& World::GetListOfGateTiles() const
 	return myGateTiles;
 }
 
+const std::list<Dot*>& World::GetOriginalListOfDots() const
+{
+	return myOriginalDots;
+}
+
+const std::list<BigDot*>& World::GetOriginalListOfBigDots() const
+{
+	return myOrignalBigDots;
+}
+
 void World::ResetToOriginalDots()
 {
 	myDots = myOriginalDots;

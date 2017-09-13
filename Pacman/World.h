@@ -38,6 +38,8 @@ public:
 	const std::list<Dot*>& GetListOfDots() const;
 	const std::list<BigDot*>& GetListOfBigDots() const;
 	const std::vector<PathmapTile*>& GetListOfGateTiles() const;
+	const std::list<Dot*>& GetOriginalListOfDots() const;
+	const std::list<BigDot*>& GetOriginalListOfBigDots() const;
 
 	void ResetToOriginalDots();
 

@@ -33,15 +33,20 @@ public:
 	virtual void ScatterState(float dt, Vector2f & directionUnitVector);
 	virtual void ScatterStateCleanup(float dt);
 
+	virtual void Update(float dt);
+
 	virtual const char* GetNormalImageName();
 	const char* GetFrightenedImageName();
 	const char* GetDeadImageName();
 
 	TileCoord GetTileCurrentTargetTile();
 
-	void ResetPreviousDirecion();
-
 	void SetReverseFlag();
+
+	float GetBehaviourSpeedModifier();
+
+	virtual void ResetBehaviour();
+	void ResetPreviousDirecion();
 
 protected:
 	void SetScatterTileCoord(TileCoord& scatterTileCoord);
@@ -64,10 +69,13 @@ protected:
 
 	void ReverseDirection(PathmapTile* ghostParentCurrentTile, Vector2f& directionUnitVector);
 
+	float mBehaviourSpeedMultiplier;
+
+	bool mReverseFlag; //this forces ghost to reverse their direction
 private:
 
 	TileCoord mScatterTargetTileCoord;
-	bool mReverseFlag; //this forces ghost to reverse their direction
+
 };
 
 

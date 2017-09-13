@@ -19,6 +19,7 @@ BaseGhostBehaviour::BaseGhostBehaviour(Ghost * ghostParent)
 	,mPreviousDirectionUnitVecY(0)
 	,mScatterTargetTileCoord{ 26, 30 }
 	,mReverseFlag(false)
+	,mBehaviourSpeedMultiplier(1.f)
 {
 }
 
@@ -286,7 +287,6 @@ void BaseGhostBehaviour::ScatterState(float dt, Vector2f & directionUnitVector)
 		return;
 	}
 
-
 	// if there are more than 2 valid neighbors, we are to use the target tile as an influence to this ghost's next direction,
 	if (tile->myValidNeighbours.size() > 2)
 	{
@@ -331,6 +331,10 @@ void BaseGhostBehaviour::ScatterStateCleanup(float dt)
 {
 }
 
+void BaseGhostBehaviour::Update(float dt)
+{
+}
+
 const char * BaseGhostBehaviour::GetNormalImageName()
 {
 	return GRAY_GHOST_IMAGE;
@@ -351,15 +355,26 @@ TileCoord BaseGhostBehaviour::GetTileCurrentTargetTile()
 	return TileCoord{ mCurrentTileTargetX, mCurrentTileTargetY };
 }
 
+void BaseGhostBehaviour::SetReverseFlag()
+{
+	mReverseFlag = true;
+}
+
+float BaseGhostBehaviour::GetBehaviourSpeedModifier()
+{
+	return mBehaviourSpeedMultiplier;
+}
+
+void BaseGhostBehaviour::ResetBehaviour()
+{
+	mBehaviourSpeedMultiplier = 1.0f;
+	mReverseFlag = false;
+}
+
 void BaseGhostBehaviour::ResetPreviousDirecion()
 {
 	mPreviousDirectionUnitVecX = 0;
 	mPreviousDirectionUnitVecY = 0;
-}
-
-void BaseGhostBehaviour::SetReverseFlag()
-{
-	mReverseFlag = true;
 }
 
 void BaseGhostBehaviour::SetScatterTileCoord(TileCoord& scatterTileCoord)

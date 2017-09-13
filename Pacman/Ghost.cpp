@@ -87,6 +87,7 @@ void Ghost::Update(float aTime, World* aWorld)
 	Vector2f unitDirection = Vector2f(0.f,0.f);
 
 	mGhostState.CheckAndSwapState();
+	mGhostBehaviour->Update(aTime);
 
 	switch (mGhostState.GetCurrentState())
 	{
@@ -415,7 +416,12 @@ void Ghost::SetDeadImage()
 	SetImage(mGhostBehaviour->GetDeadImageName());
 }
 
-void Ghost::ResetGhost()
+void Ghost::ResetGhostBehaviour()
+{
+	mGhostBehaviour->ResetBehaviour();
+}
+
+void Ghost::SoftReset()
 {
 	myPosition = mOriginalStartPos;
 	ResetTilesToCurrentPosition();
@@ -424,24 +430,35 @@ void Ghost::ResetGhost()
 	myNextTileX = myCurrentTileX;
 	myNextTileY = myCurrentTileY;
 	myIsResurrectedFlag = false;
-	mGhostBehaviour->ResetPreviousDirecion();
 	SetImage(mGhostBehaviour->GetNormalImageName());
 	SetAlpha(255);
+
+	mGhostBehaviour->ResetPreviousDirecion();
 }
 
 void Ghost::SetFrightenedSpeed()
 {
-	mGhostSpeed = GHOST_BASE_SPEED * GHOST_FRIGHTENED_SPEED_FACTOR;
+	mGhostSpeed = GHOST_BASE_SPEED * GHOST_FRIGHTENED_SPEED_FACTOR * mGhostBehaviour->GetBehaviourSpeedModifier();
 }
 
 void Ghost::SetDeadSpeed()
 {
-	mGhostSpeed = GHOST_BASE_SPEED * GHOST_DEAD_SPEED_FACTOR;
+	mGhostSpeed = GHOST_BASE_SPEED * GHOST_DEAD_SPEED_FACTOR * mGhostBehaviour->GetBehaviourSpeedModifier();
 }
 
 void Ghost::SetNormalSpeed()
 {
-	mGhostSpeed = GHOST_BASE_SPEED;
+	mGhostSpeed = GHOST_BASE_SPEED * mGhostBehaviour->GetBehaviourSpeedModifier();
+}
+
+float Ghost::GetCurrentSpeed()
+{
+	return mGhostSpeed;
+}
+
+void Ghost::SetCurrentSpeed(float speed)
+{
+	mGhostSpeed = speed;
 }
 
 void Ghost::SetBehaviourReverseFlag()

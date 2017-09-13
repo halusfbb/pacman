@@ -62,11 +62,14 @@ public:
 	void SetNormalImage();
 	void SetDeadImage();
 
-	void ResetGhost();
+	void ResetGhostBehaviour();
+	void SoftReset(); //reset position, and death flags
 
 	void SetFrightenedSpeed();
 	void SetDeadSpeed();
 	void SetNormalSpeed();
+	float GetCurrentSpeed();
+	void SetCurrentSpeed(float speed);
 
 	void SetBehaviourReverseFlag();
 
