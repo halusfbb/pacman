@@ -211,7 +211,7 @@ bool Pacman::Update(float aTime)
 			{
 				if ((ghost->GetPosition() - myAvatar->GetPosition()).Length() < 10.f)
 				{
-					if (myGhostGhostCounter <= 0.f)
+					if (ghost->GetCurrentState() != GHOST_FRIGHTENED && !ghost->myIsDeadFlag)
 					{
 						myPacmanGameState.SetNextState(GAME_STATE_LOSE_LIFE, true);
 					}

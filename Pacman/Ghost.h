@@ -44,6 +44,7 @@ public:
 	void Update(float aTime, World* aWorld);
 
 	bool myIsDeadFlag;
+	bool myIsResurrectedFlag;
 
 	void Die(World* aWorld);
 

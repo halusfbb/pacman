@@ -35,6 +35,7 @@ Ghost::Ghost(const Vector2f& aPosition, GhostColor ghostColor)
 , myIsClaimableFlag(false)
 , myIsDeadFlag(false)
 , mGhostColor(ghostColor)
+, myIsResurrectedFlag(false)
 {
 }
 
@@ -278,9 +279,29 @@ void Ghost::Update(float aTime, World* aWorld)
 		break;
 	}
 
-	float speed = 30.f;
-	if (unitDirection.Length() != 0)
+	float speed = 60.f;
+
+	if (myIsDeadFlag)
+		speed = 120.f;
+
+	if (!myPath.empty())
 	{
+		if (IsAtDestination())
+		{
+			PathmapTile* nextTile = myPath.front();
+			myPath.pop_front();
+			SetNextTile(nextTile->myX, nextTile->myY);
+		}
+	}
+	else if (unitDirection.Length() != 0)
+	{
+		if (myIsDeadFlag) //if previously dead
+		{
+			myIsResurrectedFlag = true;
+			myIsDeadFlag = false;
+			SetNextState(GHOST_EXITING);
+		}
+
 		int nextTileX = GetCurrentTileX() + unitDirection.myX;
 		int nextTileY = GetCurrentTileY() + unitDirection.myY;
 

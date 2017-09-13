@@ -75,7 +75,14 @@ void GhostManager::Update(float aTime)
 	{
 		if (!(*i)->IsGhostAtHome())
 		{
-			(*i)->SetNextState(mCurrentState);
+			if ((*i)->myIsResurrectedFlag)
+			{
+				(*i)->SetNextState(mCyclic_Chase_Scatter);
+			}
+			else
+			{
+				(*i)->SetNextState(mCurrentState);
+			}
 			mGhostvec.push_back(*i);
 			i = mGhostAtHomevec.erase(i);
 		}
