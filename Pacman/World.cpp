@@ -27,6 +27,11 @@ World::~World(void)
 	{
 		delete dot;
 	}
+
+	for (auto pathMap : myPathmapTiles)
+	{
+		delete pathMap;
+	}
 }
 
 void World::Init()
