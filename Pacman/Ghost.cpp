@@ -443,3 +443,8 @@ void Ghost::SetNormalSpeed()
 {
 	mGhostSpeed = GHOST_BASE_SPEED;
 }
+
+void Ghost::SetBehaviourReverseFlag()
+{
+	mGhostBehaviour->SetReverseFlag();
+}

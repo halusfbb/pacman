@@ -211,7 +211,7 @@ bool Pacman::Update(float aTime)
 			{
 				myScore += 20;
 				myGhostGhostCounter = (float)FRIGHTEN_DURATION;
-				myGhostManager->SetGhostsNextState(GHOST_FRIGHTENED);
+				myGhostManager->SetGhostsNextState(GHOST_FRIGHTENED, false);
 				myGhostCounterCountdown = true;
 			}
 

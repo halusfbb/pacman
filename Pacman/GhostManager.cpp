@@ -50,7 +50,7 @@ void GhostManager::Init()
 
 	//get the duration for the state in mCyclicChase_Scatter
 	mCurrentCycleStateTimer = GetDurationForChase_ScatterState(mCyclic_Chase_Scatter);
-	SetGhostsNextState(mCyclic_Chase_Scatter);
+	SetGhostsNextState(mCyclic_Chase_Scatter, true);
 
 	mTimerBeforeGhostExit = GetDurationForGhostRelease();
 }
@@ -150,11 +150,15 @@ void GhostManager::Draw(Drawer * aDrawer)
 #endif
 }
 
-void GhostManager::SetGhostsNextState(GhostState ghostState)
+void GhostManager::SetGhostsNextState(GhostState ghostState, bool isRevertingFromPreviousState)
 {
 	for (auto ghost : mGhostvec)
 	{
 		ghost->SetNextState(ghostState);
+		if (!isRevertingFromPreviousState)
+		{
+			ghost->SetBehaviourReverseFlag();
+		}
 	}
 
 	//for ghosts in the home zone
@@ -187,7 +191,7 @@ void GhostManager::SetGhostsNextState(GhostState ghostState)
 
 void GhostManager::RevertToPreviousState()
 {
-	SetGhostsNextState(mCyclic_Chase_Scatter);
+	SetGhostsNextState(mCyclic_Chase_Scatter, true);
 }
 
 void GhostManager::SwapCyclicState()
@@ -204,7 +208,7 @@ void GhostManager::SwapCyclicState()
 	}
 
 	mCurrentCycleStateTimer = GetDurationForChase_ScatterState(mCyclic_Chase_Scatter);
-	SetGhostsNextState(mCyclic_Chase_Scatter);
+	SetGhostsNextState(mCyclic_Chase_Scatter, false);
 }
 
 const std::vector<Ghost*>& GhostManager::GetVectorOfHomeGhost()

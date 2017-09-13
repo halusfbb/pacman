@@ -18,6 +18,7 @@ BaseGhostBehaviour::BaseGhostBehaviour(Ghost * ghostParent)
 	,mPreviousDirectionUnitVecX(0)
 	,mPreviousDirectionUnitVecY(0)
 	,mScatterTargetTileCoord{ 26, 30 }
+	,mReverseFlag(false)
 {
 }
 
@@ -132,6 +133,14 @@ void BaseGhostBehaviour::ChaseState(float dt, Vector2f & directionUnitVector)
 	World* world = gPacman->GetWorld();
 	PathmapTile* tile = world->GetTile(ghostParentCurrentTileX, ghostParentCurrentTileY);
 	PathmapTile* destinationTile;
+
+	if (mReverseFlag)
+	{
+		ReverseDirection(tile, directionUnitVector);
+		mReverseFlag = false;
+		return;
+	}
+
 	// if there are more than 2 valid neighbors, we are to use the target tile as an influence to this ghost's next direction,
 	if (tile->myValidNeighbours.size() > 2)
 	{
@@ -269,6 +278,15 @@ void BaseGhostBehaviour::ScatterState(float dt, Vector2f & directionUnitVector)
 	World* world = gPacman->GetWorld();
 	PathmapTile* tile = world->GetTile(ghostParentCurrentTileX, ghostParentCurrentTileY);
 	PathmapTile* destinationTile;
+
+	if (mReverseFlag)
+	{
+		ReverseDirection(tile, directionUnitVector);
+		mReverseFlag = false;
+		return;
+	}
+
+
 	// if there are more than 2 valid neighbors, we are to use the target tile as an influence to this ghost's next direction,
 	if (tile->myValidNeighbours.size() > 2)
 	{
@@ -337,6 +355,11 @@ void BaseGhostBehaviour::ResetPreviousDirecion()
 {
 	mPreviousDirectionUnitVecX = 0;
 	mPreviousDirectionUnitVecY = 0;
+}
+
+void BaseGhostBehaviour::SetReverseFlag()
+{
+	mReverseFlag = true;
 }
 
 void BaseGhostBehaviour::SetScatterTileCoord(TileCoord& scatterTileCoord)
@@ -472,4 +495,19 @@ void BaseGhostBehaviour::MoveInSameDirectionVertically(PathmapTile * ghostParent
 	directionUnitVector.myY = mPreviousDirectionUnitVecY = direction.y;
 	//str = "DirectionB x: " + std::to_string(directionUnitVector.myX) + " y: " + std::to_string(directionUnitVector.myY);
 	//SDL_Log(str.c_str());
+}
+
+void BaseGhostBehaviour::ReverseDirection(PathmapTile * ghostParentCurrentTile, Vector2f & directionUnitVector)
+{
+	//get ghost current tile
+	int ghostParentCurrentTileX = ghostParentCurrentTile->myX;
+	int ghostParentCurrentTileY = ghostParentCurrentTile->myY;
+
+	//these was where the ghost came from
+	int previousTileX = ghostParentCurrentTileX - mPreviousDirectionUnitVecX;
+	int previousTileY = ghostParentCurrentTileY - mPreviousDirectionUnitVecY;
+
+	TileCoord direction = TileCoord{ previousTileX ,previousTileY } -TileCoord{ ghostParentCurrentTileX, ghostParentCurrentTileY };
+	directionUnitVector.myX = mPreviousDirectionUnitVecX = direction.x;
+	directionUnitVector.myY = mPreviousDirectionUnitVecY = direction.y;
 }

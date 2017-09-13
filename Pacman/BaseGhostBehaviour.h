@@ -41,6 +41,8 @@ public:
 
 	void ResetPreviousDirecion();
 
+	void SetReverseFlag();
+
 protected:
 	void SetScatterTileCoord(TileCoord& scatterTileCoord);
 	int GetIndirectMagnitude(TileCoord a, TileCoord b);
@@ -59,9 +61,13 @@ protected:
 	void MoveInSameDirection(PathmapTile* ghostParentCurrentTile, Vector2f& directionUnitVector);
 
 	void MoveInSameDirectionVertically(PathmapTile* ghostParentCurrentTile, Vector2f& directionUnitVector);
+
+	void ReverseDirection(PathmapTile* ghostParentCurrentTile, Vector2f& directionUnitVector);
+
 private:
 
 	TileCoord mScatterTargetTileCoord;
+	bool mReverseFlag; //this forces ghost to reverse their direction
 };
 
 

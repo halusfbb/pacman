@@ -20,7 +20,7 @@ public:
 	void Update(float aTime);
 	void Draw(Drawer* aDrawer);
 
-	void SetGhostsNextState(GhostState ghostState);
+	void SetGhostsNextState(GhostState ghostState, bool isSwappingState); // isSwappingState is used to track if we are swapping between scatter-chase or reverting from frightened state
 	void RevertToPreviousState(); //revert to the cyclic state given in mCyclic_Chase_Scatter
 	void SwapCyclicState();
 

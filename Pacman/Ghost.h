@@ -68,6 +68,8 @@ public:
 	void SetDeadSpeed();
 	void SetNormalSpeed();
 
+	void SetBehaviourReverseFlag();
+
 private:
 
 	int myDesiredMovementX; //!!@do we still need this
