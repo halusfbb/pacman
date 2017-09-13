@@ -345,12 +345,12 @@ void Ghost::Draw(Drawer* aDrawer)
 	{
 		str = "State: " + std::string(gGhostStateChar[mGhostState.GetCurrentState()]);
 	}
-	aDrawer->DrawText(str.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", (int)myPosition.myX + 20 + 220, (int)myPosition.myY - 20  + 60, 20, SDL_Color{ 255,0,0 });
+	aDrawer->DrawText(str.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", (int)myPosition.myX + 20 + ENTITIY_OFFSET_SIZE_X, (int)myPosition.myY - 20  + ENTITIY_OFFSET_SIZE_Y, 20, SDL_Color{ 255,0,0 });
 
 	SDL_SetRenderDrawColor(aDrawer->myRenderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
 	if (mGhostState.GetCurrentState() != GHOST_FRIGHTENED)
 	{
-		SDL_RenderDrawLine(aDrawer->myRenderer, (int)myPosition.myX + 11 + 220, (int)myPosition.myY + 11 + 60, mGhostBehaviour->GetTileCurrentTargetTile().x * 22 + 11 + 220, mGhostBehaviour->GetTileCurrentTargetTile().y * 22 + 11 + 60);
+		SDL_RenderDrawLine(aDrawer->myRenderer, (int)myPosition.myX + 11 + ENTITIY_OFFSET_SIZE_X, (int)myPosition.myY + 11 + ENTITIY_OFFSET_SIZE_Y, mGhostBehaviour->GetTileCurrentTargetTile().x * 22 + 11 + 220, mGhostBehaviour->GetTileCurrentTargetTile().y * 22 + 11 + 60);
 	}
 #endif
 }

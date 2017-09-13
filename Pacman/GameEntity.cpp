@@ -1,6 +1,7 @@
 #include "GameEntity.h"
 #include "Drawer.h"
 #include "AssetManager.h"
+#include "globals.h"
 
 GameEntity::GameEntity(const Vector2f& aPosition, const char* anImage)
 :myPosition(aPosition)
@@ -45,5 +46,5 @@ bool GameEntity::Intersect(GameEntity* aGameEntity)
 void GameEntity::Draw(Drawer* aDrawer)
 {
 	myImageAssetCache->SetAlpha(myAlpha);
-	aDrawer->Draw(myImageAssetCache, (int)myPosition.myX + 220, (int)myPosition.myY + 60);
+	aDrawer->Draw(myImageAssetCache, (int)myPosition.myX + ENTITIY_OFFSET_SIZE_X, (int)myPosition.myY + ENTITIY_OFFSET_SIZE_Y);  //!!@ Hardcoded values
 }

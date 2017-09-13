@@ -27,5 +27,8 @@ extern int MIN_TIMER_BEFORE_GHOST_EXIT;
 extern int MAX_TIMER_BEFORE_GHOSTS_EXIT;
 
 extern int TILE_SIZE;
+
+extern int ENTITIY_OFFSET_SIZE_X;
+extern int ENTITIY_OFFSET_SIZE_Y;
 #endif
 
