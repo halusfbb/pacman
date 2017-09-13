@@ -286,7 +286,15 @@ bool Pacman::Update(float aTime)
 			myTimerToNextState -= aTime;
 			if (myTimerToNextState < 0)
 			{
-				myPacmanGameState.SetNextState(GAME_STATE_START, true, true);
+				myLives--;
+				if (myLives <= 0)
+				{
+					myPacmanGameState.SetNextState(GAME_STATE_LOSE, true);
+				}
+				else
+				{
+					myPacmanGameState.SetNextState(GAME_STATE_START, true);
+				}
 			}
 			else
 			{
@@ -299,8 +307,7 @@ bool Pacman::Update(float aTime)
 		{
 			if (!myPacmanGameState.IsInSubState())
 			{
-				myPacmanGameState.SetSubState();
-				myLives--;
+				myPacmanGameState.SetSubState();			
 			}
 			else
 			{
