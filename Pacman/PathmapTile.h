@@ -7,9 +7,9 @@ typedef struct TC {
 	int x;
 	int y;
 
-	TC& operator+(const TC& rhs) const { return TC{ x + rhs.x, y + rhs.y }; }
-	TC& operator-(const TC& rhs) const { return TC{ x - rhs.x, y - rhs.y }; }
-} TileCoord;
+	TC operator+(const TC& rhs) const { return TC{ x + rhs.x, y + rhs.y }; }
+	TC operator-(const TC& rhs) const { return TC{ x - rhs.x, y - rhs.y }; }
+} TileCoord; //!!@consider using this to replace PathmapTile::myY and ::mX
 
 class PathmapTile
 {
