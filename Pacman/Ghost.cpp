@@ -329,7 +329,7 @@ void Ghost::Update(float aTime, World* aWorld)
 	}
 
 	if (myIsDeadFlag)
-		SetImage("Ghost_Dead_32.png");
+		SetDeadImage();
 }
 
 void Ghost::Draw(Drawer* aDrawer)
