@@ -49,9 +49,9 @@ private:
 	bool Pathfind(PathmapTile* aFromTile, PathmapTile* aToTile, std::list<PathmapTile*>& aList);
 	bool ListDoesNotContain(PathmapTile* aFromTile, std::list<PathmapTile*>& aList);
 
-	bool InitPathmap();
-	bool InitDots();
-	bool InitBigDots();
+	bool InitPathmap(std::ifstream& myfile);
+	bool InitDots(std::ifstream& myfile);
+	bool InitBigDots(std::ifstream& myfile);
 	void InitBoard();
 
 	std::vector<PathmapTile*> myPathmapTiles; //instantiate the correct number of slots change back to list?

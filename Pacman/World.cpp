@@ -30,18 +30,28 @@ World::~World(void)
 
 void World::Init()
 {
-	InitPathmap();
-	InitDots();
-	InitBigDots();
+	std::ifstream myfile("map.txt");
+
+	InitPathmap(myfile);
+
+	myfile.clear();
+	myfile.seekg(0, std::ios::beg);
+	InitDots(myfile);
+
+	myfile.clear();
+	myfile.seekg(0, std::ios::beg);
+	InitBigDots(myfile);
+
+	myfile.close();
+
 	InitBoard();
 
 	ResetToOriginalDots();
 }
 
-bool World::InitPathmap()
+bool World::InitPathmap(std::ifstream& myfile)
 {
 	std::string line;
-	std::ifstream myfile ("map.txt");
 	if (myfile.is_open())
 	{
 		int lineIndex = 0;
@@ -74,7 +84,6 @@ bool World::InitPathmap()
 					SDL_Log("MapSize is not Square!");
 			}
 		}
-		myfile.close();
 	}
 	
 	//iterate over each tile and determine how many valid tiles are its neighbours
@@ -112,10 +121,9 @@ bool World::InitPathmap()
 	return true;
 }
 
-bool World::InitDots()
+bool World::InitDots(std::ifstream& myfile)
 {
 	std::string line;
-	std::ifstream myfile ("map.txt");
 	if (myfile.is_open())
 	{
 		int lineIndex = 0;
@@ -134,16 +142,14 @@ bool World::InitDots()
 
 			lineIndex++;
 		}
-		myfile.close();
 	}
 
 	return true;
 }
 
-bool World::InitBigDots()
+bool World::InitBigDots(std::ifstream& myfile)
 {
 	std::string line;
-	std::ifstream myfile ("map.txt");
 	if (myfile.is_open())
 	{
 		int lineIndex = 0;
@@ -162,7 +168,6 @@ bool World::InitBigDots()
 
 			lineIndex++;
 		}
-		myfile.close();
 	}
 
 	return true;
