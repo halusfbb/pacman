@@ -1,8 +1,8 @@
 #include "Avatar.h"
-
+#include "globals.h"
 Avatar::Avatar(const Vector2f& aPosition)
 : MovableGameEntity(aPosition, "open_left_32.png")
-, mEnumAvatarFacing(AVATAR_FACING_RIGHT) //this corresponds to open_32.png 
+, mEnumAvatarFacing(AVATAR_FACING_LEFT) //this corresponds to open_left_32.png 
 {
 
 }
@@ -28,7 +28,7 @@ void Avatar::Init()
 
 void Avatar::Update(float aTime)
 {
-	int tileSize = 22;
+	int tileSize = TILE_SIZE;
 
 	Vector2f destination(myNextTileX * tileSize, myNextTileY * tileSize);
 	Vector2f direction = destination - myPosition;
@@ -54,7 +54,7 @@ void Avatar::Update(float aTime)
 
 void Avatar::ResetAvatar()
 {
-	SetPosition(Vector2f(13 * 22, 22 * 22));
+	SetPosition(Vector2f(13 * TILE_SIZE, 22 * TILE_SIZE));
 	ResetTilesToCurrentPosition();
 	SetAlpha(255);
 	SetImage("open_left_32.png");

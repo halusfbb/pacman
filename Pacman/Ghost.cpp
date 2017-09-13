@@ -9,6 +9,7 @@
 #include "CyanGhostBehaviour.h"
 #include "OrangeGhostBehaviour.h"
 #include "Pacman.h"
+#include "globals.h"
 
 #ifdef _DEBUG
 const char* gGhostStateChar[] = {
@@ -306,13 +307,10 @@ void Ghost::Update(float aTime, World* aWorld)
 		int nextTileX = GetCurrentTileX() + unitDirection.myX;
 		int nextTileY = GetCurrentTileY() + unitDirection.myY;
 
-//		if (aWorld->TileIsValid(nextTileX, nextTileY)) //!!@ this check might be unnessary if ghost behaviours already made sure of this. and this is expensive operate at the moment
-//		{
-			SetNextTile(nextTileX, nextTileY);
-//		}
+		SetNextTile(nextTileX, nextTileY);
 	}
 
-	int tileSize = 22;
+	int tileSize = TILE_SIZE;
 	Vector2f destination(myNextTileX * tileSize, myNextTileY * tileSize);
 	Vector2f direction = destination - myPosition;
 

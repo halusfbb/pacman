@@ -10,6 +10,7 @@
 #include "Drawer.h"
 #include "AssetManager.h"
 #include "SDL.h"
+#include "globals.h"
 
 World::World(void)
 {
@@ -60,7 +61,7 @@ bool World::InitPathmap(std::ifstream& myfile)
 			std::getline(myfile, line);
 			for (unsigned int i = 0; i < line.length(); i++)
 			{
-				PathmapTile* tile = new PathmapTile(i, lineIndex, (line[i] == 'x'), (line[i] == 's'), line[i] == 'g');
+				PathmapTile* tile = new PathmapTile(i, lineIndex, (line[i] == 'x'), (line[i] == 's'), line[i] == 'g', line[i] == 'l');
 				myPathmapTiles.push_back(tile);
 
 				if (line[i] == 'g')
@@ -134,7 +135,7 @@ bool World::InitDots(std::ifstream& myfile)
 			{
 				if (line[i] == '.')
 				{
-					Dot* dot = new Dot(Vector2f(i*22, lineIndex*22));
+					Dot* dot = new Dot(Vector2f(i*TILE_SIZE, lineIndex*TILE_SIZE));
 					dot->Init();
 					myOriginalDots.push_back(dot);
 				}
@@ -160,7 +161,7 @@ bool World::InitBigDots(std::ifstream& myfile)
 			{
 				if (line[i] == 'o')
 				{
-					BigDot* dot = new BigDot(Vector2f(i*22, lineIndex*22));
+					BigDot* dot = new BigDot(Vector2f(i*TILE_SIZE, lineIndex*TILE_SIZE));
 					dot->Init();
 					myOrignalBigDots.push_back(dot);
 				}
@@ -213,8 +214,8 @@ bool World::TileIsValid(int anX, int anY)
 		return NULL;
 	if (anX >= myMapColSize || anY >= myMapRowSize)
 		return NULL;
-	//to speed up the search, we can do index referencing on the vector
-	int numberOfTilesPerRow = 26; //in future this can be read from map.txt
+	//to speed up the search, we do index referencing on the vector
+	int numberOfTilesPerRow = 26;
 	int indexNumber = anY * 26 + anX;
 	PathmapTile* tile = myPathmapTiles[indexNumber];
 

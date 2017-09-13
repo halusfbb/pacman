@@ -11,6 +11,7 @@
 #include "World.h"
 #include "GhostManager.h"
 #include "globals.h"
+#include "PathmapTile.h"
 
 #ifdef _DEBUG
 const char* gGameStateChar[] = {
@@ -54,7 +55,7 @@ Pacman::Pacman(Drawer* aDrawer)
 , myGhostGhostCounter(0.f)
 , myTimerToNextState(0.f)
 {
-	myAvatar = new Avatar(Vector2f(13*22,22*22));
+	myAvatar = new Avatar(Vector2f(13* TILE_SIZE,22* TILE_SIZE));
 	myGhostManager = GhostManager::Create();
 	myWorld = new World();
 
@@ -423,14 +424,43 @@ bool Pacman::UpdateInput()
 
 void Pacman::MoveAvatar()
 {
-	int nextTileX = myAvatar->GetCurrentTileX() + myNextMovement.myX;
-	int nextTileY = myAvatar->GetCurrentTileY() + myNextMovement.myY;
-
 	if (myAvatar->IsAtDestination())
 	{
-		if (myWorld->TileIsValid(nextTileX, nextTileY))
+		int currentTileX = myAvatar->GetCurrentTileX();
+		int currentTileY = myAvatar->GetCurrentTileY();
+
+		int nextTileX = currentTileX + myNextMovement.myX;
+		int nextTileY = currentTileY + myNextMovement.myY;
+
+		bool isTileValid = myWorld->TileIsValid(nextTileX, nextTileY);
+		if (isTileValid)
 		{
 			myAvatar->SetNextTile(nextTileX, nextTileY);
+		}
+		else
+		{
+			//checks if destination is a loop tile
+			PathmapTile* tile = myWorld->GetTile(currentTileX, currentTileY);
+			bool isLoopTile = tile->myLoopFlag;
+
+			if (isLoopTile)
+			{
+				//check if avatar wants to move out of the maze and not the walls
+				if (myNextMovement.myY == 0)
+				{
+					//this is a loop tile, so send the avatar across the maze directly
+					if (myNextMovement.myX == -1)
+					{
+						nextTileX = myWorld->GetMapColSize() - 1;
+					}
+					else
+					{
+						nextTileX = 0;
+					}
+					myAvatar->SetPosition(Vector2f(nextTileX * TILE_SIZE, nextTileY * TILE_SIZE));
+					myAvatar->ResetTilesToCurrentPosition();
+				}
+			}
 		}
 	}
 }
