@@ -64,6 +64,10 @@ public:
 
 	void ResetGhost();
 
+	void SetFrightenedSpeed();
+	void SetDeadSpeed();
+	void SetNormalSpeed();
+
 private:
 
 	int myDesiredMovementX; //!!@do we still need this
@@ -80,6 +84,8 @@ private:
 	GhostColor mGhostColor;
 
 	Vector2f mOriginalStartPos;
+
+	float mGhostSpeed;
 };
 
 #endif // GHOST_H

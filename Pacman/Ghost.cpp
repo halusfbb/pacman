@@ -38,6 +38,7 @@ Ghost::Ghost(const Vector2f& aPosition, GhostColor ghostColor)
 , mGhostColor(ghostColor)
 , myIsResurrectedFlag(false)
 , mOriginalStartPos(aPosition)
+, mGhostSpeed(GHOST_BASE_SPEED)
 {
 }
 
@@ -167,6 +168,7 @@ void Ghost::Update(float aTime, World* aWorld)
 		{
 			if (!mGhostState.IsInSubState())
 			{
+				SetNormalSpeed();
 				mGhostState.SetSubState();
 				mGhostBehaviour->ChaseStateInit(aTime);
 			}
@@ -205,6 +207,7 @@ void Ghost::Update(float aTime, World* aWorld)
 		{
 			if (!mGhostState.IsInSubState())
 			{
+				SetNormalSpeed();
 				mGhostState.SetSubState();
 				mGhostBehaviour->ScatterStateInit(aTime);
 			}
@@ -245,7 +248,7 @@ void Ghost::Update(float aTime, World* aWorld)
 			{
 				mGhostState.SetSubState();
 				mGhostBehaviour->FrightenedStateInit(aTime);
-
+				SetFrightenedSpeed();
 				SetIsClaimableFlag(true);
 			}
 			else
@@ -258,7 +261,9 @@ void Ghost::Update(float aTime, World* aWorld)
 		else if (!mGhostState.IsChangingState())
 		{
 			if (IsAtDestination())
+			{
 				mGhostBehaviour->FrightenedState(aTime, unitDirection);
+			}
 		}
 
 		//cleanup
@@ -280,11 +285,6 @@ void Ghost::Update(float aTime, World* aWorld)
 	default:
 		break;
 	}
-
-	float speed = 60.f;
-
-	if (myIsDeadFlag)
-		speed = 120.f;
 
 	if (!myPath.empty())
 	{
@@ -314,7 +314,7 @@ void Ghost::Update(float aTime, World* aWorld)
 	Vector2f destination(myNextTileX * tileSize, myNextTileY * tileSize);
 	Vector2f direction = destination - myPosition;
 
-	float distanceToMove = aTime * speed;
+	float distanceToMove = aTime * mGhostSpeed;
 
 	if (distanceToMove > direction.Length())
 	{
@@ -329,7 +329,18 @@ void Ghost::Update(float aTime, World* aWorld)
 	}
 
 	if (myIsDeadFlag)
-		SetDeadImage();
+	{
+		if (mGhostState.GetCurrentState() == GHOST_HOME)
+		{
+			SetNormalImage();
+			SetNormalSpeed();
+		}
+		else
+		{
+			SetDeadImage();
+			SetDeadSpeed();
+		}
+	}
 }
 
 void Ghost::Draw(Drawer* aDrawer)
@@ -416,4 +427,19 @@ void Ghost::ResetGhost()
 	mGhostBehaviour->ResetPreviousDirecion();
 	SetImage(mGhostBehaviour->GetNormalImageName());
 	SetAlpha(255);
+}
+
+void Ghost::SetFrightenedSpeed()
+{
+	mGhostSpeed = GHOST_BASE_SPEED * GHOST_FRIGHTENED_SPEED_FACTOR;
+}
+
+void Ghost::SetDeadSpeed()
+{
+	mGhostSpeed = GHOST_BASE_SPEED * GHOST_DEAD_SPEED_FACTOR;
+}
+
+void Ghost::SetNormalSpeed()
+{
+	mGhostSpeed = GHOST_BASE_SPEED;
 }

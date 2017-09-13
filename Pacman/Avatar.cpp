@@ -33,7 +33,7 @@ void Avatar::Update(float aTime)
 	Vector2f destination(myNextTileX * tileSize, myNextTileY * tileSize);
 	Vector2f direction = destination - myPosition;
 
-	float distanceToMove = aTime * 30.f;
+	float distanceToMove = aTime * (float)PACMAN_BASE_SPEED;
 	
 	UpdateFacingDirection(direction);
 

@@ -164,6 +164,7 @@ void GhostManager::SetGhostsNextState(GhostState ghostState)
 		for (auto ghost : mGhostAtHomevec)
 		{
 			ghost->SetFrightenedImage();
+			ghost->SetFrightenedSpeed();
 		}
 	}
 	else

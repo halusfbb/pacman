@@ -20,6 +20,11 @@ extern int CHASE_SCATTER_SWAPS; //no of chase and scatter state swaps before it 
 extern GhostState INITIAL_CYCLIC_GHOST_STATE;
 
 extern int PACMAN_START_LIVES;
+extern float PACMAN_BASE_SPEED;
+
+extern float GHOST_BASE_SPEED;
+extern float GHOST_FRIGHTENED_SPEED_FACTOR;
+extern float GHOST_DEAD_SPEED_FACTOR;
 
 extern int FRIGHTEN_DURATION;
 
