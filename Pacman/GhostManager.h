@@ -27,6 +27,8 @@ public:
 	const std::vector<Ghost*>& GetVectorOfGhost();
 	const std::vector<Ghost*>& GetVectorOfHomeGhost();
 
+	void ResetCycleCount();
+
 private:
 
 	float GetDurationForChase_ScatterState(GhostState ghoststate);

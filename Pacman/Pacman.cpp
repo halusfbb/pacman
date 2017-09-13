@@ -102,6 +102,7 @@ bool Pacman::Update(float aTime)
 		{
 			myWorld->ResetToOriginalDots();
 			myLives = PACMAN_START_LIVES;
+			myGhostManager->ResetCycleCount();
 			myPacmanGameState.SetNextState(GAME_STATE_START, true);
 		}
 		//cleanup

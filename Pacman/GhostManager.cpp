@@ -19,8 +19,8 @@ GhostManager * GhostManager::Create()
 }
 
 GhostManager::GhostManager()
-	:mCurrentState(GHOST_SCATTER)
-	,mCyclic_Chase_Scatter(GHOST_SCATTER)
+	:mCurrentState(GHOST_CHASE)
+	,mCyclic_Chase_Scatter(INITIAL_CYCLIC_GHOST_STATE)
 	,mNoOf_Chase_Scatter_Cycles(0)
 	,mTimerBeforeGhostExit(0.f)
 {
@@ -210,6 +210,13 @@ const std::vector<Ghost*>& GhostManager::GetVectorOfHomeGhost()
 	return mGhostAtHomevec;
 }
 
+void GhostManager::ResetCycleCount()
+{
+	mNoOf_Chase_Scatter_Cycles = 0;
+	mCurrentCycleStateTimer = 0.f;
+	mCyclic_Chase_Scatter = INITIAL_CYCLIC_GHOST_STATE;
+}
+
 const std::vector<Ghost*>& GhostManager::GetVectorOfGhost()
 {
 	return mGhostvec;
@@ -220,7 +227,7 @@ float GhostManager::GetDurationForChase_ScatterState(GhostState ghoststate)
 	switch (ghoststate)
 	{
 	case GHOST_CHASE:
-		if (mNoOf_Chase_Scatter_Cycles >= 7)
+		if (mNoOf_Chase_Scatter_Cycles >= CHASE_SCATTER_SWAPS)
 		{
 			return INT_MAX; //indefinitely on chase
 		}

@@ -1,6 +1,8 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
+#include "Ghost.h"
+
 extern const char* GRAY_GHOST_IMAGE;
 extern const char* RED_GHOST_IMAGE;
 extern const char* PINK_GHOST_IMAGE;
@@ -14,6 +16,8 @@ extern int CHASE_STATE_MIN_DURATION;
 extern int CHASE_STATE_MAX_DURATION;
 extern int SCATTER_STATE_MIN_DURATION;
 extern int SCATTER_STATE_MAX_DURATION;
+extern int CHASE_SCATTER_SWAPS; //no of chase and scatter state swaps before it gets permanently locked
+extern GhostState INITIAL_CYCLIC_GHOST_STATE;
 
 extern int PACMAN_START_LIVES;
 
