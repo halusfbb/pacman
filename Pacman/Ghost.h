@@ -62,9 +62,11 @@ public:
 	void SetNormalImage();
 	void SetDeadImage();
 
+	void ResetGhost();
+
 private:
 
-	int myDesiredMovementX;
+	int myDesiredMovementX; //!!@do we still need this
 	int myDesiredMovementY;
 
 	bool myIsClaimableFlag;
@@ -76,6 +78,8 @@ private:
 	StateHelper<GhostState> mGhostState;
 
 	GhostColor mGhostColor;
+
+	Vector2f mOriginalStartPos;
 };
 
 #endif // GHOST_H

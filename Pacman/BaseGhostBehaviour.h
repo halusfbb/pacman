@@ -39,6 +39,8 @@ public:
 
 	TileCoord GetTileCurrentTargetTile();
 
+	void ResetPreviousDirecion();
+
 protected:
 	void SetScatterTileCoord(TileCoord& scatterTileCoord);
 	int GetIndirectMagnitude(TileCoord a, TileCoord b);

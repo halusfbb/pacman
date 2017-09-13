@@ -36,6 +36,7 @@ Ghost::Ghost(const Vector2f& aPosition, GhostColor ghostColor)
 , myIsDeadFlag(false)
 , mGhostColor(ghostColor)
 , myIsResurrectedFlag(false)
+, mOriginalStartPos(aPosition)
 {
 }
 
@@ -403,4 +404,17 @@ void Ghost::SetNormalImage()
 void Ghost::SetDeadImage()
 {
 	SetImage(mGhostBehaviour->GetDeadImageName());
+}
+
+void Ghost::ResetGhost()
+{
+	myPosition = mOriginalStartPos;
+	ResetTilesToCurrentPosition();
+	myIsClaimableFlag = false;
+	myIsDeadFlag = false;
+	myNextTileX = myCurrentTileX;
+	myNextTileY = myCurrentTileY;
+	myIsResurrectedFlag = false;
+	mGhostBehaviour->ResetPreviousDirecion();
+	SetAlpha(255);
 }

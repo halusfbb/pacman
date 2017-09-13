@@ -205,6 +205,11 @@ void GhostManager::SwapCyclicState()
 	SetGhostsNextState(mCyclic_Chase_Scatter);
 }
 
+const std::vector<Ghost*>& GhostManager::GetVectorOfHomeGhost()
+{
+	return mGhostAtHomevec;
+}
+
 const std::vector<Ghost*>& GhostManager::GetVectorOfGhost()
 {
 	return mGhostvec;

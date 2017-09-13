@@ -58,6 +58,8 @@ void Avatar::ResetAvatar()
 	ResetTilesToCurrentPosition();
 	SetAlpha(255);
 	SetImage("open_left_32.png");
+	myNextTileX = myCurrentTileX;
+	myNextTileY = myCurrentTileY;
 }
 
 void Avatar::UpdateFacingDirection(Vector2f vec)

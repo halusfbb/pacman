@@ -132,7 +132,12 @@ bool Pacman::Update(float aTime)
 
 				for (auto ghost : myGhostManager->GetVectorOfGhost())
 				{
-					ghost->SetAlpha(255);
+					ghost->ResetGhost();
+				}
+
+				for (auto ghost : myGhostManager->GetVectorOfHomeGhost())
+				{
+					ghost->ResetGhost();
 				}
 			}
 			else
@@ -258,6 +263,11 @@ bool Pacman::Update(float aTime)
 				myPacmanGameState.SetSubState();
 				myTimerToNextState = 2.f;
 				for (auto ghost : myGhostManager->GetVectorOfGhost())
+				{
+					ghost->SetAlpha(0);
+				}
+
+				for (auto ghost : myGhostManager->GetVectorOfHomeGhost())
 				{
 					ghost->SetAlpha(0);
 				}

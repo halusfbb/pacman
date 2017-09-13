@@ -25,6 +25,7 @@ public:
 	void SwapCyclicState();
 
 	const std::vector<Ghost*>& GetVectorOfGhost();
+	const std::vector<Ghost*>& GetVectorOfHomeGhost();
 
 private:
 

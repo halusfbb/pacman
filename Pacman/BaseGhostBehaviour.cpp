@@ -334,6 +334,12 @@ TileCoord BaseGhostBehaviour::GetTileCurrentTargetTile()
 	return TileCoord{ mCurrentTileTargetX, mCurrentTileTargetY };
 }
 
+void BaseGhostBehaviour::ResetPreviousDirecion()
+{
+	mPreviousDirectionUnitVecX = 0;
+	mPreviousDirectionUnitVecY = 0;
+}
+
 void BaseGhostBehaviour::SetScatterTileCoord(TileCoord& scatterTileCoord)
 {
 	mScatterTargetTileCoord = scatterTileCoord;
@@ -341,6 +347,17 @@ void BaseGhostBehaviour::SetScatterTileCoord(TileCoord& scatterTileCoord)
 
 void BaseGhostBehaviour::MoveInSameDirection(PathmapTile* ghostParentCurrentTile, Vector2f& directionUnitVector)
 {
+	//SDL_Log("");
+	//SDL_Log("");
+	//SDL_Log("");
+	//SDL_Log("~~~~~~~~~~~~~~~~~~~~~~~~~~");
+	//SDL_Log("MoveInSameDirection x,y ");
+
+	//std::string str = " x: " + std::to_string(ghostParentCurrentTile->myX)
+	//	+ " y: " + std::to_string(ghostParentCurrentTile->myY)
+	//	+ " v: " + std::to_string(ghostParentCurrentTile->myValidNeighbours.size());
+	//SDL_Log(str.c_str());
+
 	//get ghost current tile
 	int ghostParentCurrentTileX = mGhostParent->GetCurrentTileX();
 	int ghostParentCurrentTileY = mGhostParent->GetCurrentTileY();
@@ -399,6 +416,16 @@ void BaseGhostBehaviour::MoveInSameDirection(PathmapTile* ghostParentCurrentTile
 
 void BaseGhostBehaviour::MoveInSameDirectionVertically(PathmapTile * ghostParentCurrentTile, Vector2f & directionUnitVector)
 {
+	//SDL_Log("");
+	//SDL_Log("");
+	//SDL_Log("");
+	//SDL_Log("***********************************");
+	//SDL_Log("MoveInSameDirectionVertically x,y ");
+
+	//std::string str = " x: " + std::to_string(ghostParentCurrentTile->myX)
+	//	+ " y: " + std::to_string(ghostParentCurrentTile->myY)
+	//	+ " v: " + std::to_string(ghostParentCurrentTile->myValidNeighbours.size());
+	//SDL_Log(str.c_str());
 	//get ghost current tile
 	int ghostParentCurrentTileX = mGhostParent->GetCurrentTileX();
 	int ghostParentCurrentTileY = mGhostParent->GetCurrentTileY();
@@ -406,16 +433,14 @@ void BaseGhostBehaviour::MoveInSameDirectionVertically(PathmapTile * ghostParent
 	//proceed with same direction if it is going vertically
 	int proposedTileX;
 	int proposedTileY;
-	if (mPreviousDirectionUnitVecX == 0)
+	if (mPreviousDirectionUnitVecX != 0)
 	{
-		proposedTileX = ghostParentCurrentTileX + mPreviousDirectionUnitVecX;
-		proposedTileY = ghostParentCurrentTileY + mPreviousDirectionUnitVecY;
+		mPreviousDirectionUnitVecX = 0;
+		mPreviousDirectionUnitVecY = -1;
 	}
-	else
-	{
-		proposedTileX = 0;
-		proposedTileY = rand() % 3 - 1; // randomly choose a vertical direction
-	}
+
+	proposedTileX = ghostParentCurrentTileX + mPreviousDirectionUnitVecX;
+	proposedTileY = ghostParentCurrentTileY + mPreviousDirectionUnitVecY;
 
 	//check if the tile is valid in the proposed direction proposedTileX, proposedTileY
 	//iterate through the neighbour list
@@ -429,6 +454,8 @@ void BaseGhostBehaviour::MoveInSameDirectionVertically(PathmapTile * ghostParent
 			//it is ok to proceed with the continue moving in the same direction proposal
 			directionUnitVector.myX = mPreviousDirectionUnitVecX;
 			directionUnitVector.myY = mPreviousDirectionUnitVecY;
+			//str = "DirectionA x: " + std::to_string(directionUnitVector.myX) + " y: " + std::to_string(directionUnitVector.myY);
+			//SDL_Log(str.c_str());
 			return;
 		}
 
@@ -444,4 +471,6 @@ void BaseGhostBehaviour::MoveInSameDirectionVertically(PathmapTile * ghostParent
 	TileCoord direction = ghostParentCurrentTile->myValidNeighbours[indexForReversingTile] - TileCoord{ ghostParentCurrentTileX, ghostParentCurrentTileY };
 	directionUnitVector.myX = mPreviousDirectionUnitVecX = direction.x;
 	directionUnitVector.myY = mPreviousDirectionUnitVecY = direction.y;
+	//str = "DirectionB x: " + std::to_string(directionUnitVector.myX) + " y: " + std::to_string(directionUnitVector.myY);
+	//SDL_Log(str.c_str());
 }
