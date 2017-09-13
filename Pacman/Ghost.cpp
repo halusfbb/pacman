@@ -416,5 +416,6 @@ void Ghost::ResetGhost()
 	myNextTileY = myCurrentTileY;
 	myIsResurrectedFlag = false;
 	mGhostBehaviour->ResetPreviousDirecion();
+	SetImage(mGhostBehaviour->GetNormalImageName());
 	SetAlpha(255);
 }

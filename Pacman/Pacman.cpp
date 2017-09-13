@@ -126,6 +126,8 @@ bool Pacman::Update(float aTime)
 			{
 				myPacmanGameState.SetSubState();
 
+				myGhostManager->RevertToPreviousState(); //so that we don't start in frighten state if avatar dies during ghost frighten state
+
 				myTimerToNextState = 4.f;
 				myAvatar->ResetAvatar();
 				SetNextMovement(Vector2f(-1, 0));
@@ -201,7 +203,7 @@ bool Pacman::Update(float aTime)
 			if (myWorld->HasIntersectedBigDot(myAvatar->GetPosition()))
 			{
 				myScore += 20;
-				myGhostGhostCounter = 20.f;
+				myGhostGhostCounter = (float)FRIGHTEN_DURATION;
 				myGhostManager->SetGhostsNextState(GHOST_FRIGHTENED);
 				myGhostCounterCountdown = true;
 			}
