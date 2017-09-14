@@ -34,8 +34,9 @@ public:
 
 	void SetNextMovement(Vector2f& vec);
 
-	const Avatar* GetAvatar() { return myAvatar; }
-	World* GetWorld() { return myWorld; }
+	const Avatar* GetAvatar() const { return myAvatar; }
+	World* GetWorld() const { return myWorld; }
+	const GhostManager* GetGhostManager() const { return myGhostManager; }
 
 	float GetFrightenedGhostCounter();
 private:

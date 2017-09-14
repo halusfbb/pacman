@@ -26,6 +26,7 @@ public:
 
 	const std::vector<Ghost*>& GetVectorOfGhost();
 	const std::vector<Ghost*>& GetVectorOfHomeGhost();
+	const Ghost* GetRedGhost() const;
 
 	void ResetCycleCount();
 
@@ -45,5 +46,7 @@ private:
 	int mNoOf_Chase_Scatter_Cycles;
 
 	float mTimerBeforeGhostExit;
+
+	Ghost* mRedGhost; //to simplify obtaining of the redghost which is needed by the blue ghost
 };
 #endif

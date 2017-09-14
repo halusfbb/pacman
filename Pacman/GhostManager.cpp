@@ -23,6 +23,7 @@ GhostManager::GhostManager()
 	,mCyclic_Chase_Scatter(INITIAL_CYCLIC_GHOST_STATE)
 	,mNoOf_Chase_Scatter_Cycles(0)
 	,mTimerBeforeGhostExit(0.f)
+	,mRedGhost(NULL)
 {
 }
 
@@ -47,6 +48,8 @@ void GhostManager::Init()
 	mGhostvec.push_back(cyanGhost);
 	mGhostvec.push_back(orangeGhost);
 	//mGhostvec.push_back(grayGhost);
+
+	mRedGhost = redGhost;
 
 	//get the duration for the state in mCyclicChase_Scatter
 	mCurrentCycleStateTimer = GetDurationForChase_ScatterState(mCyclic_Chase_Scatter);
@@ -214,6 +217,11 @@ void GhostManager::SwapCyclicState()
 const std::vector<Ghost*>& GhostManager::GetVectorOfHomeGhost()
 {
 	return mGhostAtHomevec;
+}
+
+const Ghost * GhostManager::GetRedGhost() const
+{
+	return mRedGhost;
 }
 
 void GhostManager::ResetCycleCount()
