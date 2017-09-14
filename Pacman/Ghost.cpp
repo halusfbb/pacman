@@ -84,6 +84,11 @@ void Ghost::Die(World* aWorld)
 
 void Ghost::Update(float aTime, World* aWorld)
 {
+#ifdef _DEBUG
+	std::string str = "Ghost:" +std::to_string((int)mGhostColor) + " X:" + std::to_string(GetPosition().myX) + " Y:" + std::to_string(GetPosition().myY) + " TX:" + std::to_string(GetCurrentTileX()) + " TY:" + std::to_string(GetCurrentTileY());
+	SDL_Log(str.c_str());
+#endif
+
 	Vector2f unitDirection = Vector2f(0.f,0.f);
 
 	mGhostState.CheckAndSwapState();
@@ -440,8 +445,19 @@ void Ghost::ResetGhostBehaviour()
 
 void Ghost::SoftReset()
 {
+#ifdef _DEBUG
+	std::string str1 = "BEFORE RESET Ghost:" + std::to_string((int)mGhostColor) + " X:" + std::to_string(GetPosition().myX) + " Y:" + std::to_string(GetPosition().myY) + " TX:" + std::to_string(GetCurrentTileX()) + " TY:" + std::to_string(GetCurrentTileY());
+	SDL_Log(str1.c_str());
+#endif
 	myPosition = mOriginalStartPos;
 	ResetTilesToCurrentPosition();
+
+#ifdef _DEBUG
+	std::string str2 = "AFTER RESET Ghost:" + std::to_string((int)mGhostColor) + " X:" + std::to_string(GetPosition().myX) + " Y:" + std::to_string(GetPosition().myY) + " TX:" + std::to_string(GetCurrentTileX()) + " TY:" + std::to_string(GetCurrentTileY());
+	SDL_Log(str2.c_str());
+#endif
+
+
 	myIsClaimableFlag = false;
 	myIsDeadFlag = false;
 	myNextTileX = myCurrentTileX;
@@ -449,6 +465,7 @@ void Ghost::SoftReset()
 	myIsResurrectedFlag = false;
 	SetImage(mGhostBehaviour->GetNormalImageName());
 	SetAlpha(255);
+	myPath.clear();
 
 	mGhostBehaviour->SoftResetBehaviour();
 }
