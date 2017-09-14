@@ -13,6 +13,7 @@ public:
 
 	const char* GetNormalImageName() override;
 
+	void ChaseState(float dt, Vector2f & directionUnitVector) override;
 private:
 };
 

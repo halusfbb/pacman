@@ -14,14 +14,14 @@ Avatar::~Avatar(void)
 void Avatar::Init()
 {
 	//the avatar will have textures set according to indices calculated in SetAnimation()
-	arrImageCache[0] = AssetManager::GetInstance()->GetImageAsset("open_32.png");
-	arrImageCache[1] = AssetManager::GetInstance()->GetImageAsset("closed_32.png");
-	arrImageCache[2] = AssetManager::GetInstance()->GetImageAsset("open_down_32.png");
-	arrImageCache[3] = AssetManager::GetInstance()->GetImageAsset("closed_down_32.png");
-	arrImageCache[4] = AssetManager::GetInstance()->GetImageAsset("open_left_32.png");
-	arrImageCache[5] = AssetManager::GetInstance()->GetImageAsset("closed_left_32.png");
-	arrImageCache[6] = AssetManager::GetInstance()->GetImageAsset("open_up_32.png");
-	arrImageCache[7] = AssetManager::GetInstance()->GetImageAsset("closed_up_32.png");
+	arrImageCache[0] = AssetManager::GetInstance()->GetImageAsset("open_up_32.png");
+	arrImageCache[1] = AssetManager::GetInstance()->GetImageAsset("closed_up_32.png");
+	arrImageCache[2] = AssetManager::GetInstance()->GetImageAsset("open_left_32.png");
+	arrImageCache[3] = AssetManager::GetInstance()->GetImageAsset("closed_left_32.png");
+	arrImageCache[4] = AssetManager::GetInstance()->GetImageAsset("open_down_32.png");
+	arrImageCache[5] = AssetManager::GetInstance()->GetImageAsset("closed_down_32.png");
+	arrImageCache[6] = AssetManager::GetInstance()->GetImageAsset("open_32.png");
+	arrImageCache[7] = AssetManager::GetInstance()->GetImageAsset("closed_32.png");
 
 	GameEntity::Init();
 }
@@ -60,6 +60,11 @@ void Avatar::ResetAvatar()
 	SetImage("open_left_32.png");
 	myNextTileX = myCurrentTileX;
 	myNextTileY = myCurrentTileY;
+}
+
+eAvatarFacing Avatar::GetAvatarFaceDirection() const
+{
+	return mEnumAvatarFacing;
 }
 
 void Avatar::UpdateFacingDirection(Vector2f vec)

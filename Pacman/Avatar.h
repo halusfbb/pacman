@@ -7,10 +7,10 @@
 
 typedef enum
 {
-	AVATAR_FACING_RIGHT = 0,
-	AVATAR_FACING_DOWN,
+	AVATAR_FACING_UP = 0,
 	AVATAR_FACING_LEFT,
-	AVATAR_FACING_UP
+	AVATAR_FACING_DOWN,
+	AVATAR_FACING_RIGHT
 } eAvatarFacing;
 
 class Avatar : public MovableGameEntity
@@ -24,6 +24,8 @@ public:
 	void Update(float aTime);
 
 	void ResetAvatar();
+
+	eAvatarFacing GetAvatarFaceDirection() const;
 
 private:
 	//this determines if avatar should bite down depending on its position within a cell
