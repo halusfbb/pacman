@@ -167,11 +167,25 @@ void GhostManager::SetGhostsNextState(GhostState ghostState, bool isRevertingFro
 	//for ghosts in the home zone
 	if (ghostState == GHOST_FRIGHTENED)
 	{
+		for (auto ghost : mGhostvec)
+		{
+			if (gPacman->GetFrightenedGhostCounter() > GHOST_BLINK_BEFORE_FRIGHTEN_END)
+			{
+				ghost->SetBlink(false);
+			}
+		}
+
 		//set ghosts in the home also to frightened image
 		for (auto ghost : mGhostAtHomevec)
 		{
 			ghost->SetFrightenedImage();
 			ghost->SetFrightenedSpeed();
+			// case of when the big dot is consumed when ghosts are blinking. 
+			//setting state doesn't trigger the ghost reset at the state inits since there is no state change
+			if (gPacman->GetFrightenedGhostCounter() > GHOST_BLINK_BEFORE_FRIGHTEN_END)
+			{
+				ghost->SetBlink(false);
+			}
 		}
 	}
 	else

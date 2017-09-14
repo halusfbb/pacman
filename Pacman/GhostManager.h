@@ -29,7 +29,6 @@ public:
 	const Ghost* GetRedGhost() const;
 
 	void ResetCycleCount();
-
 private:
 
 	float GetDurationForChase_ScatterState(GhostState ghoststate);
