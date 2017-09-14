@@ -55,12 +55,15 @@ public:
 
 	void SetNextState(GhostState ghostState);
 	GhostState GetCurrentState();
+	bool IsChangingState();
 
 	bool IsGhostAtHome();
 
 	void SetFrightenedImage();
 	void SetNormalImage();
 	void SetDeadImage();
+
+	void SetBlink(bool flag) const;
 
 	void ResetGhostBehaviour();
 	void SoftReset(); //reset position, and death flags

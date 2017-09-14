@@ -256,6 +256,7 @@ void BaseGhostBehaviour::FrightenedState(float dt, Vector2f & directionUnitVecto
 
 void BaseGhostBehaviour::FrightenedStateCleanup(float dt)
 {
+	SetBlinkFlag(false);
 }
 
 void BaseGhostBehaviour::ScatterStateInit(float dt)
@@ -336,8 +337,8 @@ void BaseGhostBehaviour::ScatterStateCleanup(float dt)
 
 void BaseGhostBehaviour::Update(float dt)
 {
-	if(mGhostParent->GetCurrentState() == GHOST_FRIGHTENED || 
-		mGhostParent->GetCurrentState() == GHOST_HOME) //ghosts at home might be "frightened" based on their image name
+	if((mGhostParent->GetCurrentState() == GHOST_FRIGHTENED || mGhostParent->GetCurrentState() == GHOST_HOME) && //ghosts at home might be "frightened" based on their image name
+		!mGhostParent->IsChangingState()) //if we are transitioning out of the frighten state, don't flip the blink flag
 	{
 		const char* ghostImageName = mGhostParent->GetImageName();
 		const char* frightenedImageName = GetFrightenedImageName();
@@ -347,10 +348,6 @@ void BaseGhostBehaviour::Update(float dt)
 		{
 			SetBlinkFlag(true);
 		}
-	}
-	else
-	{
-		SetBlinkFlag(false);
 	}
 
 	if (mBlinkModeFlag)

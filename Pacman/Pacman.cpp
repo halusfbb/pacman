@@ -543,8 +543,17 @@ bool Pacman::Draw()
 	}
 
 #ifdef _DEBUG
+	std::string str;
+
+	if (myPacmanGameState.GetCurrentState() == GAME_STATE_UNDEFINED)
+	{
+		str = "GameState: GAME_STATE_UNDEFINED";
+	}
+	else
+	{
+		str = "GameState: " + std::string(gGameStateChar[myPacmanGameState.GetCurrentState()]);
+	}
 	float timer = myTimerToNextState;
-	std::string str = "GameState: " + std::string(gGameStateChar[myPacmanGameState.GetCurrentState()]);
 	std::string str2 = "Time: " + std::to_string(timer);
 	myDrawer->DrawText(str.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 20, 350, 24, SDL_Color{ 0,255,0 });
 	myDrawer->DrawText(str2.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 20, 375, 24, SDL_Color{ 0,255,0 });

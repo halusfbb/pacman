@@ -185,6 +185,8 @@ void GhostManager::SetGhostsNextState(GhostState ghostState, bool isRevertingFro
 			else
 			{
 				ghost->SetNormalImage();
+				ghost->SetBlink(false);
+				ghost->SetNormalSpeed();
 			}
 		}
 	}

@@ -30,6 +30,7 @@ private:
 	bool mIsCleanedUp; //this is used to indicate if this current state has gone through cleanup step before a state change is done.
 	bool mIsInSubState; //this is used to indicate if this current state has its initalization or cleanup initiated.
 	bool mSkipNextInitialize; //skips the next initialie after the state change
+	bool mSkipNextCleanup; //skips the next cleanup after the state change
 };
 
 template<typename T>
@@ -37,9 +38,10 @@ inline StateHelper<T>::StateHelper()
 	:mCurrentState((T)-1)
 	, mNextState((T)-1)
 	, mIsInitalized(false)
-	, mIsCleanedUp(false)
+	, mIsCleanedUp(true)
 	, mIsInSubState(false)
 	, mSkipNextInitialize(false)
+	, mSkipNextCleanup(false)
 {
 }
 
@@ -80,11 +82,7 @@ inline void StateHelper<T>::SetNextState(T nextState, bool needInitalize, bool n
 		return;
 
 	mSkipNextInitialize = !needInitalize;
-
-	if (!needCleanup)
-	{
-		SetCleanUpDone();		
-	}
+	mSkipNextCleanup = !needCleanup;
 
 	mNextState = nextState;
 }
@@ -94,8 +92,6 @@ inline void StateHelper<T>::SetInitalizingDone()
 {
 	mIsInitalized = true;
 	mIsInSubState = false;
-
-	mIsCleanedUp = false;
 }
 
 template<typename T>
@@ -103,8 +99,6 @@ inline void StateHelper<T>::SetCleanUpDone()
 {
 	mIsCleanedUp = true;
 	mIsInSubState = false;
-
-	mIsInitalized = false;
 }
 
 template<typename T>
@@ -129,6 +123,23 @@ inline void StateHelper<T>::SetCurrentStateFromNextState()
 	{
 		SetInitalizingDone();
 		mSkipNextInitialize = false;
+	}
+	else
+	{
+		mIsInitalized = false;
+		mIsInSubState = false;
+	}
+	
+
+	if (mSkipNextCleanup)
+	{
+		SetCleanUpDone();
+		mSkipNextCleanup = false;
+	}
+	else
+	{
+		mIsCleanedUp = false;
+		mIsInSubState = false;
 	}
 }
 

@@ -379,12 +379,24 @@ bool Ghost::GetIsClaimableFlag()
 
 void Ghost::SetNextState(GhostState ghostState)
 {
-	mGhostState.SetNextState(ghostState, true);
+	if (ghostState == GHOST_FRIGHTENED) //because we have a cleanup logic in ghost frighted state
+	{
+		mGhostState.SetNextState(ghostState, true, true);
+	}
+	else
+	{
+		mGhostState.SetNextState(ghostState, true);
+	}
 }
 
 GhostState Ghost::GetCurrentState()
 {
 	return mGhostState.GetCurrentState();
+}
+
+bool Ghost::IsChangingState()
+{
+	return mGhostState.IsChangingState();
 }
 
 bool Ghost::IsGhostAtHome()
@@ -414,6 +426,11 @@ void Ghost::SetNormalImage()
 void Ghost::SetDeadImage()
 {
 	SetImage(mGhostBehaviour->GetDeadImageName());
+}
+
+void Ghost::SetBlink(bool flag) const
+{
+	mGhostBehaviour->SetBlinkFlag(false);
 }
 
 void Ghost::ResetGhostBehaviour()

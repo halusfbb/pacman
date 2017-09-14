@@ -11,6 +11,7 @@ class World;
 class GhostManager;
 
 typedef enum {
+	GAME_STATE_UNDEFINED = -1,
 	GAME_STATE_INIT,  //does a hard reset of game items
 	GAME_STATE_START, //displays "Get Ready" and does a soft reset of game items
 	GAME_STATE_PLAY,
