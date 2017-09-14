@@ -60,7 +60,7 @@ Pacman::Pacman(Drawer* aDrawer)
 	myGhostManager = GhostManager::Create();
 	myWorld = new World();
 
-	myPacmanGameState.SetNextState(GAME_STATE_START, true);
+	myPacmanGameState.SetNextState(GAME_STATE_INIT, true);
 
 	srand(time(NULL));
 }

@@ -7,9 +7,20 @@ PathmapTile::PathmapTile(int anX, int anY, bool aIsBlockingFlag, bool myIsStartZ
 , myIsStartZoneFlag(myIsStartZoneFlag)
 , myIsGateFlag(myIsGateFlag)
 , myLoopFlag(myIsLoopFlag)
+, myIsVisitedFlag(false)
 {
 }
 
 PathmapTile::~PathmapTile(void)
 {
+}
+
+bool PathmapTile::getVisitedFlag() const
+{
+	return myIsVisitedFlag;
+}
+
+void PathmapTile::setVisitedFlag(bool flag)
+{
+	myIsVisitedFlag = flag;
 }

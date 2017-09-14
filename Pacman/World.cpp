@@ -273,7 +273,7 @@ void World::GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<Pathma
 	for(std::vector<PathmapTile*>::iterator list_iter = myPathmapTiles.begin(); list_iter != myPathmapTiles.end(); list_iter++)
 	{
 		PathmapTile* tile = *list_iter;
-		tile->myIsVisitedFlag = false;
+		tile->setVisitedFlag(false);
 	}
 
 	Pathfind(fromTile, toTile, aList);
@@ -363,7 +363,7 @@ bool SortFromGhostSpawn(PathmapTile* a, PathmapTile* b)
 
 bool World::Pathfind(PathmapTile* aFromTile, PathmapTile* aToTile, std::list<PathmapTile*>& aList)
 {
-	aFromTile->myIsVisitedFlag = true;
+	aFromTile->setVisitedFlag(true);
 
 	if (aFromTile->myIsBlockingFlag)
 		return false;
@@ -374,19 +374,19 @@ bool World::Pathfind(PathmapTile* aFromTile, PathmapTile* aToTile, std::list<Pat
 	std::list<PathmapTile*> neighborList;
 
 	PathmapTile* up = GetTile(aFromTile->myX, aFromTile->myY - 1);
-	if (up && !up->myIsVisitedFlag && !up->myIsBlockingFlag && ListDoesNotContain(up, aList))
+	if (up && !up->getVisitedFlag() && !up->myIsBlockingFlag && ListDoesNotContain(up, aList))
 		neighborList.push_front(up);
 
 	PathmapTile* down = GetTile(aFromTile->myX, aFromTile->myY + 1);
-	if (down && !down->myIsVisitedFlag && !down->myIsBlockingFlag && ListDoesNotContain(down, aList))
+	if (down && !down->getVisitedFlag() && !down->myIsBlockingFlag && ListDoesNotContain(down, aList))
 		neighborList.push_front(down);
 
 	PathmapTile* right = GetTile(aFromTile->myX + 1, aFromTile->myY);
-	if (right && !right->myIsVisitedFlag && !right->myIsBlockingFlag && ListDoesNotContain(right, aList))
+	if (right && !right->getVisitedFlag() && !right->myIsBlockingFlag && ListDoesNotContain(right, aList))
 		neighborList.push_front(right);
 
 	PathmapTile* left = GetTile(aFromTile->myX - 1, aFromTile->myY);
-	if (left && !left->myIsVisitedFlag && !left->myIsBlockingFlag && ListDoesNotContain(left, aList))
+	if (left && !left->getVisitedFlag() && !left->myIsBlockingFlag && ListDoesNotContain(left, aList))
 		neighborList.push_front(left);
 
 	neighborList.sort(SortFromGhostSpawn);
@@ -402,6 +402,73 @@ bool World::Pathfind(PathmapTile* aFromTile, PathmapTile* aToTile, std::list<Pat
 
 		aList.pop_back();
 	}
+
+	return false;
+}
+
+bool World::PathfindDestination(PathmapTile* aFromTile, PathmapTile* aToTile, std::list<PathmapTile*>& aList, int& minDist, int searchRange)
+{
+	aFromTile->setVisitedFlag(true);
+
+	if (aList.size() >= minDist ||
+		aList.size() >= searchRange) // going any further would yield a path which is longer than what we have
+	{
+		aFromTile->setVisitedFlag(false);
+		return false;
+	}
+
+	if (aFromTile->myIsBlockingFlag)
+	{
+		aFromTile->setVisitedFlag(false);
+		return false;
+	}
+
+	if (aFromTile == aToTile)
+	{
+		aFromTile->setVisitedFlag(false);
+		return true;
+	}
+	else if (aList.empty())
+	{
+		if (searchRange >= 0)
+			minDist = INT_MAX; //initialization of recursion
+	}
+
+	std::list<PathmapTile*> neighborList;
+
+	PathmapTile* up = GetTile(aFromTile->myX, aFromTile->myY - 1);
+	if (up && !up->getVisitedFlag() && !up->myIsBlockingFlag && !up->myIsGateFlag && ListDoesNotContain(up, aList))
+		neighborList.push_front(up);
+
+	PathmapTile* down = GetTile(aFromTile->myX, aFromTile->myY + 1);
+	if (down && !down->getVisitedFlag() && !down->myIsBlockingFlag && !down->myIsGateFlag && ListDoesNotContain(down, aList))
+		neighborList.push_front(down);
+
+	PathmapTile* right = GetTile(aFromTile->myX + 1, aFromTile->myY);
+	if (right && !right->getVisitedFlag() && !right->myIsBlockingFlag && !right->myIsGateFlag && ListDoesNotContain(right, aList))
+		neighborList.push_front(right);
+
+	PathmapTile* left = GetTile(aFromTile->myX - 1, aFromTile->myY);
+	if (left && !left->getVisitedFlag() && !left->myIsBlockingFlag && !left->myIsGateFlag && ListDoesNotContain(left, aList))
+		neighborList.push_front(left);
+
+	for (std::list<PathmapTile*>::iterator list_iter = neighborList.begin(); list_iter != neighborList.end(); list_iter++)
+	{
+		PathmapTile* tile = *list_iter;
+
+		aList.push_back(tile);
+
+		if (PathfindDestination(tile, aToTile, aList, minDist, searchRange))
+		{
+			minDist = aList.size(); //we already checked the min condition above
+			aList.pop_back();
+			break;
+		}
+
+		aList.pop_back();
+	}
+
+	aFromTile->setVisitedFlag(false);
 
 	return false;
 }

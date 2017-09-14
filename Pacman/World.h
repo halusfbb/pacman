@@ -42,6 +42,10 @@ public:
 	const std::list<BigDot*>& GetOriginalListOfBigDots() const;
 
 	void ResetToOriginalDots();
+	//searches for shortest path to target. 
+	//param minDist INT_MAX will be writted into this parameter if no results was found
+	//param searchRange pass <= 0 to search exhaustively. otherwise the path will only search for tiles within searchRange value
+	bool PathfindDestination(PathmapTile* aFromTile, PathmapTile* aToTile, std::list<PathmapTile*>& aList, int& minDist, int searchRange);
 
 private:
 
@@ -56,7 +60,7 @@ private:
 	bool InitBigDots(std::ifstream& myfile);
 	void InitBoard();
 
-	std::vector<PathmapTile*> myPathmapTiles; //instantiate the correct number of slots change back to list?
+	std::vector<PathmapTile*> myPathmapTiles;
 	std::list<Dot*> myDots;
 	std::list<BigDot*> myBigDots;
 	std::list<Cherry*> myCherry;

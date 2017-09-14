@@ -17,15 +17,20 @@ public:
 	PathmapTile(int anX, int anY, bool aIsBlockingFlag, bool aIsStartZoneFlag, bool myIsGateFlag, bool myIsLoopFlag);
 	~PathmapTile(void);
 
+	bool getVisitedFlag() const;
+	void setVisitedFlag(bool flag);
+
 	int myX;
 	int myY;
 	std::vector<TileCoord> myValidNeighbours;
 	bool myIsBlockingFlag;
-	bool myIsVisitedFlag;
+
 	bool myIsStartZoneFlag; //indicates the home location of the ghosts
 	bool myIsGateFlag;	//this is the gate that ghosts have to cross to get from spawning zone to the maze
 	bool myLoopFlag; //this is the loop tile where avatar and ghosts can loop around the maze by entering the tile ahead
 
+private:
+	bool myIsVisitedFlag;
 };
 
 #endif // PATHMAPTILE_H
