@@ -20,27 +20,30 @@ void PinkGhostBehaviour::ChaseState(float dt, Vector2f & directionUnitVector)
 {
 	//getting avatar and his current tile position
 	const Avatar* avatar = gPacman->GetAvatar();
-	mCurrentTileTargetX = avatar->GetCurrentTileX();
-	mCurrentTileTargetY = avatar->GetCurrentTileY();
+	int targetX = avatar->GetCurrentTileX();
+	int targetY = avatar->GetCurrentTileY();
 
 	eAvatarFacing avatarFaceDirection = avatar->GetAvatarFaceDirection();
 	switch (avatarFaceDirection)
 	{
 	case AVATAR_FACING_UP:
-		mCurrentTileTargetY -= 4;
+		targetY -= 4;
 		break;
 	case AVATAR_FACING_LEFT:
-		mCurrentTileTargetX -= 4;
+		targetX -= 4;
 		break;
 	case AVATAR_FACING_DOWN:
-		mCurrentTileTargetY += 4;
+		targetY += 4;
 		break;
 	case AVATAR_FACING_RIGHT:
-		mCurrentTileTargetX += 4;
+		targetX += 4;
 		break;
 	default:
 		break;
 	}
+
+	mCurrentTileTargetX = targetX;
+	mCurrentTileTargetY = targetY;
 
 	//get ghost current tile
 	int ghostParentCurrentTileX = mGhostParent->GetCurrentTileX();

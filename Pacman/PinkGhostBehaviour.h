@@ -6,6 +6,7 @@
 //this class is designed to be "plugged" into the Ghost class to incorporate the
 //behaviour of the pink ghost
 
+//pink ghost targets 4 tiles ahead of where avatar is facing, trying to ambush the avatar
 class PinkGhostBehaviour : public BaseGhostBehaviour
 {
 public:
