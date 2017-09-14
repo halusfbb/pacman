@@ -504,6 +504,32 @@ void BaseGhostBehaviour::MoveInSameDirection(PathmapTile* ghostParentCurrentTile
 		}
 	}
 
+	//if we reach here. it means that moving in the same direction leads to a tile that is not valid but before choose another way or retreating, 
+	// we first check if destination is a loop tile
+	PathmapTile* tile = gPacman->GetWorld()->GetTile(ghostParentCurrentTileX, ghostParentCurrentTileY);
+	bool isLoopTile = tile->myLoopFlag;
+	if (isLoopTile)
+	{
+		int nextTileX;
+		int nextTileY;
+		//this is a loop tile, so send the avatar across the maze directly
+		if (mPreviousDirectionUnitVecX == -1 || mPreviousDirectionUnitVecX == -1)
+		{
+			nextTileX = gPacman->GetWorld()->GetMapColSize() - 1;
+		}
+		else
+		{
+			nextTileX = 0;
+		}
+		nextTileY = ghostParentCurrentTileY; //ghost to stay at the same row
+
+		mGhostParent->SetPosition(Vector2f(nextTileX * TILE_SIZE, nextTileY * TILE_SIZE));
+		mGhostParent->ResetTilesToCurrentPosition();
+		directionUnitVector.myX = mPreviousDirectionUnitVecX;
+		directionUnitVector.myY = mPreviousDirectionUnitVecY;
+		return;
+	}
+
 	//continuing in the same direction does not yield a valid tile, so we just go to the tile we did not come from
 	//note: if the ghost started at this position, then technically any direction is valid since none of the valid neighbours
 	//was a previous tile, so the first tile that was discoverd will be taken as the new direction
