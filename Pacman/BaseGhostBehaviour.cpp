@@ -336,9 +336,14 @@ void BaseGhostBehaviour::ScatterStateCleanup(float dt)
 
 void BaseGhostBehaviour::Update(float dt)
 {
-	if(mGhostParent->GetCurrentState() == GHOST_FRIGHTENED)
+	if(mGhostParent->GetCurrentState() == GHOST_FRIGHTENED || 
+		mGhostParent->GetCurrentState() == GHOST_HOME) //ghosts at home might be "frightened" based on their image name
 	{
-		if (gPacman->GetFrightenedGhostCounter() < GHOST_BLINK_BEFORE_FRIGHTEN_END && !GetBlinkFlag())
+		const char* ghostImageName = mGhostParent->GetImageName();
+		const char* frightenedImageName = GetFrightenedImageName();
+		if (gPacman->GetFrightenedGhostCounter() < GHOST_BLINK_BEFORE_FRIGHTEN_END && 
+			!GetBlinkFlag() &&
+			!strcmp(ghostImageName, frightenedImageName))
 		{
 			SetBlinkFlag(true);
 		}

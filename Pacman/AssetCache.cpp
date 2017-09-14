@@ -16,7 +16,7 @@ SDL_Renderer* AssetCache::GetRenderer() const
 	return mRenderer;
 }
 
-std::string AssetCache::getImageName() const
+const std::string& AssetCache::getImageName() const
 {
 	return mAssetName;
 }

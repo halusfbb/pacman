@@ -19,7 +19,7 @@ GameEntity::~GameEntity(void)
 void GameEntity::Init()
 {
 	if ((myImage != NULL) && (myImage[0] != '\0'))
-		myImageAssetCache = AssetManager::GetInstance()->GetImageAsset(myImage);
+		SetImage(myImage);
 }
 
 void GameEntity::SetAlpha(Uint8 alpha)
@@ -36,6 +36,13 @@ void GameEntity::SetImage(const char * anImage)
 	}
 	
 	myImageAssetCache = std::dynamic_pointer_cast<ImageAssetCache>(AssetManager::GetInstance()->GetImageAsset(anImage));
+	myImage = anImage;
+}
+
+const char * GameEntity::GetImageName() const
+{
+	const char* imageTmp = myImageAssetCache->getImageName().c_str();
+	return myImageAssetCache->getImageName().c_str();
 }
 
 bool GameEntity::Intersect(GameEntity* aGameEntity)

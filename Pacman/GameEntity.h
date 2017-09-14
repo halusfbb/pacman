@@ -18,6 +18,7 @@ public:
 	void SetPosition(const Vector2f& aPosition){ myPosition = aPosition; }
 	void SetAlpha(Uint8 alpha);
 	void SetImage(const char* anImage);
+	const char* GetImageName() const;
 
 	bool Intersect(GameEntity* aGameEntity);
 	virtual void Draw(Drawer* aDrawer);

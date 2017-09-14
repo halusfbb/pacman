@@ -14,7 +14,7 @@ class AssetCache
 public: 
 	SDL_Renderer* GetRenderer() const;
 	virtual void CleanUpAssets() = 0;
-	std::string getImageName() const;
+	const std::string& getImageName() const;
 
 protected:
 	AssetCache(std::string assetName, SDL_Renderer* sdlRenderer);
