@@ -410,13 +410,6 @@ bool World::PathfindDestination(PathmapTile* aFromTile, PathmapTile* aToTile, st
 {
 	aFromTile->setVisitedFlag(true);
 
-	if (aList.size() >= minDist ||
-		aList.size() >= searchRange) // going any further would yield a path which is longer than what we have
-	{
-		aFromTile->setVisitedFlag(false);
-		return false;
-	}
-
 	if (aFromTile->myIsBlockingFlag)
 	{
 		aFromTile->setVisitedFlag(false);
@@ -431,7 +424,14 @@ bool World::PathfindDestination(PathmapTile* aFromTile, PathmapTile* aToTile, st
 	else if (aList.empty())
 	{
 		if (searchRange >= 0)
-			minDist = INT_MAX; //initialization of recursion
+			minDist = INT_MAX; //initialization only one in this recursion
+	}
+
+	if (aList.size() >= minDist ||
+		aList.size() >= searchRange) // going any further would yield a path which is longer than what we have
+	{
+		aFromTile->setVisitedFlag(false);
+		return false;
 	}
 
 	std::list<PathmapTile*> neighborList;
