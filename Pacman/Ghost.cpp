@@ -433,7 +433,7 @@ void Ghost::SoftReset()
 	SetImage(mGhostBehaviour->GetNormalImageName());
 	SetAlpha(255);
 
-	mGhostBehaviour->ResetPreviousDirecion();
+	mGhostBehaviour->SoftResetBehaviour();
 }
 
 void Ghost::SetFrightenedSpeed()

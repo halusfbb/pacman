@@ -20,6 +20,9 @@ BaseGhostBehaviour::BaseGhostBehaviour(Ghost * ghostParent)
 	,mScatterTargetTileCoord{ 26, 30 }
 	,mReverseFlag(false)
 	,mBehaviourSpeedMultiplier(1.f)
+	,mBlinkModeFlag(false)
+	,mBlinkType(false)
+	,mBlinkTimer(0.f)
 {
 }
 
@@ -333,6 +336,51 @@ void BaseGhostBehaviour::ScatterStateCleanup(float dt)
 
 void BaseGhostBehaviour::Update(float dt)
 {
+	if(mGhostParent->GetCurrentState() == GHOST_FRIGHTENED)
+	{
+		if (gPacman->GetFrightenedGhostCounter() < GHOST_BLINK_BEFORE_FRIGHTEN_END && !GetBlinkFlag())
+		{
+			SetBlinkFlag(true);
+		}
+	}
+	else
+	{
+		SetBlinkFlag(false);
+	}
+
+	if (mBlinkModeFlag)
+	{
+		if (mBlinkType)
+		{
+			if (mBlinkTimer <= 0.f)
+			{
+				mGhostParent->SetAlpha(255);
+			}
+
+			mBlinkTimer += dt;
+			
+			if (mBlinkTimer >= GHOST_BLINK_ON_DURATION)
+			{
+				mBlinkType = false;
+				mBlinkTimer = 0.f;
+			}
+		}
+		else
+		{
+			if (mBlinkTimer <= 0.f)
+			{
+				mGhostParent->SetAlpha(0);
+			}
+
+			mBlinkTimer += dt;
+
+			if (mBlinkTimer >= GHOST_BLINK_OFF_DURATION)
+			{
+				mBlinkType = true;
+				mBlinkTimer = 0.f;
+			}
+		}
+	}
 }
 
 const char * BaseGhostBehaviour::GetNormalImageName()
@@ -371,10 +419,30 @@ void BaseGhostBehaviour::ResetBehaviour()
 	mReverseFlag = false;
 }
 
-void BaseGhostBehaviour::ResetPreviousDirecion()
+void BaseGhostBehaviour::SoftResetBehaviour()
 {
 	mPreviousDirectionUnitVecX = 0;
 	mPreviousDirectionUnitVecY = 0;
+
+	SetBlinkFlag(false);
+	
+}
+
+void BaseGhostBehaviour::SetBlinkFlag(bool blinkMode)
+{
+	mBlinkModeFlag = blinkMode;
+
+	if (!mBlinkModeFlag)
+	{
+		mGhostParent->SetAlpha(255);
+		mBlinkType = true;
+		mBlinkTimer = 0.f;
+	}
+}
+
+bool BaseGhostBehaviour::GetBlinkFlag() const
+{
+	return mBlinkModeFlag;
 }
 
 void BaseGhostBehaviour::SetScatterTileCoord(TileCoord& scatterTileCoord)

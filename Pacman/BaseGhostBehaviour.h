@@ -46,8 +46,10 @@ public:
 	float GetBehaviourSpeedModifier();
 
 	virtual void ResetBehaviour();
-	void ResetPreviousDirecion();
+	void SoftResetBehaviour();
 
+	void SetBlinkFlag(bool blinkMode);
+	bool GetBlinkFlag() const;
 protected:
 	void SetScatterTileCoord(TileCoord& scatterTileCoord);
 	int GetIndirectMagnitude(TileCoord a, TileCoord b);
@@ -72,10 +74,14 @@ protected:
 	float mBehaviourSpeedMultiplier;
 
 	bool mReverseFlag; //this forces ghost to reverse their direction
+
 private:
 
 	TileCoord mScatterTargetTileCoord;
-
+	
+	bool mBlinkModeFlag;
+	bool mBlinkType;	//false would be transparent and true would be 255
+	float mBlinkTimer;
 };
 
 
